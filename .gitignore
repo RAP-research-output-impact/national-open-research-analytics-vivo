@@ -3,3 +3,8 @@ custom-vivo/settings-local.xml
 custom-vivo/home/target/
 custom-vivo/solr/target/
 custom-vivo/webapp/target/
+etl/.classpath
+etl/.project
+etl/.settings/org.eclipse.core.resources.prefs
+etl/.settings/org.eclipse.jdt.core.prefs
+etl/.settings/org.eclipse.m2e.core.prefs

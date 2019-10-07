@@ -1,0 +1,5 @@
+custom-vivo/settings.xml
+custom-vivo/settings-local.xml
+custom-vivo/home/target/
+custom-vivo/solr/target/
+custom-vivo/webapp/target/

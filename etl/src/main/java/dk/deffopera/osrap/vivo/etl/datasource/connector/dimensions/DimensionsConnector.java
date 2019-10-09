@@ -1,7 +1,9 @@
 package dk.deffopera.osrap.vivo.etl.datasource.connector.dimensions;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -34,8 +36,9 @@ public class DimensionsConnector extends ConnectorDataSource
 
     private static final String DIMENSIONS_API = "https://app.dimensions.ai/api/";
     private static final String ABOX = "http://vivo.deffopera.dk/individual/";
+    private static final String SPARQL_RESOURCE_DIR = "/dimensions/sparql/";
     private static final long REQUEST_INTERVAL = 2000; // ms
-    
+       
     private static final Log log = LogFactory.getLog(DimensionsConnector.class);
     private HttpUtils httpUtils = new HttpUtils();
     private String token;
@@ -287,16 +290,55 @@ public class DimensionsConnector extends ConnectorDataSource
             }
         }
 
-        
     }
 
     @Override
     protected Model filter(Model model) {
-        return model;
+        if(true) {
+            return filterGeneric(model);
+        } else {
+            return model;
+        }
     }
 
     @Override
     protected Model mapToVIVO(Model model) {
+        List<String> queries = Arrays.asList(
+                //"050-orcidId.rq",
+                "100-publicationTypes.rq",
+                "110-publicationMetadata.rq",
+                "120-publicationDate.rq",
+                "130-publicationJournal.rq",
+                "140-publicationAuthorship.rq"
+                );
+        for(String query : queries) {
+            log.debug("Executing query " + query);
+            long pre = model.size();
+            log.debug("Pre-query model size: " + pre);
+            construct(SPARQL_RESOURCE_DIR + query, model, ABOX + getPrefixName() + "-");
+            log.debug("Post-query model size: " + model.size());
+            if(model.size() - pre == 0 ) {
+                log.info(query + " constructed no triples");
+            }
+        }
+        model = renameByIdentifier(model, model.getProperty(
+                XmlToRdf.GENERIC_NS + "person_researcher_id"), ABOX, "");
+        //model = renameByIdentifier(model, model.getProperty(
+        //        XmlToRdf.GENERIC_NS + "person_orcidStr"), ABOX, "orcid-");
+        queries = Arrays.asList(         
+                "150-publicationAuthor.rq",
+                "160-publicationAuthorPosition.rq"
+                );
+        for(String query : queries) {
+            log.debug("Executing query " + query);
+            long pre = model.size();
+            log.debug("Pre-query model size: " + pre);
+            construct(SPARQL_RESOURCE_DIR + query, model, ABOX + getPrefixName() + "-");
+            log.debug("Post-query model size: " + model.size());
+            if(model.size() - pre == 0 ) {
+                log.info(query + " constructed no triples");
+            }
+        }
         return model;
     }
 

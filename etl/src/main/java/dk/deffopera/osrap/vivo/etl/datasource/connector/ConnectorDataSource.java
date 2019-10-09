@@ -3,6 +3,7 @@ package dk.deffopera.osrap.vivo.etl.datasource.connector;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -33,6 +34,9 @@ public abstract class ConnectorDataSource extends DataSourceBase {
     /* number of iterator elements to be processed at once in memory 
     before being flushed to a SPARQL endpoint */
     protected final static int DEFAULT_BATCH_SIZE = 5;
+    private static final List<String> FILTER_OUT = Arrays.asList(
+            "generalizedXMLtoRDF/0.1", "vitro/0.7#position", "vitro/0.7#value", "XMLSchema-instance");
+    private static final String FILTER_OUT_RES = "match_nothing"; 
     
     protected Model result;
     
@@ -60,6 +64,45 @@ public abstract class ConnectorDataSource extends DataSourceBase {
      * terms or other criteria
      */
     protected abstract Model filter(Model model);
+    
+    /**
+     * A filter that removes generic statements and types produced by
+     * XML (or JSON) to RDF lifting
+     * @param model
+     * @return model with generic statements removed
+     */
+    protected Model filterGeneric(Model model) {
+        Model filtered = ModelFactory.createDefaultModel();
+        StmtIterator sit = model.listStatements();
+        while(sit.hasNext()) {
+            Statement stmt = sit.next();
+            if( (RDF.type.equals(stmt.getPredicate()))
+                        && (stmt.getObject().isURIResource())
+                        && (stmt.getObject().asResource().getURI().contains(FILTER_OUT.get(0))) ) {                                   
+                continue;     
+            } 
+            boolean filterPredicate = false;
+            for (String filterOut : FILTER_OUT) {
+                if(stmt.getPredicate().getURI().contains(filterOut)) {
+                    filterPredicate = true;
+                    break;
+                }
+            }
+            if(filterPredicate) {
+                continue;
+            }
+            if(stmt.getSubject().isURIResource() 
+                    && stmt.getSubject().getURI().contains(FILTER_OUT_RES)) {
+                continue;
+            }
+            if(stmt.getObject().isURIResource() 
+                    && stmt.getObject().asResource().getURI().contains(FILTER_OUT_RES)) {
+                continue;
+            }
+            filtered.add(stmt);
+        }
+        return filtered;
+    }
     
     /**
      * to be overridden by subclasses

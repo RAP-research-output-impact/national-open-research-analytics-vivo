@@ -28,6 +28,7 @@ CONSTRUCT {
     ?x vivo:relatedBy ?authorship .
     ?authorship vivo:relates ?x .
     ?authorship vivo:relates ?person .
+    ?authorship vivo:rank ?rank .
     ?person vivo:relatedBy ?authorship .
     ?person a foaf:Person .
     ?person ?authorP ?authorO .

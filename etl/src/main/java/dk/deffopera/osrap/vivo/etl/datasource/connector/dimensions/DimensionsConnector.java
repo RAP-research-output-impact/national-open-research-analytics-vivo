@@ -261,35 +261,8 @@ public class DimensionsConnector extends ConnectorDataSource
                     + " return clinical_trials[id + title + abstract + active_years + associated_grant_ids + date + researchers + organizations + funders]"
                     + " limit 200 skip " + skip;
             return getDslResponse(queryStr, token);
-        }
+        }        
         
-        protected Model renameByIdentifier(Model m, Property identifier, 
-                String namespace, String localNamePrefix) {
-            Map<Resource, String> idMap = new HashMap<Resource, String>();
-            StmtIterator sit = m.listStatements(null, identifier, (RDFNode) null);
-            while(sit.hasNext()) {
-                Statement stmt = sit.next();
-                if(stmt.getObject().isLiteral()) {
-                    idMap.put(stmt.getSubject(), 
-                            //stripNonWordChars(stmt.getObject().asLiteral().getLexicalForm()));
-                            stmt.getObject().asLiteral().getLexicalForm());
-                }
-            }
-            for(Resource res : idMap.keySet()) {
-                ResourceUtils.renameResource(
-                        res, namespace + localNamePrefix + idMap.get(res));
-            }
-            return m;
-        }
-        
-        protected String stripNonWordChars(String value) {
-            if(value == null) {
-                return value;
-            } else {
-                return value.replaceAll("\\W", "");
-            }
-        }
-
     }
 
     @Override

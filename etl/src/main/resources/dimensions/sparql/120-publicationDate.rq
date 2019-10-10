@@ -30,5 +30,5 @@ CONSTRUCT {
 } WHERE {
     ?x g:year ?year .
     BIND(IRI(CONCAT(STR(?x), "-dtv")) AS ?dtv)
-    BIND(CONCAT(STR(?year), "-01-01T00:00:00+01:00") AS ?dateTime)
+    BIND(CONCAT(STR(?year), "-01-01T00:00:00") AS ?dateTime)
 }

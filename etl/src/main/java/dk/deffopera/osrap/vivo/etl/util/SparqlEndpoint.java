@@ -6,11 +6,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.DatatypeConverter;
 
+import org.apache.commons.codec.Charsets;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpResponse;
@@ -38,7 +40,7 @@ import org.apache.jena.sparql.resultset.ResultSetException;
 public class SparqlEndpoint {
 
     // writing too many triples at once to VIVO seems to result in 403 errors
-    private static final int CHUNK_SIZE = 2500;
+    private static final int CHUNK_SIZE = 100000;
     
     private static final Log log = LogFactory.getLog(SparqlEndpoint.class);
     
@@ -213,7 +215,7 @@ public class SparqlEndpoint {
 
     public void update(String updateString) {
         HttpPost post = new HttpPost(endpointParams.getEndpointUpdateURI());
-        post.addHeader("Content-Type", "application/x-www-form-urlencoded");
+        post.addHeader("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
         try {
             List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
             nameValuePairs.add(new BasicNameValuePair(
@@ -223,7 +225,7 @@ public class SparqlEndpoint {
             nameValuePairs.add(new BasicNameValuePair(
                     "update", updateString));
             UrlEncodedFormEntity entity = new UrlEncodedFormEntity(
-                    nameValuePairs);
+                    nameValuePairs, Charsets.UTF_8);
             post.setEntity(entity);
             if(this.authorizationHeaderValue != null) {
                 post.setHeader("Authorization", "Basic " + this.authorizationHeaderValue);
@@ -261,7 +263,11 @@ public class SparqlEndpoint {
         chunk.write(out, "N-TRIPLE");
         StringBuffer reqBuff = new StringBuffer();
         reqBuff.append("INSERT DATA { GRAPH <" + graphURI + "> { \n");
-        reqBuff.append(out);
+        try {
+            reqBuff.append(out.toString("UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
         reqBuff.append(" } } \n");
         String reqStr = reqBuff.toString();     
         long startTime = System.currentTimeMillis();
@@ -332,7 +338,7 @@ public class SparqlEndpoint {
      */
     public void clearGraph(String graphURI) {
         // retrieve individual URIs in batches of 1000
-        int batchSize = 100;
+        int batchSize = 20000;
         log.info("Clearing graph " + graphURI + " in batches of " + batchSize + 
                 " individuals");
         boolean getNextBatch = true;

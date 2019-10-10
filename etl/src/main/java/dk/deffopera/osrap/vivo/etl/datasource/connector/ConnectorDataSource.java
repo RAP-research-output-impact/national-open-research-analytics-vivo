@@ -236,7 +236,8 @@ public abstract class ConnectorDataSource extends DataSourceBase {
             Statement stmt = sit.next();
             if(stmt.getObject().isLiteral()) {
                 idMap.put(stmt.getSubject(), 
-                        stripNonWordChars(stmt.getObject().asLiteral().getLexicalForm()));
+                        stmt.getObject().asLiteral().getLexicalForm());
+                        //stripNonWordChars(stmt.getObject().asLiteral().getLexicalForm()));
             }
         }
         for(Resource res : idMap.keySet()) {

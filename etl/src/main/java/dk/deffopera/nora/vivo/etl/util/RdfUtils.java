@@ -1,4 +1,4 @@
-package dk.deffopera.osrap.vivo.etl.util;
+package dk.deffopera.nora.vivo.etl.util;
 
 import java.util.HashSet;
 import java.util.Iterator;

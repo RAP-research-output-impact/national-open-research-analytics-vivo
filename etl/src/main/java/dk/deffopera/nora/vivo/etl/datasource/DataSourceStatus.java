@@ -1,4 +1,4 @@
-package dk.deffopera.osrap.vivo.etl.datasource;
+package dk.deffopera.nora.vivo.etl.datasource;
 
 public class DataSourceStatus {
 

@@ -5,13 +5,13 @@
 
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>dk.deffopera.osrap.vivo</groupId>
+    <groupId>dk.deffopera.nora.vivo</groupId>
     <artifactId>vivo</artifactId>
     <version>1.10.0</version>
     <packaging>war</packaging>
 
     <parent>
-        <groupId>dk.deffopera.osrap.vivo</groupId>
+        <groupId>dk.deffopera.nora.vivo</groupId>
         <artifactId>vivo-installer</artifactId>
         <version>1.10.0</version>
         <relativePath>..</relativePath>

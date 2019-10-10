@@ -1,4 +1,4 @@
-package dk.deffopera.osrap.vivo.etl.datasource.connector;
+package dk.deffopera.nora.vivo.etl.datasource.connector;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -23,10 +23,10 @@ import org.apache.jena.rdf.model.StmtIterator;
 import org.apache.jena.util.ResourceUtils;
 import org.apache.jena.vocabulary.RDF;
 
-import dk.deffopera.osrap.vivo.etl.datasource.DataSourceBase;
-import dk.deffopera.osrap.vivo.etl.datasource.DataSourceConfiguration;
-import dk.deffopera.osrap.vivo.etl.datasource.IteratorWithSize;
-import dk.deffopera.osrap.vivo.etl.datasource.VivoVocabulary;
+import dk.deffopera.nora.vivo.etl.datasource.DataSourceBase;
+import dk.deffopera.nora.vivo.etl.datasource.DataSourceConfiguration;
+import dk.deffopera.nora.vivo.etl.datasource.IteratorWithSize;
+import dk.deffopera.nora.vivo.etl.datasource.VivoVocabulary;
 
 public abstract class ConnectorDataSource extends DataSourceBase {
     

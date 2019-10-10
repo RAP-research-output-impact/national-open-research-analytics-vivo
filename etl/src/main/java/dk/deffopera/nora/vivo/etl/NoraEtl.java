@@ -1,4 +1,4 @@
-package dk.deffopera.osrap.vivo.etl;
+package dk.deffopera.nora.vivo.etl;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -11,13 +11,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.jena.rdf.model.Model;
 
-import dk.deffopera.osrap.vivo.etl.datasource.DataSource;
-import dk.deffopera.osrap.vivo.etl.datasource.connector.dimensions.DimensionsConnector;
-import dk.deffopera.osrap.vivo.etl.util.SparqlEndpointParams;
+import dk.deffopera.nora.vivo.etl.datasource.DataSource;
+import dk.deffopera.nora.vivo.etl.datasource.connector.dimensions.DimensionsConnector;
+import dk.deffopera.nora.vivo.etl.util.SparqlEndpointParams;
 
-public class OsrapEtl {
+public class NoraEtl {
 
-    private static final Log log = LogFactory.getLog(OsrapEtl.class);
+    private static final Log log = LogFactory.getLog(NoraEtl.class);
     
     public static void main(String[] args) {
         if(args.length < 3) {

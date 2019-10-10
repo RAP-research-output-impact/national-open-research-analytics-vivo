@@ -1,4 +1,4 @@
-package dk.deffopera.osrap.vivo.etl.datasource;
+package dk.deffopera.nora.vivo.etl.datasource;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -10,9 +10,6 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import dk.deffopera.osrap.vivo.etl.util.SparqlEndpoint;
-import dk.deffopera.osrap.vivo.etl.util.RdfUtils;
-
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.QueryParseException;
@@ -21,6 +18,9 @@ import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.RDFNode;
+
+import dk.deffopera.nora.vivo.etl.util.RdfUtils;
+import dk.deffopera.nora.vivo.etl.util.SparqlEndpoint;
 
 public abstract class DataSourceBase {
 

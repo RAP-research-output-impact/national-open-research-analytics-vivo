@@ -1,10 +1,10 @@
-package dk.deffopera.osrap.vivo.etl.datasource;
+package dk.deffopera.nora.vivo.etl.datasource;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import dk.deffopera.osrap.vivo.etl.util.SparqlEndpointParams;
+import dk.deffopera.nora.vivo.etl.util.SparqlEndpointParams;
 
 public class DataSourceConfiguration {
    

@@ -1,4 +1,4 @@
-package dk.deffopera.osrap.vivo.etl.datasource.connector.dimensions;
+package dk.deffopera.nora.vivo.etl.datasource.connector.dimensions;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -23,13 +23,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import dk.deffopera.osrap.vivo.etl.datasource.DataSource;
-import dk.deffopera.osrap.vivo.etl.datasource.IteratorWithSize;
-import dk.deffopera.osrap.vivo.etl.datasource.connector.ConnectorDataSource;
-import dk.deffopera.osrap.vivo.etl.util.HttpUtils;
-import dk.deffopera.osrap.vivo.etl.util.JsonToXMLConverter;
-import dk.deffopera.osrap.vivo.etl.util.RdfUtils;
-import dk.deffopera.osrap.vivo.etl.util.XmlToRdf;
+import dk.deffopera.nora.vivo.etl.datasource.DataSource;
+import dk.deffopera.nora.vivo.etl.datasource.IteratorWithSize;
+import dk.deffopera.nora.vivo.etl.datasource.connector.ConnectorDataSource;
+import dk.deffopera.nora.vivo.etl.util.HttpUtils;
+import dk.deffopera.nora.vivo.etl.util.JsonToXMLConverter;
+import dk.deffopera.nora.vivo.etl.util.RdfUtils;
+import dk.deffopera.nora.vivo.etl.util.XmlToRdf;
 
 public class DimensionsConnector extends ConnectorDataSource 
         implements DataSource {

@@ -1,4 +1,4 @@
-package dk.deffopera.osrap.vivo.controller;
+package dk.deffopera.nora.vivo.controller;
 
 import org.glassfish.jersey.server.ResourceConfig;
 

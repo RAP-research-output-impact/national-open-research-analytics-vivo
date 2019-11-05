@@ -1,4 +1,4 @@
-package dk.deffopera.osrap.vivo.controller;
+package dk.deffopera.nora.vivo.controller;
 
 import static edu.cornell.mannlib.vitro.webapp.utils.threads.VitroBackgroundThread.WorkLevel.WORKING;
 

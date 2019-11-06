@@ -8,3 +8,5 @@ etl/.project
 etl/.settings/org.eclipse.core.resources.prefs
 etl/.settings/org.eclipse.jdt.core.prefs
 etl/.settings/org.eclipse.m2e.core.prefs
+custom-vivo/.classpath
+custom-vivo/.project

@@ -38,6 +38,59 @@ public class DimensionsConnector extends ConnectorDataSource
     private static final String ABOX = "http://vivo.deffopera.dk/individual/";
     private static final String SPARQL_RESOURCE_DIR = "/dimensions/sparql/";
     private static final long REQUEST_INTERVAL = 2000; // ms
+    private static final Map<String, String> ugrids = new HashMap<String, String>();
+    private static final Map<String, String> hgrids = new HashMap<String, String>();
+    
+    static {
+        // TODO load dynamically from a CSV
+        ugrids.put("DTU", "grid.5170.3");
+        ugrids.put("Arhus University", "grid.7048.b");
+        ugrids.put("Aalborg University", "grid.5117.2");
+        ugrids.put("University of Southern Denmark", "grid.10825.3e");
+        ugrids.put("Copenhagen Business School", "grid.4655.2");
+        ugrids.put("IT University", "grid.32190.39");
+        ugrids.put("Roskilde University", "grid.11702.35");
+        ugrids.put("Copenhagen University", "grid.5254.6");
+        hgrids.put("Rigshospitalet", "grid.475435.4");
+        hgrids.put("Aarhus University Hospital",  "grid.154185.c");
+        hgrids.put("Bispebjerg Hospital", "grid.411702.1");
+        hgrids.put("Hvidovre Hospital", "grid.411905.8");
+        hgrids.put("Copenhagen University Hospital", "grid.4973.9");   
+        hgrids.put("Herlev Hospital", "grid.411900.d");
+        hgrids.put("Glostrup Hospital", "grid.411719.b");
+        hgrids.put("Gentofte Hospital", "grid.411646.0");
+        hgrids.put("Frederiksberg Hospital", "grid.415046.2");
+        hgrids.put("Vejle Sygehus", "grid.417271.6");
+        hgrids.put("Nordsjællands Hospital", "grid.414092.a");
+        hgrids.put("Odense University Hospital", "grid.7143.1");
+        hgrids.put("Regionshospitalet Viborg", "grid.416838.0");
+        hgrids.put("Marselisborg Hospital", "grid.477140.1");
+        hgrids.put("Sydvestjysk Sygehus", "grid.414576.5");
+        hgrids.put("Kolding Hospital", "grid.415434.3");
+        hgrids.put("Aalborg Hospital", "grid.27530.33");
+        hgrids.put("Amager Hospital", "grid.413660.6");
+        hgrids.put("Roskilde Sygehus", "grid.416059.f");
+        hgrids.put("Regionshospitalet Herning", "grid.414058.c");
+        hgrids.put("Regionshospital Holstebro", "grid.414304.6");
+        hgrids.put("Svendborg Sygehus", "grid.416768.a");
+        hgrids.put("Køge Hospital", "grid.416055.3");
+        hgrids.put("Regionshospitalet Randers", "grid.415677.6");
+        hgrids.put("Næstved Sygehus", "grid.416369.f");
+        hgrids.put("Hosrsens Hospital", "grid.414334.5");
+        hgrids.put("Sygehus Sønderjylland", "grid.416811.b");
+        hgrids.put("Nykøbing Hospital", "grid.413717.7");
+        hgrids.put("Holbæk Sygehus", "grid.414289.2");
+        hgrids.put("Sygehus Vendsyssel", "grid.414274.0");
+        hgrids.put("Skive Hospital", "grid.416035.5");
+        hgrids.put("Sygehus Lillebælt", "grid.459623.f");
+        hgrids.put("Fredericia Sygehus", "grid.415040.4");
+        hgrids.put("Slagelse Hospital", "grid.452905.f");
+        hgrids.put("Regional Hospital West Jutland", "grid.452681.c");
+        hgrids.put("Zealand University Hospital", "grid.476266.7");
+        hgrids.put("Regionshospitalet Silkeborg", "grid.477812.f");
+        hgrids.put("Rinsted Sygehus", "grid.477756.0");
+        hgrids.put("Regionshospital Nordjylland", "grid.487445.e");
+    }
        
     private static final Log log = LogFactory.getLog(DimensionsConnector.class);
     private HttpUtils httpUtils = new HttpUtils();

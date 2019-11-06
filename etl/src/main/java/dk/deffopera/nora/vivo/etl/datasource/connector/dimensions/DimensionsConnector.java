@@ -1,6 +1,7 @@
 package dk.deffopera.nora.vivo.etl.datasource.connector.dimensions;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -10,12 +11,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.Property;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.rdf.model.StmtIterator;
-import org.apache.jena.util.ResourceUtils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -130,50 +129,63 @@ public class DimensionsConnector extends ConnectorDataSource
         private final String[] sources = {
                 "publications", "grants", "patents", "clinical_trials"};
         // number of requests to be made for each data source (pubs, grants, etc.)
-        private int[] totals = new int[4];
-        private int requestCount;
+        private Map<String, int[]> totals = new HashMap<String, int[]>();
+        
+        List<String> grids = new ArrayList<String>();
+        private int requestCount;       
         private Model firstIteration;
         
         public DimensionsIterator(String token) {
             this.token = token;
-            for(int i = 0; i < totals.length; i++) {
-                // run a request for each data source at least once, then set
-                // the actual total results based on the number returned
-                totals[i] = 1;
-            } 
+            grids.addAll(ugrids.values());
+            grids.addAll(hgrids.values());
+            log.info(grids.size() + " grids");
+            for(String grid : grids) {
+                int[] total = new int[4];
+                for(int i = 0; i < total.length; i++) {
+                    total[i] = 1;
+                }
+                totals.put(grid, total);
+            }
             try {
-                firstIteration = getResults();
-                setTotals();
+                firstIteration = ModelFactory.createDefaultModel();
+                for(String grid : grids) {
+                    Model gridModel = getResults(grid);
+                    setTotals(grid, gridModel);    
+                    firstIteration.add(gridModel);                    
+                }                                
             } catch (InterruptedException e) {
                 log.error(e, e);
                 throw new RuntimeException(e);
             }
         }
         
-        private void setTotals() {
+        private void setTotals(String grid, Model model) {
             for(int i = 0; i < sources.length; i++) {
-                StmtIterator sit = firstIteration.listStatements(
-                        null, firstIteration.getProperty(
+                StmtIterator sit = model.listStatements(
+                        null, model.getProperty(
                                 XmlToRdf.GENERIC_NS + sources[i]), (RDFNode) null);
                 if(sit.hasNext()) {
                     Statement stmt = sit.next();
                     Resource r = stmt.getSubject();
-                    Statement stats = r.getProperty(firstIteration.getProperty(
+                    Statement stats = r.getProperty(model.getProperty(
                             XmlToRdf.GENERIC_NS + "_stats"));
                     if(stats != null) {
                         RDFNode statsNode = stats.getObject();
                         if(statsNode.isResource()) {
                             Resource statsRes = statsNode.asResource();
                             Statement totalCount = statsRes.getProperty(
-                                    firstIteration.getProperty(
+                                    model.getProperty(
                                             XmlToRdf.GENERIC_NS + "total_count"));
                             if(totalCount != null) {
                                 RDFNode totalCountNode = totalCount.getObject();
                                 if(totalCountNode.isLiteral()) {
                                     try {
                                         int totalCountInt = totalCountNode.asLiteral().getInt();
-                                        log.info(totalCountInt + " total " + sources[i]);
-                                        totals[i] = totalCountInt / RESULTS_PER_REQUEST + 1;
+                                        log.info(grid + " " + totalCountInt + " total " + sources[i]);
+                                        int[] total = totals.get(grid);
+                                        total[i] = totalCountInt / RESULTS_PER_REQUEST + 1;
+                                        totals.put(grid, total);
                                     } catch (Exception e) {
                                         log.error(e, e);
                                     }
@@ -187,23 +199,27 @@ public class DimensionsConnector extends ConnectorDataSource
         
         @Override
         public boolean hasNext() {
-            for(int i = 0; i < totals.length; i++) {
-               if(requestCount < totals[i]) {
-                   return true;
-               }
+            for(String grid : grids) {
+                for(int i = 0; i < totals.get(grid).length; i++) {
+                   if(requestCount < totals.get(grid)[i]) {
+                       return true;
+                   }
+                }
             }
             return false;
         }
 
         @Override
         public Model next() {
-            Model results;
+            Model results = ModelFactory.createDefaultModel();
             if(requestCount == 0) {                
                 results = firstIteration;
                 firstIteration = null;
             } else {
                 try {
-                    results = getResults();
+                    for(String grid : grids) {
+                        results.add(getResults(grid));
+                    }
                 } catch (InterruptedException e) {
                     log.error(e, e);
                     throw new RuntimeException(e);
@@ -216,9 +232,11 @@ public class DimensionsConnector extends ConnectorDataSource
         @Override
         public Integer size() {
             int size = 0;
-            for(int i = 0; i < totals.length; i++) {
-                if(totals[i] > size) {
-                    size = totals[i];
+            for(String grid : grids) {
+                for(int i = 0; i < totals.get(grid).length; i++) {
+                    if(totals.get(grid)[i] > size) {
+                        size = totals.get(grid)[i];
+                    }
                 }
             }
             return size;
@@ -229,20 +247,21 @@ public class DimensionsConnector extends ConnectorDataSource
             // no API method for logging out; nothing to do for now
         }
         
-        private Model getResults() throws InterruptedException {
+        private Model getResults(String grid) throws InterruptedException {
             Model model = ModelFactory.createDefaultModel();
-            if(requestCount < totals[0]) {
-                model.add(toRdf(getPubs(this.token, requestCount * RESULTS_PER_REQUEST)));
+            if(requestCount < totals.get(grid)[0]) {
+                model.add(toRdf(getPubs(grid, this.token, requestCount * RESULTS_PER_REQUEST)));
             }
-            if(requestCount < totals[1]) {
-                model.add(toRdf(getGrants(this.token, requestCount * RESULTS_PER_REQUEST)));
+            if(requestCount < totals.get(grid)[1]) {
+                model.add(toRdf(getGrants(grid, this.token, requestCount * RESULTS_PER_REQUEST)));
             }
-            if(requestCount < totals[2]) {
-                model.add(toRdf(getPatents(this.token, requestCount * RESULTS_PER_REQUEST)));
+            if(requestCount < totals.get(grid)[2]) {
+                model.add(toRdf(getPatents(grid, this.token, requestCount * RESULTS_PER_REQUEST)));
             }
-            if(requestCount < totals[3]) {
-                model.add(toRdf(getClinicalTrials(this.token, requestCount * RESULTS_PER_REQUEST)));
+            if(requestCount < totals.get(grid)[3]) {
+                model.add(toRdf(getClinicalTrials(grid, this.token, requestCount * RESULTS_PER_REQUEST)));
             }
+            log.debug("Model size " + model.size());
             return model;
         }
         
@@ -283,36 +302,40 @@ public class DimensionsConnector extends ConnectorDataSource
             }
         }
         
-        private String getGrants(String token, int skip) throws InterruptedException {
+        private String getGrants(String grid, String token, int skip) throws InterruptedException {
             String queryStr = "search grants where"
-                    + " (start_year >= 2014 and start_year <= 2017 and research_orgs.id = \"grid.5170.3\")"
+                    + " (start_year >= 2014 and start_year <= 2017 and research_orgs.id = \"" + grid + "\")"
                     + " return grants[active_year + end_date + funders + id + project_num + start_date + start_year + title + abstract + funding_eur + grant_number + investigator_details + research_orgs]"
                     + " limit 200 skip " + skip;
+            log.debug(queryStr);
             return getDslResponse(queryStr, token);
         }
         
-        private String getPubs(String token, int skip) throws InterruptedException {
+        private String getPubs(String grid, String token, int skip) throws InterruptedException {
             String queryStr = "search publications where"
-                    + " (year >= 2014 and year <= 2017 and research_orgs.id = \"grid.5170.3\" and type in [\"article\", \"chapter\", \"proceeding\"])"
+                    + " (year >= 2014 and year <= 2017 and research_orgs.id = \"" + grid + "\" and type in [\"article\", \"chapter\", \"proceeding\"])"
                     //+ " return publications"
                     + " return publications[id + type + title + authors + doi + pmid + pmcid + date + year + mesh_terms + journal + issn + volume + issue]"
                     + " limit 200 skip " + skip;
+            log.debug(queryStr);
             return getDslResponse(queryStr, token);
         }
         
-        private String getPatents(String token, int skip) throws InterruptedException {
+        private String getPatents(String grid, String token, int skip) throws InterruptedException {
             String queryStr = "search patents where"
-                    + " (granted_year >= 2014 and granted_year <= 2017 and assignees.id = \"grid.5170.3\")"
+                    + " (granted_year >= 2014 and granted_year <= 2017 and assignees.id = \"" + grid + "\")"
                     + " return patents[assignees + granted_year + id + title + inventor_names + funders + abstract + associated_grant_ids]"
                     + " limit 200 skip " + skip;
+            log.debug(queryStr);
             return getDslResponse(queryStr, token);
         }
         
-        private String getClinicalTrials(String token, int skip) throws InterruptedException {
+        private String getClinicalTrials(String grid, String token, int skip) throws InterruptedException {
             String queryStr = "search clinical_trials where"
-                    + " (active_years >= 2014 and active_years <= 2017 and organizations.id = \"grid.5170.3\")"
+                    + " (active_years >= 2014 and active_years <= 2017 and organizations.id = \"" + grid + "\")"
                     + " return clinical_trials[id + title + abstract + active_years + associated_grant_ids + date + researchers + organizations + funders]"
                     + " limit 200 skip " + skip;
+            log.debug(queryStr);
             return getDslResponse(queryStr, token);
         }        
         

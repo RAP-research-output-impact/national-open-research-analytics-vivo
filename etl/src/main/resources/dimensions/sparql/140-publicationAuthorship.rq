@@ -32,19 +32,26 @@ CONSTRUCT {
     ?person vivo:relatedBy ?authorship .
     ?person a foaf:Person .
     ?person ?authorP ?authorO .
-    ?person g:person_researcher_id ?researcherId .
-    ?authorship osrap:relatedToOrganization ?affiliation .
+    #?person g:person_researcher_id ?researcherId .
+    ?authorship osrap:relatedToOrganization ?org .
     ?affiliation osrap:relatedByAuthorship ?authorship .
 } WHERE {
     ?x g:authors ?author .
     ?author vitro:position ?position .
     ?author g:affiliations ?affiliation .
+    OPTIONAL {
+      ?affiliation g:id ?orgId .
+      ?realOrg g:xid ?orgId .
+    }
+    BIND(COALESCE(?realOrg, ?affiliation) AS ?org)
     ?author ?authorP ?authorO .
     OPTIONAL {
-      ?author g:researcher_id ?researcherId 
+      ?author g:researcher_id ?researcherId .
+      ?knperson g:id ?researcherId .
     }
     FILTER(?authorP != vitro:position)
-    BIND(xsd:integer(?position) AS ?rank)
+    BIND((xsd:integer(?position) - 7) AS ?rank)
     BIND(IRI(CONCAT(STR(?x), "-authorship-", ?position)) AS ?authorship)
-    BIND(IRI(CONCAT(STR(?x), "-author-", ?position)) AS ?person)
+    BIND(IRI(CONCAT(STR(?x), "-author-", ?position)) AS ?unkperson)
+    BIND(COALESCE(?knperson, ?unkperson) AS ?person)
 }

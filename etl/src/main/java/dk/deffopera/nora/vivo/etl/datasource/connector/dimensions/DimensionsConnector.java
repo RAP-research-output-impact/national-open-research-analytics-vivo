@@ -43,12 +43,12 @@ public class DimensionsConnector extends ConnectorDataSource
     static {
         // TODO load dynamically from a CSV
         ugrids.put("DTU", "grid.5170.3");
-        ugrids.put("Arhus University", "grid.7048.b");
+        //ugrids.put("Arhus University", "grid.7048.b");
         ugrids.put("Aalborg University", "grid.5117.2");
-        ugrids.put("University of Southern Denmark", "grid.10825.3e");
-        ugrids.put("Copenhagen Business School", "grid.4655.2");
-        ugrids.put("IT University", "grid.32190.39");
-        ugrids.put("Roskilde University", "grid.11702.35");
+        //ugrids.put("University of Southern Denmark", "grid.10825.3e");
+        //ugrids.put("Copenhagen Business School", "grid.4655.2");
+        //ugrids.put("IT University", "grid.32190.39");
+        //ugrids.put("Roskilde University", "grid.11702.35");
         ugrids.put("Copenhagen University", "grid.5254.6");
         hgrids.put("Rigshospitalet", "grid.475435.4");
         hgrids.put("Aarhus University Hospital",  "grid.154185.c");
@@ -125,7 +125,7 @@ public class DimensionsConnector extends ConnectorDataSource
     private class DimensionsIterator implements IteratorWithSize<Model> {
 
         private static final int RESULTS_PER_REQUEST = 200;
-        private String token;
+        private String token;        
         private final String[] sources = {
                 "publications", "grants", "patents", "clinical_trials"};
         // number of requests to be made for each data source (pubs, grants, etc.)
@@ -137,8 +137,9 @@ public class DimensionsConnector extends ConnectorDataSource
         
         public DimensionsIterator(String token) {
             this.token = token;
+            // TODO switch back after debugging            
             grids.addAll(ugrids.values());
-            grids.addAll(hgrids.values());
+            //grids.addAll(hgrids.values());
             log.info(grids.size() + " grids");
             for(String grid : grids) {
                 int[] total = new int[4];
@@ -250,17 +251,21 @@ public class DimensionsConnector extends ConnectorDataSource
         private Model getResults(String grid) throws InterruptedException {
             Model model = ModelFactory.createDefaultModel();
             if(requestCount < totals.get(grid)[0]) {
+                log.info(grid + " pubs " + requestCount);
                 model.add(toRdf(getPubs(grid, this.token, requestCount * RESULTS_PER_REQUEST)));
             }
-            if(requestCount < totals.get(grid)[1]) {
-                model.add(toRdf(getGrants(grid, this.token, requestCount * RESULTS_PER_REQUEST)));
-            }
-            if(requestCount < totals.get(grid)[2]) {
-                model.add(toRdf(getPatents(grid, this.token, requestCount * RESULTS_PER_REQUEST)));
-            }
-            if(requestCount < totals.get(grid)[3]) {
-                model.add(toRdf(getClinicalTrials(grid, this.token, requestCount * RESULTS_PER_REQUEST)));
-            }
+            //if(requestCount < totals.get(grid)[1]) {
+            //    log.info(grid + " grants " + requestCount);
+            //    model.add(toRdf(getGrants(grid, this.token, requestCount * RESULTS_PER_REQUEST)));
+            //}
+            //if(requestCount < totals.get(grid)[2]) {
+            //    log.info(grid + " patents " + requestCount);
+            //   model.add(toRdf(getPatents(grid, this.token, requestCount * RESULTS_PER_REQUEST)));
+            //}
+            //if(requestCount < totals.get(grid)[3]) {
+            //    log.info(grid + " clinical trials " + requestCount);
+            //    model.add(toRdf(getClinicalTrials(grid, this.token, requestCount * RESULTS_PER_REQUEST)));
+            //}
             log.debug("Model size " + model.size());
             return model;
         }
@@ -291,9 +296,7 @@ public class DimensionsConnector extends ConnectorDataSource
                 RdfUtils rdfUtils = new RdfUtils();
                 String xml = json2xml.convertJsonToXml(data);
                 Model rdf = xml2rdf.toRDF(xml);
-                rdf = rdfUtils.renameBNodes(rdf, ABOX + "n", rdf);
-                rdf = renameByIdentifier(rdf, rdf.getProperty(
-                        XmlToRdf.GENERIC_NS + "id"), ABOX, "");
+                rdf = rdfUtils.renameBNodes(rdf, ABOX + "n", rdf);               
                 return rdf;
             } catch (JsonProcessingException e) {
                 throw new RuntimeException(e);
@@ -315,7 +318,7 @@ public class DimensionsConnector extends ConnectorDataSource
             String queryStr = "search publications where"
                     + " (year >= 2014 and year <= 2017 and research_orgs.id = \"" + grid + "\" and type in [\"article\", \"chapter\", \"proceeding\"])"
                     //+ " return publications"
-                    + " return publications[id + type + title + authors + doi + pmid + pmcid + date + year + mesh_terms + journal + issn + volume + issue]"
+                    + " return publications[id + type + title + authors + doi + pmid + pmcid + date + year + mesh_terms + journal + issn + volume + issue + research_orgs + researchers]"
                     + " limit 200 skip " + skip;
             log.debug(queryStr);
             return getDslResponse(queryStr, token);
@@ -343,7 +346,8 @@ public class DimensionsConnector extends ConnectorDataSource
 
     @Override
     protected Model filter(Model model) {
-        if(true) {
+        // TODO check
+        if(false) {
             return filterGeneric(model);
         } else {
             return model;
@@ -352,6 +356,9 @@ public class DimensionsConnector extends ConnectorDataSource
 
     @Override
     protected Model mapToVIVO(Model model) {
+        construct(SPARQL_RESOURCE_DIR + "010-xid.rq", model, ABOX + getPrefixName() + "-");
+        model = renameByIdentifier(model, model.getProperty(
+                XmlToRdf.GENERIC_NS + "xid"), ABOX, "");
         List<String> queries = Arrays.asList(
                 //"050-orcidId.rq",
                 "100-publicationTypes.rq",
@@ -370,8 +377,9 @@ public class DimensionsConnector extends ConnectorDataSource
                 log.info(query + " constructed no triples");
             }
         }
-        model = renameByIdentifier(model, model.getProperty(
-                XmlToRdf.GENERIC_NS + "person_researcher_id"), ABOX, "");
+        // TODO restore this next one, but second was already commented out
+        //model = renameByIdentifier(model, model.getProperty(
+        //        XmlToRdf.GENERIC_NS + "person_researcher_id"), ABOX, "");
         //model = renameByIdentifier(model, model.getProperty(
         //        XmlToRdf.GENERIC_NS + "person_orcidStr"), ABOX, "orcid-");
         queries = Arrays.asList(         

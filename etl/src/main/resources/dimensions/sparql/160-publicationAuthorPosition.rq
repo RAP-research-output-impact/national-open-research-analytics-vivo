@@ -33,7 +33,7 @@ CONSTRUCT {
 } WHERE {
     ?x a foaf:Person .
     ?x g:affiliations ?org .
-    ?org g:id ?orgId .
+    OPTIONAL { ?org g:id ?orgId }
     ?org g:name ?orgName .
-    BIND(IRI(CONCAT(STR(?x), "-position-", STR(?orgId))) AS ?position)
+    BIND(IRI(CONCAT(STR(?x), "-position-", STR(COALESCE(?orgId, REPLACE(?orgName, "\\W", "-"))))) AS ?position)
 }

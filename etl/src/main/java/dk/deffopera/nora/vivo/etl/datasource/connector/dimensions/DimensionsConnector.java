@@ -252,15 +252,15 @@ public class DimensionsConnector extends ConnectorDataSource
             if(requestCount < totals.get(grid)[0]) {
                 model.add(toRdf(getPubs(grid, this.token, requestCount * RESULTS_PER_REQUEST)));
             }
-            if(requestCount < totals.get(grid)[1]) {
-                model.add(toRdf(getGrants(grid, this.token, requestCount * RESULTS_PER_REQUEST)));
-            }
-            if(requestCount < totals.get(grid)[2]) {
-                model.add(toRdf(getPatents(grid, this.token, requestCount * RESULTS_PER_REQUEST)));
-            }
-            if(requestCount < totals.get(grid)[3]) {
-                model.add(toRdf(getClinicalTrials(grid, this.token, requestCount * RESULTS_PER_REQUEST)));
-            }
+//            if(requestCount < totals.get(grid)[1]) {
+//                model.add(toRdf(getGrants(grid, this.token, requestCount * RESULTS_PER_REQUEST)));
+//            }
+//            if(requestCount < totals.get(grid)[2]) {
+//                model.add(toRdf(getPatents(grid, this.token, requestCount * RESULTS_PER_REQUEST)));
+//            }
+//            if(requestCount < totals.get(grid)[3]) {
+//                model.add(toRdf(getClinicalTrials(grid, this.token, requestCount * RESULTS_PER_REQUEST)));
+//            }
             log.debug("Model size " + model.size());
             return model;
         }

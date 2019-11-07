@@ -32,9 +32,10 @@ CONSTRUCT {
     ?name vcard:givenName ?firstName .
 } WHERE {
     ?x a foaf:Person .
-    ?x g:first_name ?firstName .
+    OPTIONAL { ?x g:first_name ?firstName }
     ?x g:last_name ?lastName .
     BIND(IRI(CONCAT(STR(?x), "-vcard")) AS ?vcard)
     BIND(IRI(CONCAT(STR(?x), "-vcard-name")) AS ?name)
-    BIND(CONCAT(STR(?lastName), ", ", STR(?firstName)) AS ?label)
+    BIND(CONCAT(STR(?lastName), ", ", STR(?firstName)) AS ?prelabel)
+    BIND(COALESCE(?prelabel, ?lastName) AS ?label)
 }

@@ -33,7 +33,7 @@ public abstract class ConnectorDataSource extends DataSourceBase {
     private static final Log log = LogFactory.getLog(ConnectorDataSource.class);
     /* number of iterator elements to be processed at once in memory 
     before being flushed to a SPARQL endpoint */
-    protected final static int DEFAULT_BATCH_SIZE = 5;
+    protected final static int DEFAULT_BATCH_SIZE = 1;
     private static final List<String> FILTER_OUT = Arrays.asList(
             "generalizedXMLtoRDF/0.1", "vitro/0.7#position", "vitro/0.7#value", "XMLSchema-instance");
     private static final String FILTER_OUT_RES = "match_nothing"; 

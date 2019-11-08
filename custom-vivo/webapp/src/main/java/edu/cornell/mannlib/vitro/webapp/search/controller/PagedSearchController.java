@@ -178,7 +178,11 @@ public class PagedSearchController extends FreemarkerHttpServlet {
 //                return doFailedSearch(badQueryMsg, queryText, format, vreq);
 //            }
 
-            SearchQuery query = getQuery(queryText, hitsPerPage, startIndex, vreq);
+            boolean facetFields = true;
+
+            // use the facet-filter-less query to get the full list of possible facets,
+            // so that we can do unions instead of intersections
+            SearchQuery query = getQuery(!facetFields, queryText, hitsPerPage, startIndex, vreq);
             SearchEngine search = ApplicationUtils.instance().getSearchEngine();
             SearchResponse response = null;
 
@@ -194,7 +198,35 @@ public class PagedSearchController extends FreemarkerHttpServlet {
                 log.error("Search response was null");
                 return doFailedSearch(I18n.text(vreq, "error_in_search_request"), queryText, format, vreq);
             }
+            
+            Map<String, Object> body = new HashMap<String, Object>();
+            
+            // Nora
+            body.put("facets", getFacetLinks(vreq, response, queryText));
+            body.put("facetsAsText", NoraSearchFacets.getSearchFacetsAsText());
+            body.put(PARAM_FACET_AS_TEXT, vreq.getParameter(PARAM_FACET_AS_TEXT));
+            body.put(PARAM_FACET_TEXT_VALUE, vreq.getParameter(PARAM_FACET_TEXT_VALUE));
+            body.put("noraQueryReduce", NoraQueryReduce(vreq, grpDao, vclassDao));
 
+            // Now do a query with the facet filters.
+            // TODO rework/refactor this 
+            query = getQuery(facetFields, queryText, hitsPerPage, startIndex, vreq);
+            search = ApplicationUtils.instance().getSearchEngine();
+            response = null;
+
+            try {
+                response = search.query(query);
+            } catch (Exception ex) {
+                String msg = makeBadSearchMessage(queryText, ex.getMessage(), vreq);
+                log.error("could not run search query",ex);
+                return doFailedSearch(msg, queryText, format, vreq);
+            }
+
+            if (response == null) {
+                log.error("Search response was null");
+                return doFailedSearch(I18n.text(vreq, "error_in_search_request"), queryText, format, vreq);
+            }
+            
             SearchResultDocumentList docs = response.getResults();
             if (docs == null) {
                 log.error("Document list for a search was null");
@@ -234,8 +266,6 @@ public class PagedSearchController extends FreemarkerHttpServlet {
 
             /* Compile the data for the templates */
 
-            Map<String, Object> body = new HashMap<String, Object>();
-
             String classGroupParam = vreq.getParameter(PARAM_CLASSGROUP);
             log.debug("ClassGroupParam is \""+ classGroupParam + "\"");
             boolean classGroupFilterRequested = false;
@@ -259,12 +289,6 @@ public class PagedSearchController extends FreemarkerHttpServlet {
 
             /* Add ClassGroup and type refinement links to body */
             if( wasHtmlRequested ){
-                // Nora
-                body.put("facets", getFacetLinks(vreq, response, queryText));
-                body.put("facetsAsText", NoraSearchFacets.getSearchFacetsAsText());
-                body.put(PARAM_FACET_AS_TEXT, vreq.getParameter(PARAM_FACET_AS_TEXT));
-                body.put(PARAM_FACET_TEXT_VALUE, vreq.getParameter(PARAM_FACET_TEXT_VALUE));
-                body.put("noraQueryReduce", NoraQueryReduce(vreq, grpDao, vclassDao));
                 if ( !classGroupFilterRequested && !typeFilterRequested ) {
                     // Search request includes no ClassGroup and no type, so add ClassGroup search refinement links.
                     body.put("classGroupLinks", getClassGroupsLinks(vreq, grpDao, docs, response, queryText));
@@ -532,7 +556,7 @@ public class PagedSearchController extends FreemarkerHttpServlet {
         return text.toString();
     }
 
-    private SearchQuery getQuery(String queryText, int hitsPerPage, int startIndex, VitroRequest vreq) {
+    private SearchQuery getQuery(boolean includeFacetFields, String queryText, int hitsPerPage, int startIndex, VitroRequest vreq) {
         // Nora: AND in search terms for specific "facet as text" field
         String facetAsText = vreq.getParameter(PARAM_FACET_AS_TEXT);
         if(facetAsText != null) {
@@ -601,23 +625,32 @@ public class PagedSearchController extends FreemarkerHttpServlet {
             //When no filtering is set, we want ClassGroup facets
             query.addFacetFields(VitroSearchTermNames.CLASSGROUP_URI).setFacetLimit(-1);
         }
-        addNoraFacetFields(query, vreq);
+        for(SearchFacet facet : NoraSearchFacets.getSearchFacets()) {
+            query.addFacetFields(facet.getFieldName()).setFacetLimit(-1);
+        }
+        if(includeFacetFields) {
+            addNoraFacetFields(query, vreq);
+        }
         log.debug("Query = " + query.toString());
         return query;
     }
 
-    protected static void addNoraFacetFields(SearchQuery query, VitroRequest vreq) {
-        for(SearchFacet facet : NoraSearchFacets.getSearchFacets()) {
-            query.addFacetFields(facet.getFieldName()).setFacetLimit(-1);
-        }
+    protected static void addNoraFacetFields(SearchQuery query, VitroRequest vreq) {        
         ParamMap facetParams = getFacetParamMap(vreq);
         for(String parameterName : facetParams.keySet()) {
             String parameterValue = facetParams.get(parameterName);
             if(!parameterValue.isEmpty()) {
                 if (parameterValue.contains(";;")) {
+                    // nora - treat multiple values for the same filter as unions,
+                    // not intersections
+                    StringBuilder builder = new StringBuilder();
                     for (String val : parameterValue.split(";;")) {
-                        query.addFilterQuery(parameterName + ":\"" + val + "\"");
+                        if(builder.length() > 0) {
+                            builder.append(" OR ");
+                        }
+                        builder.append(parameterName + ":\"" + val + "\"");
                     }
+                    query.addFilterQuery(builder.toString());
                 } else {
                     query.addFilterQuery(parameterName + ":\"" + parameterValue + "\"");
                 }

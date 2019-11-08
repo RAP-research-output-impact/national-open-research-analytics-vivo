@@ -13,16 +13,12 @@ public class NoraSearchFacets {
     private static Map<String, SearchFacet> facetsByFieldName = new HashMap<String, SearchFacet>();
     
     static {
-        searchFacets.add(new SearchFacet("facet_wos-category_ss", "Subject categories"));
         searchFacets.add(new SearchFacet("facet_document-type_ss", "Document types"));
-        searchFacets.add(new SearchFacet("facet_research-area_ss", "Research areas"));
         searchFacets.add(new SearchFacet("facet_publication-year_ss", "Publication years"));
-        searchFacets.add(new SearchFacet("facet_organization-enhanced_ss", "Org.-Enhanced"));
-        searchFacets.add(new SearchFacet("facet_journal_ss", "Journals"));
-        searchFacets.add(new SearchFacet("facet_conference_ss", "Conferences"));
-        searchFacets.add(new SearchFacet("facet_country_ss", "Countries"));
-        searchFacets.add(new SearchFacet("facet_funding-agency_ss", "Funding agencies"));
-        searchFacets.add(new SearchFacet("facet_dtu-dept_ss", "DTU departments"));
+        searchFacets.add(new SearchFacet("facet_university_ss", "Universities"));
+        searchFacets.add(new SearchFacet("facet_hospital_ss", "Hospitals"));
+        searchFacets.add(new SearchFacet("facet_organization_ss", "Organizations"));
+        searchFacets.add(new SearchFacet("facet_journal_ss", "Journals"));        
         for(SearchFacet facet : searchFacets) {
             facetsByFieldName.put(facet.getFieldName(), facet);
             String textFieldName = facet.getFieldName().replaceAll(

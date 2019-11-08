@@ -1,0 +1,132 @@
+/* ------------------------------------------------->  */
+/* HOMEPAGE AND INTERIOR PAGES STYLES -------------->  */
+/* ------------------------------------------------->  */
+
+/* WRAPPER CONTENT------>  */
+#wrapper-content {
+    clear: both;
+/*  width: 930px; */
+    margin: 0 auto;
+    background: #fff;
+    min-height: 710px;
+    padding: 20px;
+    padding-top: 25px;
+}
+#flash-message {
+    border: 1px dotted #E2C822;
+    background-color: #FFF9D7;
+    padding: .5em;  
+    margin-bottom: 10px;
+    margin-top: 14px;
+}
+#welcome-message {
+    border: 1px dotted #E2C822;
+    background-color: #FFF9D7;
+    padding: .25em;
+    margin-bottom: 8px;
+}
+#welcome-msg-container {
+    margin-bottom: 8px;
+    margin-top: 14px;
+    margin-right:-10px;
+    height:34px;
+}
+
+table.searchTOC {
+    margin-left: 1px;
+    margin-right: 6px;
+    width: 270px;
+    float: left;
+    padding: 2px;
+    background: #e2e2e0;
+}
+.searchTOC-box {
+    background: #e2e2e0;
+    padding: 5px;
+    width: 270px;
+    height: 100%;
+    float: left;
+    margin-top: 40px;
+}
+table.searchTOC td {
+    padding: 2px;
+    background: #e2e2e0;
+}
+.searchTOC h4.hitCount {
+    color: black;
+    background: #e2e2e0;
+    text-align: center;
+}
+.searchTOC-header {
+    color: #666666;
+    background: #e2e2e0;
+    text-align: center;
+    font-size: 12px;
+}
+.searchTOC h4 {    
+    color: black;
+    padding: .2em 0 .2em 0;
+    text-align: left;
+}
+.searchTOC ul {
+    background: #e2e2e0;
+    padding: 0;
+    margin-top: 1px;
+    text-align: left;
+}
+.searchTOC ul li {
+    background: #e2e2e0;
+    border-bottom: none;
+    display: block;
+    font-size: 12px;
+    margin-left: 10px;
+    padding: 0;
+    width: 258px;
+}
+.searchTOC ul li:hover {
+    background-color:#f7f9f9;
+}
+.searchTOC ul li:last-child {
+    border-bottom: none
+}
+.searchTOC ul a {
+    display: inline;
+}
+.searchTOC ul span {
+	float:right;
+	padding-right: 10px;
+	color:gray;
+	font-size:smaller;
+}
+.search-facets-toggle {
+    width: 15px;
+    float: left;
+    cursor: pointer;
+}
+.search-facets-title {
+    color: black;
+    background: #e2e2e0;
+    cursor: pointer;
+}
+.search-facets {
+    color: black;
+    background: #e2e2e0;
+}
+
+.limit-head,
+.limit-head a:link,
+.limit-head a:visited {
+    color: #b50404;
+    font-size: 14px;
+    font-weight: bold;
+    text-decoration: none;
+}
+.searchTOC li.limit-sub {
+    font-size: 12px;
+}
+.limit-sub a:link,
+.limit-sub a:visited {
+    color: black;
+    font-size: 12px;
+    text-decoration: none;
+}

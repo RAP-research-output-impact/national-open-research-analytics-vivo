@@ -635,11 +635,21 @@ public class PagedSearchController extends FreemarkerHttpServlet {
         return query;
     }
 
-    protected static void addNoraFacetFields(SearchQuery query, VitroRequest vreq) {        
+    protected static void addNoraFacetFields(SearchQuery query, VitroRequest vreq) {       
+        
         ParamMap facetParams = getFacetParamMap(vreq);
+        
+        // Treat these facets differently, where values are unioned across the 
+        // different facets.  For the remaining facets, union only the values
+        // within a single facet. 
+        // E.g. (year=2014 or year=2015) AND (university=DTU OR hospital=Rigshospitalet OR org=Red Cross)
+        List<String> unionFacets = Arrays.asList(
+                "facet_university_ss", "facet_hospital_ss", "facet_organization_ss");                
+        
+        // regular facet behavior
         for(String parameterName : facetParams.keySet()) {
             String parameterValue = facetParams.get(parameterName);
-            if(!parameterValue.isEmpty()) {
+            if(!parameterValue.isEmpty() && !unionFacets.contains(parameterName)) {
                 if (parameterValue.contains(";;")) {
                     // nora - treat multiple values for the same filter as unions,
                     // not intersections
@@ -656,7 +666,25 @@ public class PagedSearchController extends FreemarkerHttpServlet {
                 }
             }
         }
-	query.setFacetMinCount(1);
+        
+        // union facet behavior
+        StringBuilder builder = new StringBuilder();
+        for(String parameterName : facetParams.keySet()) {
+            String parameterValue = facetParams.get(parameterName);
+            if(!parameterValue.isEmpty() && unionFacets.contains(parameterName)) {    
+                for (String val : parameterValue.split(";;")) {
+                    if(builder.length() > 0) {
+                        builder.append(" OR ");
+                    }
+                    builder.append(parameterName + ":\"" + val + "\"");
+                }                
+            }
+        }
+        if(builder.length() > 0) {
+            query.addFilterQuery(builder.toString());    
+        }
+        
+	    query.setFacetMinCount(1);
     }
 
     private static ParamMap getFacetParamMap(VitroRequest vreq) {

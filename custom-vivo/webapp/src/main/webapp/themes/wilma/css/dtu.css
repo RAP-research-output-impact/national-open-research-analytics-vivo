@@ -1,3 +1,38 @@
+.qr-box {
+    background: #e2e2e0;
+    border: 1px solid #aaaaaa;
+    margin: 5px;
+    border-radius: 5px;
+    display: inline-block;
+}
+.qr-text {
+    padding: 3px 6px;
+    font-size: 12px;
+}
+.qr-link {
+    padding: 3px 6px;
+    display: inline-block;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.qr-link:hover {
+    background: #b50404;
+    color: white;
+}
+.qr-link a {
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 12px;
+    color: #666666;
+}
+.qr-link:hover a {
+    color: white;
+}
+.qr-x {
+    font-weight: bold;
+    font-size: 12px;
+}
+
 /* ------------------------------------------------->  */
 /* HOMEPAGE AND INTERIOR PAGES STYLES -------------->  */
 /* ------------------------------------------------->  */

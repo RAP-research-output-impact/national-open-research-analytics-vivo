@@ -83,7 +83,7 @@
         }
     """ .
 
-:documentModifier_facet_university
+:documentModifier_facet_hospital
     a   <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.SelectQueryDocumentModifier> ,
             <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.DocumentModifier> ;
     rdfs:label "Hospital document modifier" ;

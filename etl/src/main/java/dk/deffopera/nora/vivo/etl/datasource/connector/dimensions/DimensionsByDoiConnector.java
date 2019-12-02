@@ -86,7 +86,7 @@ public class DimensionsByDoiConnector extends DimensionsConnector implements Dat
                 continue;
             } else {
                 String pubURI = pubNode.asResource().getURI();
-                dois.put(pubURI, qsoln.get("doi").asLiteral().getLexicalForm().toLowerCase());    
+                dois.put(qsoln.get("doi").asLiteral().getLexicalForm().toLowerCase(), pubURI);    
             }
             
         }
@@ -204,7 +204,9 @@ public class DimensionsByDoiConnector extends DimensionsConnector implements Dat
                                 model.add(missingPubMarker(univStr, doi));
                                 notFoundInDimensionsCount++;
                             } else {                                
+                                log.info("before " + model.size());
                                 model.add(associationTriple(univStr, foundDois.get(doi)));
+                                log.info("after " + model.size());
                             }
                         }
                         model.add(rdf);                        
@@ -249,6 +251,7 @@ public class DimensionsByDoiConnector extends DimensionsConnector implements Dat
                 m.add(m.getResource(univURI), 
                         m.getProperty("http://vivo.deffopera.dk/ontology/osrap/relatedToPublicationByDdfDoi"), m.getResource(pubURI));
             }
+            log.info("Returning " + m.size() + " triples");
             return m;
         }
         
@@ -258,9 +261,11 @@ public class DimensionsByDoiConnector extends DimensionsConnector implements Dat
             if(grid == null) {
                 throw new RuntimeException("grid not found for " + univStr);
             } else {
+                String univURI = DEFAULT_NAMESPACE + grid;
                 String pubURI = DEFAULT_NAMESPACE + "notfoundindimensions-doi-" + doi;
                 m.add(m.getResource(pubURI), m.getProperty("http://purl.org/ontology/bibo/doi"), doi);
-                m.add(m.getResource(pubURI), RDF.type, "http://vivo.deffopera.dk/ontology/osrap/NotFoundByDOIInDimensions");
+                m.add(m.getResource(pubURI), RDF.type, m.getResource("http://vivo.deffopera.dk/ontology/osrap/NotFoundByDOIInDimensions"));
+                m.add(m.getResource(pubURI), m.getProperty("http://vivo.deffopera.dk/ontology/osrap/notFoundForOrganization"), m.getResource(univURI));
             }
             return m;
         }
@@ -278,7 +283,7 @@ public class DimensionsByDoiConnector extends DimensionsConnector implements Dat
                         continue;
                     } else {
                         String sURI = sNode.asResource().getURI();
-                        foundDois.put(sURI, qsoln.get("x").asLiteral().getLexicalForm().toLowerCase());
+                        foundDois.put(qsoln.get("x").asLiteral().getLexicalForm().toLowerCase(), sURI);
                     }
                 }
                 return foundDois;

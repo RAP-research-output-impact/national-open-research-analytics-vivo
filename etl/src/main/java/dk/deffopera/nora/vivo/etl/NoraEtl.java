@@ -12,7 +12,9 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.jena.rdf.model.Model;
 
 import dk.deffopera.nora.vivo.etl.datasource.DataSource;
+import dk.deffopera.nora.vivo.etl.datasource.connector.dimensions.DimensionsByDoiConnector;
 import dk.deffopera.nora.vivo.etl.datasource.connector.dimensions.DimensionsConnector;
+import dk.deffopera.nora.vivo.etl.util.SparqlEndpoint;
 import dk.deffopera.nora.vivo.etl.util.SparqlEndpointParams;
 
 public class NoraEtl {
@@ -22,7 +24,8 @@ public class NoraEtl {
     public static void main(String[] args) {
         if(args.length < 3) {
             System.out.println("Usage: " 
-                    + "dimensions outputfile dimensionsUsername=<username> dimensionsPassword=<password> " 
+                    + "dimensions|dimensionsByDoi outputfile dimensionsUsername=<username> dimensionsPassword=<password> " 
+                    + "[sourceEndpointURI= sourceEndpointUsername= sourceEndpointPassword=] "
                     + "[dataDir=] [endpointURI= endpointUpdateURI= username= password=] [authUsername= authPassword=] [graphURI=] "
                     + "[limit]");
             return;
@@ -65,6 +68,15 @@ public class NoraEtl {
             connector = new DimensionsConnector(
                     getParameter(queryTerms, "dimensionsUsername"), 
                     getParameter(queryTerms, "dimensionsPassword"));
+        } else if("dimensionsByDoi".equals(connectorName)) {
+            String dimensionsUsername = getParameter(queryTerms, "dimensionsUsername"); 
+            String dimensionsPassword = getParameter(queryTerms, "dimensionsPassword");
+            SparqlEndpointParams params = new SparqlEndpointParams();
+            params.setEndpointURI(getParameter(queryTerms, "sourceEndpointURI"));
+            params.setUsername(getParameter(queryTerms, "sourceEndpointUsername"));
+            params.setPassword(getParameter(queryTerms, "sourceEndpointPassword"));
+            connector = new DimensionsByDoiConnector(
+                    dimensionsUsername, dimensionsPassword, new SparqlEndpoint(params));
         } else {
             throw new RuntimeException("Connector not found: " 
                     + connectorName);

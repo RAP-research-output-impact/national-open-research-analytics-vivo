@@ -15,6 +15,8 @@ import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.rdf.model.StmtIterator;
+import org.apache.jena.vocabulary.RDF;
+import org.apache.jena.vocabulary.RDFS;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -24,6 +26,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import dk.deffopera.nora.vivo.etl.datasource.DataSource;
 import dk.deffopera.nora.vivo.etl.datasource.IteratorWithSize;
+import dk.deffopera.nora.vivo.etl.datasource.VivoVocabulary;
 import dk.deffopera.nora.vivo.etl.datasource.connector.ConnectorDataSource;
 import dk.deffopera.nora.vivo.etl.util.HttpUtils;
 import dk.deffopera.nora.vivo.etl.util.JsonToXMLConverter;
@@ -33,10 +36,10 @@ import dk.deffopera.nora.vivo.etl.util.XmlToRdf;
 public class DimensionsConnector extends ConnectorDataSource 
         implements DataSource {
 
-    private static final String DIMENSIONS_API = "https://app.dimensions.ai/api/";
-    private static final String ABOX = "http://vivo.deffopera.dk/individual/";
-    private static final String SPARQL_RESOURCE_DIR = "/dimensions/sparql/";
-    private static final long REQUEST_INTERVAL = 2000; // ms
+    protected static final String DIMENSIONS_API = "https://app.dimensions.ai/api/";
+    protected static final String ABOX = "http://vivo.deffopera.dk/individual/";
+    protected static final String SPARQL_RESOURCE_DIR = "/dimensions/sparql/";
+    protected static final long REQUEST_INTERVAL = 2000; // ms
     private static final Map<String, String> ugrids = new HashMap<String, String>();
     private static final Map<String, String> hgrids = new HashMap<String, String>();
     
@@ -92,14 +95,14 @@ public class DimensionsConnector extends ConnectorDataSource
     }
        
     private static final Log log = LogFactory.getLog(DimensionsConnector.class);
-    private HttpUtils httpUtils = new HttpUtils();
-    private String token;
+    protected HttpUtils httpUtils = new HttpUtils();
+    protected String token;
         
     public DimensionsConnector(String username, String password) {
         this.token = getToken(username, password);    
     }
     
-    private String getToken(String username, String password) {
+    protected String getToken(String username, String password) {
         ObjectNode json = JsonNodeFactory.instance.objectNode();
         json.put("username", username);
         json.put("password", password);
@@ -344,10 +347,29 @@ public class DimensionsConnector extends ConnectorDataSource
     @Override
     protected Model filter(Model model) {
         if(true) {
+            // TODO remove
+            //return generateOrgs();
             return filterGeneric(model);
         } else {
             return model;
         }
+    }
+    
+    private Model generateOrgs() {
+        Model orgs = ModelFactory.createDefaultModel();
+        for(Map<String, String> map : Arrays.asList(ugrids, hgrids)) {
+            for(String key : map.keySet()) {
+                String grid = map.get(key);
+                Resource res = orgs.getResource("http://vivo.deffopera.dk/individual/" + grid);
+                if(ugrids.equals(map)) {
+                    orgs.add(res, RDF.type, orgs.getResource(VivoVocabulary.VIVO + "University"));
+                } else if(hgrids.equals(map)) {
+                    orgs.add(res, RDF.type, orgs.getResource(VivoVocabulary.VIVO + "Hospital"));
+                }
+                //orgs.add(res, RDFS.label, key);
+            }
+        }
+        return orgs;
     }
 
     @Override

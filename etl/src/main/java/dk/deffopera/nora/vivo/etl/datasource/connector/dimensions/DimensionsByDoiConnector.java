@@ -177,7 +177,7 @@ public class DimensionsByDoiConnector extends DimensionsConnector implements Dat
                             if(pubURI == null) {
                                 throw new RuntimeException("No URI found for " + doi);                    
                             } else {
-                                model.add(associationTriple(univStr, pubURI));
+                                model.add(associationTriple(univStr, pubURI, false));
                                 foundButNotAssociatedCount++;    
                             }                            
                         } else {
@@ -205,7 +205,7 @@ public class DimensionsByDoiConnector extends DimensionsConnector implements Dat
                                 notFoundInDimensionsCount++;
                             } else {                                
                                 log.info("before " + model.size());
-                                model.add(associationTriple(univStr, foundDois.get(doi)));
+                                model.add(associationTriple(univStr, foundDois.get(doi), true));
                                 log.info("after " + model.size());
                             }
                         }
@@ -236,7 +236,7 @@ public class DimensionsByDoiConnector extends DimensionsConnector implements Dat
             }
         }
         
-        private Model associationTriple(String univStr, String pubURI) {
+        private Model associationTriple(String univStr, String pubURI, boolean markRetrieved) {
             Model m = ModelFactory.createDefaultModel();
             String grid = ugrids.get(univStr);
             if(grid == null) {
@@ -250,6 +250,10 @@ public class DimensionsByDoiConnector extends DimensionsConnector implements Dat
                         m.getProperty("http://vivo.deffopera.dk/ontology/osrap/relatedToOrganizationByDdfDoi"), m.getResource(univURI));
                 m.add(m.getResource(univURI), 
                         m.getProperty("http://vivo.deffopera.dk/ontology/osrap/relatedToPublicationByDdfDoi"), m.getResource(pubURI));
+                if(markRetrieved) {
+                    m.add(m.getResource(pubURI), 
+                            m.getProperty("http://vivo.deffopera.dk/ontology/osrap/retrievedFromDimensionsByDdfDoi"), m.getResource(univURI));
+                }
             }
             log.info("Returning " + m.size() + " triples");
             return m;

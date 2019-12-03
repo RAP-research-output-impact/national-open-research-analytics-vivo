@@ -76,10 +76,15 @@
 	PREFIX nora:    <http://vivo.deffopera.dk/ontology/osrap/>
         SELECT DISTINCT ?org
         WHERE {
+	  {
             ?authorship vivo:relates ?uri .
 	    ?authorship a vivo:Authorship .
 	    ?authorship nora:relatedToOrganization ?org .
 	    ?org a vivo:University .
+	  } UNION {
+            ?uri nora:relatedToOrganizationByDdfDoi ?org .
+	    ?org a vivo:University .
+	  }
         }
     """ .
 
@@ -118,6 +123,23 @@
 	    ?journal a bibo:Journal .
         }
     """ .
+
+:documentModifier_facet_retrieval
+    a   <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.SelectQueryDocumentModifier> ,
+            <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.DocumentModifier> ;
+    rdfs:label "Retrieval document modifier" ;
+    :hasTargetField "facet_retrieval_ss" ;
+    :hasTypeRestriction "http://purl.obolibrary.org/obo/IAO_0000030";
+    :hasSelectQuery """
+	PREFIX vivo: <http://vivoweb.org/ontology/core#>
+	PREFIX bibo: <http://purl.org/ontology/bibo/> 
+        SELECT DISTINCT ?retrieval
+        WHERE {
+            ?uri <http://vivo.deffopera.dk/ontology/osrap/retrievedFromDimensionsByDdfDoi> ?something .
+	    BIND("by DDF DOI" AS ?retrieval)
+        }
+    """ .
+
 
 :uriFinder_facet_publication-year
     a   <java:edu.cornell.mannlib.vitro.webapp.searchindex.indexing.IndexingUriFinder> ,

@@ -37,7 +37,7 @@ CONSTRUCT {
     ?affiliation osrap:relatedByAuthorship ?authorship .
 } WHERE {
     ?x g:authors ?author .
-    ?author vitro:position ?position .
+    ?author g:authorRank ?position .
     ?author g:affiliations ?affiliation .
     ?author ?authorP ?authorO .
     OPTIONAL {

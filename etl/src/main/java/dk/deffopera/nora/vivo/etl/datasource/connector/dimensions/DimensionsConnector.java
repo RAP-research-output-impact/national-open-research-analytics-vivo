@@ -4,8 +4,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -16,11 +18,13 @@ import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.rdf.model.StmtIterator;
 import org.apache.jena.vocabulary.RDF;
-import org.apache.jena.vocabulary.RDFS;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -42,6 +46,8 @@ public class DimensionsConnector extends ConnectorDataSource
     protected static final long REQUEST_INTERVAL = 2000; // ms
     private static final Map<String, String> ugrids = new HashMap<String, String>();
     private static final Map<String, String> hgrids = new HashMap<String, String>();
+    
+    private Set<String> retrievedPubIds = new HashSet<String>();
     
     static {
         // TODO load dynamically from a CSV
@@ -282,27 +288,72 @@ public class DimensionsConnector extends ConnectorDataSource
                     dslQuery, "application/json", token);        
         }
         
+        private int toRdfIteration = 0;
+        
         private Model toRdf(String data) {                
             try {
-                //ObjectMapper mapper = new ObjectMapper();
-                //JsonNode dataObj;
-                //dataObj = mapper.readTree(data);
-                //System.out.println(mapper.writerWithDefaultPrettyPrinter()
-                //        .writeValueAsString(dataObj));
                 JsonToXMLConverter json2xml = new JsonToXMLConverter();
                 XmlToRdf xml2rdf = new XmlToRdf();
                 RdfUtils rdfUtils = new RdfUtils();
+                JSONObject jsonObj = new JSONObject(data);
+                JSONArray pubs = jsonObj.getJSONArray("publications");
+                for(int pubi = 0; pubi < pubs.length(); pubi++) {
+                    JSONObject pub = pubs.getJSONObject(pubi);
+                    JSONArray authors = pub.getJSONArray("authors");
+                    for(int authi = 0; authi < authors.length(); authi++) {
+                        JSONObject author = authors.getJSONObject(authi);
+                        author.put("authorRank", authi + 1);
+                    }                    
+                }
+                data = jsonObj.toString(2);
+                //log.info(data);
                 String xml = json2xml.convertJsonToXml(data);
                 Model rdf = xml2rdf.toRDF(xml);
-                rdf = rdfUtils.renameBNodes(rdf, ABOX + "n", rdf);
-                rdf = renameByIdentifier(rdf, rdf.getProperty(
-                        XmlToRdf.GENERIC_NS + "id"), ABOX, "");
+                rdf = removeAlreadyRetrievedPubs(rdf);
+                toRdfIteration++;
+                rdf = rdfUtils.renameBNodes(rdf, ABOX + "n" + toRdfIteration + "-", rdf);
+                //rdf = renameByIdentifier(rdf, rdf.getProperty(
+                //        XmlToRdf.GENERIC_NS + "id"), ABOX, "");
                 return rdf;
             } catch (JsonProcessingException e) {
                 throw new RuntimeException(e);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
+        }
+        
+        protected Model removeAlreadyRetrievedPubs(Model model) {
+            List<String> newPubIds = new ArrayList<String>();
+            List<Resource> resToRemove = new ArrayList<Resource>();
+            StmtIterator idIt = model.listStatements(
+                    null, model.getProperty(XmlToRdf.GENERIC_NS + "id"), (RDFNode) null);
+            while(idIt.hasNext()) {
+                Statement stmt = idIt.next();
+                if(!stmt.getObject().isLiteral()) {
+                    continue;
+                } else {
+                    String idVal = stmt.getObject().asLiteral().getLexicalForm();
+                    if(!idVal.startsWith("pub")) {
+                        continue;
+                    } else {
+                        if(retrievedPubIds.contains(idVal)) {
+                            resToRemove.add(stmt.getSubject());
+                        } else {
+                            //log.info("Adding " + idVal + " to retrieved pub ids");
+                            newPubIds.add(idVal);
+                        }
+                    }
+                }
+            }
+            //log.info("retrievedPubIds has " + retrievedPubIds.size() + " items");
+            retrievedPubIds.addAll(newPubIds);
+            log.info("Model size before pruning: " + model.size());
+            log.info("Removing " + resToRemove.size() + " duplicate resources");           
+            for(Resource toRemove : resToRemove) {
+                model.removeAll(toRemove, null, null);
+            }
+            log.info("Model size after pruning: " + model.size());
+            return model;
         }
         
         private String getGrants(String grid, String token, int skip) throws InterruptedException {
@@ -377,13 +428,10 @@ public class DimensionsConnector extends ConnectorDataSource
         List<String> queries = Arrays.asList(
                 //"050-orcidId.rq",
                 "100-publicationTypes.rq",
-                "110-publicationMetadata.rq",
-                "120-publicationDate.rq",
-                "130-publicationJournal.rq",
-                "140-publicationAuthorship.rq"
+                "110-publicationMetadata.rq"
                 );
         for(String query : queries) {
-            log.debug("Executing query " + query);
+            log.info("Executing query " + query);
             long pre = model.size();
             log.debug("Pre-query model size: " + pre);
             construct(SPARQL_RESOURCE_DIR + query, model, ABOX + getPrefixName() + "-");
@@ -393,15 +441,14 @@ public class DimensionsConnector extends ConnectorDataSource
             }
         }
         model = renameByIdentifier(model, model.getProperty(
-                XmlToRdf.GENERIC_NS + "person_researcher_id"), ABOX, "");
-        //model = renameByIdentifier(model, model.getProperty(
-        //        XmlToRdf.GENERIC_NS + "person_orcidStr"), ABOX, "orcid-");
-        queries = Arrays.asList(         
-                "150-publicationAuthor.rq",
-                "160-publicationAuthorPosition.rq"
+                XmlToRdf.GENERIC_NS + "publication_id"), ABOX, "");
+        queries = Arrays.asList(
+                "120-publicationDate.rq",
+                "130-publicationJournal.rq",
+                "140-publicationAuthorship.rq"
                 );
         for(String query : queries) {
-            log.debug("Executing query " + query);
+            log.info("Executing query " + query);
             long pre = model.size();
             log.debug("Pre-query model size: " + pre);
             construct(SPARQL_RESOURCE_DIR + query, model, ABOX + getPrefixName() + "-");
@@ -410,6 +457,26 @@ public class DimensionsConnector extends ConnectorDataSource
                 log.info(query + " constructed no triples");
             }
         }
+        model = renameByIdentifier(model, model.getProperty(
+               XmlToRdf.GENERIC_NS + "person_researcher_id"), ABOX, "");
+        model = renameByIdentifier(model, model.getProperty(
+                XmlToRdf.GENERIC_NS + "person_orcidStr"), ABOX, "orcid-");
+        queries = Arrays.asList(         
+                "150-publicationAuthor.rq",
+                "160-publicationAuthorPosition.rq"
+                );
+        for(String query : queries) {
+            log.info("Executing query " + query);
+            long pre = model.size();
+            log.debug("Pre-query model size: " + pre);
+            construct(SPARQL_RESOURCE_DIR + query, model, ABOX + getPrefixName() + "-");
+            log.debug("Post-query model size: " + model.size());
+            if(model.size() - pre == 0 ) {
+                log.info(query + " constructed no triples");
+            }
+        }
+        model = renameByIdentifier(model, model.getProperty(
+                XmlToRdf.GENERIC_NS + "org_id"), ABOX, "");
         return model;
     }
 

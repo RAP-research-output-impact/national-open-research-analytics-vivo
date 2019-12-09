@@ -21,6 +21,7 @@ PREFIX vitro-public: <http://vitro.mannlib.cornell.edu/ns/vitro/public#>
 PREFIX vivo:     <http://vivoweb.org/ontology/core#>
 PREFIX scires:   <http://vivoweb.org/ontology/scientific-research#>
 PREFIX g:        <http://ingest.mannlib.cornell.edu/generalizedXMLtoRDF/0.1/> 
+PREFIX abox:     <http://vivo.deffopera.dk/individual>
 
 CONSTRUCT {
     ?x vivo:relatedBy ?position .
@@ -28,12 +29,16 @@ CONSTRUCT {
     ?position vivo:relates ?x .
     ?position vivo:relates ?org .
     ?org a foaf:Organization .
-    ?org rdfs:label ?orgName . 
+    ?org rdfs:label ?orgame . 
     ?org vivo:relatedBy ?position .
+    ?org ?orgP ?orgO .
+    ?org g:org_id ?orgId .
 } WHERE {
     ?x a foaf:Person .
     ?x g:affiliations ?org .
-    OPTIONAL { ?org g:id ?orgId }
-    ?org g:name ?orgName .
-    BIND(IRI(CONCAT(STR(?x), "-position-", STR(COALESCE(?orgId, REPLACE(?orgName, "\\W", "-"))))) AS ?position)
+    OPTIONAL { ?org g:id ?id }
+    ?org g:name ?orgame .
+    ?org ?orgP ?orgO .
+    BIND(COALESCE(?id, CONCAT("org-", REPLACE(?orgame, "\\W", "-"))) AS ?orgId)
+    BIND(IRI(CONCAT(STR(?x), "-position-", STR(COALESCE(?id, REPLACE(?orgame, "\\W", "-"))))) AS ?position)
 }

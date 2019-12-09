@@ -30,7 +30,9 @@ CONSTRUCT {
     ?x bibo:volume ?volume .
     ?x bibo:issue ?issue .
     ?x vivo:freetextKeyword ?mesh_term .
+    ?x g:publication_id ?id .
 } WHERE {
+    ?x g:title ?title .
     ?x g:id ?id 
     OPTIONAL {
       ?x g:doi ?doi .
@@ -40,9 +42,6 @@ CONSTRUCT {
     }
     OPTIONAL {
       ?x g:pmcid ?pmcid .
-    }
-    OPTIONAL {
-      ?x g:title ?title .
     }
     OPTIONAL {
       ?x g:volume ?volume .

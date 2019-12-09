@@ -28,6 +28,8 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.vocabulary.RDF;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
@@ -322,14 +324,20 @@ public class DimensionsByDoiConnector extends DimensionsConnector implements Dat
         
         private Model toRdf(String data) {                
             try {
-                //ObjectMapper mapper = new ObjectMapper();
-                //JsonNode dataObj;
-                //dataObj = mapper.readTree(data);
-                //System.out.println(mapper.writerWithDefaultPrettyPrinter()
-                //        .writeValueAsString(dataObj));
                 JsonToXMLConverter json2xml = new JsonToXMLConverter();
                 XmlToRdf xml2rdf = new XmlToRdf();
                 RdfUtils rdfUtils = new RdfUtils();
+                JSONObject jsonObj = new JSONObject(data);
+                JSONArray pubs = jsonObj.getJSONArray("publications");
+                for(int pubi = 0; pubi < pubs.length(); pubi++) {
+                    JSONObject pub = pubs.getJSONObject(pubi);
+                    JSONArray authors = pub.getJSONArray("authors");
+                    for(int authi = 0; authi < authors.length(); authi++) {
+                        JSONObject author = authors.getJSONObject(authi);
+                        author.put("authorRank", authi + 1);
+                    }                    
+                }
+                data = jsonObj.toString(2);
                 String xml = json2xml.convertJsonToXml(data);
                 Model rdf = xml2rdf.toRDF(xml);
                 rdf = rdfUtils.renameBNodes(rdf, ABOX + "n", rdf);

@@ -22,6 +22,7 @@ PREFIX vivo:     <http://vivoweb.org/ontology/core#>
 PREFIX scires:   <http://vivoweb.org/ontology/scientific-research#>
 PREFIX g:        <http://ingest.mannlib.cornell.edu/generalizedXMLtoRDF/0.1/> 
 PREFIX osrap:    <http://vivo.deffopera.dk/ontology/osrap/> 
+PREFIX abox:     <http://vivo.deffopera.dk/individual/>
 
 CONSTRUCT {
     ?authorship a vivo:Authorship .
@@ -35,16 +36,24 @@ CONSTRUCT {
     ?person g:person_researcher_id ?researcherId .
     ?authorship osrap:relatedToOrganization ?affiliation .
     ?affiliation osrap:relatedByAuthorship ?authorship .
+    ?x g:minAuthorPosition ?minPosition .
 } WHERE {
+    {
+      SELECT ?x (MIN(xsd:integer(?authorsPosition)) AS ?minPosition) WHERE {
+        ?x g:authors ?authorsNode .
+	?authorsNode vitro:position ?authorsPosition .
+      } GROUP BY ?x
+    }
     ?x g:authors ?author .
     ?author vitro:position ?position .
     ?author g:affiliations ?affiliation .
+    ?author g:last_name ?lastName .
     ?author ?authorP ?authorO .
     OPTIONAL {
       ?author g:researcher_id ?researcherId 
     }
     FILTER(?authorP != vitro:position)
-    BIND(xsd:integer(?position) AS ?rank)
-    BIND(IRI(CONCAT(STR(?x), "-authorship-", ?position)) AS ?authorship)
-    BIND(IRI(CONCAT(STR(?x), "-author-", ?position)) AS ?person)
+    BIND((xsd:integer(?position) - ?minPosition + 1) AS ?rank)
+    BIND(IRI(CONCAT(STR(?x), "-authorship-", STR(xsd:integer(?position) - ?minPosition + 1), STRAFTER(STR(?author), STR(abox:)) )) AS ?authorship)
+    BIND(IRI(CONCAT(STR(?x), "-author-", STR(xsd:integer(?position) - ?minPosition + 1), STRAFTER(STR(?author), STR(abox:)) )) AS ?person)
 }

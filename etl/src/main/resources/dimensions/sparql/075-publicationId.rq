@@ -23,19 +23,9 @@ PREFIX scires:   <http://vivoweb.org/ontology/scientific-research#>
 PREFIX g:        <http://ingest.mannlib.cornell.edu/generalizedXMLtoRDF/0.1/> 
 
 CONSTRUCT {
-    ?x vivo:relatedBy ?position .
-    ?position a vivo:Position .
-    ?position vivo:relates ?x .
-    ?position vivo:relates ?org .
-    ?org a foaf:Organization .
-    ?org rdfs:label ?orgName . 
-    ?org vivo:relatedBy ?position .
-    ?org g:org_id ?org_id
+    ?x g:publication_id ?id 
 } WHERE {
-    ?x a foaf:Person .
-    ?x g:affiliations ?org .
-    OPTIONAL { ?org g:id ?orgId }
-    ?org g:name ?orgName .
-    BIND(STR(COALESCE(?orgId, REPLACE(?orgName, "\\W", "-"))) AS ?org_id)
-    BIND(IRI(CONCAT(STR(?x), "-position-", STR(COALESCE(?orgId, REPLACE(?orgName, "\\W", "-"))))) AS ?position)
+    ?x g:year ?year .
+    ?x g:title ?title .
+    ?x g:id ?id
 }

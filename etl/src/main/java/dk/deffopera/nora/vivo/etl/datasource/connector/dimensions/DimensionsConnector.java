@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -16,7 +17,6 @@ import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.rdf.model.StmtIterator;
 import org.apache.jena.vocabulary.RDF;
-import org.apache.jena.vocabulary.RDFS;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -135,8 +135,9 @@ public class DimensionsConnector extends ConnectorDataSource
         private Map<String, int[]> totals = new HashMap<String, int[]>();
         
         List<String> grids = new ArrayList<String>();
-        private int requestCount;       
-        private Model firstIteration;
+        private int requestCount;   
+        private int record;
+        private Map<String, Model> firstIteration;
         
         public DimensionsIterator(String token) {
             this.token = token;
@@ -151,11 +152,11 @@ public class DimensionsConnector extends ConnectorDataSource
                 totals.put(grid, total);
             }
             try {
-                firstIteration = ModelFactory.createDefaultModel();
+                firstIteration = new HashMap<String, Model>();
                 for(String grid : grids) {
-                    Model gridModel = getResults(grid);
+                    Model gridModel = getResults(grid, requestCount);
                     setTotals(grid, gridModel);    
-                    firstIteration.add(gridModel);                    
+                    firstIteration.put(grid, gridModel);                    
                 }                                
             } catch (InterruptedException e) {
                 log.error(e, e);
@@ -202,33 +203,44 @@ public class DimensionsConnector extends ConnectorDataSource
         
         @Override
         public boolean hasNext() {
-            for(String grid : grids) {
-                for(int i = 0; i < totals.get(grid).length; i++) {
-                   if(requestCount < totals.get(grid)[i]) {
-                       return true;
-                   }
-                }
-            }
-            return false;
+            return record < this.size();
+//            for(String grid : grids) {
+//                for(int i = 0; i < totals.get(grid).length; i++) {
+//                   if(requestCount < totals.get(grid)[i]) {
+//                       return true;
+//                   }
+//                }
+//            }
+//            return false;
         }
 
+        private int currentGrid = 0;
+        
         @Override
         public Model next() {
-            Model results = ModelFactory.createDefaultModel();
-            if(requestCount == 0) {                
-                results = firstIteration;
-                firstIteration = null;
-            } else {
-                try {
-                    for(String grid : grids) {
-                        results.add(getResults(grid));
+            Model results = ModelFactory.createDefaultModel();            
+            try {
+                while(results.isEmpty()) {
+                    if(currentGrid == (grids.size() - 1)) {
+                        currentGrid = 0;
+                        requestCount++;
                     }
-                } catch (InterruptedException e) {
-                    log.error(e, e);
-                    throw new RuntimeException(e);
+                    String grid = grids.get(currentGrid);
+                    if(requestCount == 0) {
+                        return firstIteration.get(grid);
+                    } else {
+                        for(int i = 0; i < totals.get(grid).length; i++) {
+                            if(requestCount < totals.get(grid)[i]) {
+                                results.add(getResults(grid, requestCount));
+                            }
+                        }       
+                    }
                 }
+            } catch (InterruptedException e) {
+                log.error(e, e);
+                throw new RuntimeException(e);
             }
-            requestCount++;
+            record++;
             return results;
         }
 
@@ -237,9 +249,7 @@ public class DimensionsConnector extends ConnectorDataSource
             int size = 0;
             for(String grid : grids) {
                 for(int i = 0; i < totals.get(grid).length; i++) {
-                    if(totals.get(grid)[i] > size) {
-                        size = totals.get(grid)[i];
-                    }
+                    size += totals.get(grid)[i];
                 }
             }
             return size;
@@ -250,10 +260,10 @@ public class DimensionsConnector extends ConnectorDataSource
             // no API method for logging out; nothing to do for now
         }
         
-        private Model getResults(String grid) throws InterruptedException {
+        private Model getResults(String grid, int requestCount) throws InterruptedException {
             Model model = ModelFactory.createDefaultModel();
             if(requestCount < totals.get(grid)[0]) {
-                model.add(toRdf(getPubs(grid, this.token, requestCount * RESULTS_PER_REQUEST)));
+                model.add(toRdf(grid, getPubs(grid, this.token, requestCount * RESULTS_PER_REQUEST)));
             }
 //            if(requestCount < totals.get(grid)[1]) {
 //                model.add(toRdf(getGrants(grid, this.token, requestCount * RESULTS_PER_REQUEST)));
@@ -282,7 +292,7 @@ public class DimensionsConnector extends ConnectorDataSource
                     dslQuery, "application/json", token);        
         }
         
-        private Model toRdf(String data) {                
+        private Model toRdf(String grid, String data) {                
             try {
                 //ObjectMapper mapper = new ObjectMapper();
                 //JsonNode dataObj;
@@ -294,9 +304,9 @@ public class DimensionsConnector extends ConnectorDataSource
                 RdfUtils rdfUtils = new RdfUtils();
                 String xml = json2xml.convertJsonToXml(data);
                 Model rdf = xml2rdf.toRDF(xml);
-                rdf = rdfUtils.renameBNodes(rdf, ABOX + "n", rdf);
-                rdf = renameByIdentifier(rdf, rdf.getProperty(
-                        XmlToRdf.GENERIC_NS + "id"), ABOX, "");
+                rdf = rdfUtils.renameBNodes(rdf, ABOX + grid + "n", rdf);
+                //rdf = renameByIdentifier(rdf, rdf.getProperty(
+                //        XmlToRdf.GENERIC_NS + "id"), ABOX, "");
                 return rdf;
             } catch (JsonProcessingException e) {
                 throw new RuntimeException(e);
@@ -374,8 +384,23 @@ public class DimensionsConnector extends ConnectorDataSource
 
     @Override
     protected Model mapToVIVO(Model model) {
+        // TODO refactor the construct list handling into a separate method
         List<String> queries = Arrays.asList(
                 //"050-orcidId.rq",
+                "075-publicationId.rq");
+        for(String query : queries) {
+            log.debug("Executing query " + query);
+            long pre = model.size();
+            log.debug("Pre-query model size: " + pre);
+            construct(SPARQL_RESOURCE_DIR + query, model, ABOX + getPrefixName() + "-");
+            log.debug("Post-query model size: " + model.size());
+            if(model.size() - pre == 0 ) {
+                log.info(query + " constructed no triples");
+            }
+        }
+        model = renameByIdentifier(model, model.getProperty(
+                XmlToRdf.GENERIC_NS + "publication_id"), ABOX, "");
+        queries = Arrays.asList(
                 "100-publicationTypes.rq",
                 "110-publicationMetadata.rq",
                 "120-publicationDate.rq",
@@ -394,8 +419,8 @@ public class DimensionsConnector extends ConnectorDataSource
         }
         model = renameByIdentifier(model, model.getProperty(
                 XmlToRdf.GENERIC_NS + "person_researcher_id"), ABOX, "");
-        //model = renameByIdentifier(model, model.getProperty(
-        //        XmlToRdf.GENERIC_NS + "person_orcidStr"), ABOX, "orcid-");
+        model = renameByIdentifier(model, model.getProperty(
+                XmlToRdf.GENERIC_NS + "person_orcidStr"), ABOX, "orcid-");
         queries = Arrays.asList(         
                 "150-publicationAuthor.rq",
                 "160-publicationAuthorPosition.rq"
@@ -410,6 +435,10 @@ public class DimensionsConnector extends ConnectorDataSource
                 log.info(query + " constructed no triples");
             }
         }
+        //model = renameByIdentifier(model, model.getProperty(
+        //        XmlToRdf.GENERIC_NS + "id"), ABOX, "");
+        model = renameByIdentifier(model, model.getProperty(
+                XmlToRdf.GENERIC_NS + "org_id"), ABOX, "");
         return model;
     }
 

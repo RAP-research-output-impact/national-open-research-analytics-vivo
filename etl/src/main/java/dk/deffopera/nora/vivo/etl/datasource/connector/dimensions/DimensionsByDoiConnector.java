@@ -6,6 +6,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -14,6 +16,18 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.TransformerFactoryConfigurationError;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
@@ -28,8 +42,14 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.vocabulary.RDF;
+import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 
 import dk.deffopera.nora.vivo.etl.datasource.DataSource;
 import dk.deffopera.nora.vivo.etl.datasource.IteratorWithSize;
@@ -327,10 +347,27 @@ public class DimensionsByDoiConnector extends DimensionsConnector implements Dat
                 //dataObj = mapper.readTree(data);
                 //System.out.println(mapper.writerWithDefaultPrettyPrinter()
                 //        .writeValueAsString(dataObj));
+                ObjectMapper mapper = new ObjectMapper();
+                JsonNode jsonObj = mapper.readTree(data);
+                mapper = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
+                data = mapper.writeValueAsString(jsonObj);
+                log.info(data);
                 JsonToXMLConverter json2xml = new JsonToXMLConverter();
                 XmlToRdf xml2rdf = new XmlToRdf();
                 RdfUtils rdfUtils = new RdfUtils();
                 String xml = json2xml.convertJsonToXml(data);
+                DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+                DocumentBuilder builder = factory.newDocumentBuilder();
+                Document doc = builder.parse(new InputSource(new StringReader(xml)));
+                Transformer transformer = TransformerFactory.newInstance().newTransformer();
+                transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+                transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+                //initialize StreamResult with File object to save to file
+                StreamResult result = new StreamResult(new StringWriter());
+                DOMSource source = new DOMSource(doc);
+                transformer.transform(source, result);
+                xml = result.getWriter().toString();                
+                log.info(xml);
                 Model rdf = xml2rdf.toRDF(xml);
                 rdf = rdfUtils.renameBNodes(rdf, ABOX + "n", rdf);
                 rdf = renameByIdentifier(rdf, rdf.getProperty(
@@ -339,6 +376,16 @@ public class DimensionsByDoiConnector extends DimensionsConnector implements Dat
             } catch (JsonProcessingException e) {
                 throw new RuntimeException(e);
             } catch (IOException e) {
+                throw new RuntimeException(e);
+            } catch (TransformerConfigurationException e) {
+                throw new RuntimeException(e);
+            } catch (TransformerFactoryConfigurationError e) {
+                throw new RuntimeException(e);
+            } catch (TransformerException e) {
+                throw new RuntimeException(e);
+            } catch (ParserConfigurationException e) {
+                throw new RuntimeException(e);
+            } catch (SAXException e) {
                 throw new RuntimeException(e);
             }
         }

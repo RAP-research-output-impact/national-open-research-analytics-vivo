@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -19,12 +20,12 @@ import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.rdf.model.StmtIterator;
 import org.apache.jena.vocabulary.RDF;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -235,6 +236,11 @@ public class DimensionsConnector extends ConnectorDataSource
                 }
             }
             requestCount++;
+            try {
+                results = addSupportingGrants(results, token);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
             return results;
         }
 
@@ -254,6 +260,31 @@ public class DimensionsConnector extends ConnectorDataSource
         @Override
         public void close() {
             // no API method for logging out; nothing to do for now
+        }
+        
+        private Model addSupportingGrants(Model model, String token) throws InterruptedException {
+            Set<String> allGrantIds = new HashSet<String>(); 
+            StmtIterator sit = model.listStatements(null, model.getProperty(
+                    XmlToRdf.GENERIC_NS + "supporting_grant_ids"), (RDFNode) null);
+            while(sit.hasNext()) {
+                Statement stmt = sit.next();
+                if(!stmt.getObject().isLiteral()) {
+                    continue;
+                } else {
+                    allGrantIds.add(stmt.getObject().asLiteral().getLexicalForm());
+                }
+            }
+            Iterator<String> allGrantIdsIt = allGrantIds.iterator();
+            List<String> batch = new ArrayList<String>();
+            int idBatchSize = 100;
+            while(allGrantIdsIt.hasNext()) {
+                batch.add(allGrantIdsIt.next());
+                if(batch.size() == idBatchSize || !allGrantIdsIt.hasNext()) {
+                    model.add(toRdf(getSupportingGrants(batch, token)));
+                    batch.clear();
+                }
+            }
+            return model;
         }
         
         private Model getResults(String grid) throws InterruptedException {
@@ -294,19 +325,8 @@ public class DimensionsConnector extends ConnectorDataSource
             try {
                 JsonToXMLConverter json2xml = new JsonToXMLConverter();
                 XmlToRdf xml2rdf = new XmlToRdf();
-                RdfUtils rdfUtils = new RdfUtils();
-                JSONObject jsonObj = new JSONObject(data);
-                JSONArray pubs = jsonObj.getJSONArray("publications");
-                for(int pubi = 0; pubi < pubs.length(); pubi++) {
-                    JSONObject pub = pubs.getJSONObject(pubi);
-                    JSONArray authors = pub.getJSONArray("authors");
-                    for(int authi = 0; authi < authors.length(); authi++) {
-                        JSONObject author = authors.getJSONObject(authi);
-                        author.put("authorRank", authi + 1);
-                    }                    
-                }
-                data = jsonObj.toString(2);
-                //log.info(data);
+                RdfUtils rdfUtils = new RdfUtils();                
+                log.info(data);
                 String xml = json2xml.convertJsonToXml(data);
                 Model rdf = xml2rdf.toRDF(xml);
                 rdf = removeAlreadyRetrievedPubs(rdf);
@@ -356,6 +376,29 @@ public class DimensionsConnector extends ConnectorDataSource
             return model;
         }
         
+        private String getSupportingGrants(List<String> grantIds, String token) throws InterruptedException {
+            String queryStr = "search grants where";
+            if(grantIds.size() > 1) {
+                queryStr += " ( ";
+            }
+            boolean first = true;
+            for(String grantId : grantIds) {
+                if(!first) {
+                    queryStr += " or";
+                }
+                queryStr += " id = \"" + grantId + "\"";
+                first = false;
+            }           
+            if(grantIds.size() > 1) {
+                queryStr += " ) ";
+            }
+            queryStr += 
+                    " return grants[id + active_year + end_date + funders + start_date + start_year + title + abstract + funding_eur + grant_number ]";
+            log.info(queryStr);
+            String data = getDslResponse(queryStr, token);
+            return (new JSONObject(data)).toString(2);
+        }
+        
         private String getGrants(String grid, String token, int skip) throws InterruptedException {
             String queryStr = "search grants where"
                     + " (start_year >= 2014 and start_year <= 2017 and research_orgs.id = \"" + grid + "\")"
@@ -369,10 +412,32 @@ public class DimensionsConnector extends ConnectorDataSource
             String queryStr = "search publications where"
                     + " (year >= 2014 and year <= 2017 and research_orgs.id = \"" + grid + "\" and type in [\"article\", \"chapter\", \"proceeding\"])"
                     //+ " return publications"
-                    + " return publications[id + type + title + authors + doi + pmid + pmcid + date + year + mesh_terms + journal + issn + volume + issue]"
+                    + " return publications[id + type + title + authors + doi + "
+                    + "pmid + pmcid + date + year + mesh_terms + "
+                    + "journal + issn + volume + issue + publisher + "
+                    + "open_access_categories + funders + funder_countries + "
+                    + "supporting_grant_ids + category_for + category_rcdc + category_hrcs_rac + "
+                    + "field_citation_ratio + relative_citation_ratio + times_cited " 
+                    + "]"
                     + " limit 200 skip " + skip;
             log.debug(queryStr);
-            return getDslResponse(queryStr, token);
+            String data = getDslResponse(queryStr, token);
+            JSONObject jsonObj = new JSONObject(data);
+            try {
+                JSONArray pubs = jsonObj.getJSONArray("publications");
+                for(int pubi = 0; pubi < pubs.length(); pubi++) {
+                    JSONObject pub = pubs.getJSONObject(pubi);
+                    JSONArray authors = pub.getJSONArray("authors");
+                    for(int authi = 0; authi < authors.length(); authi++) {
+                        JSONObject author = authors.getJSONObject(authi);
+                        author.put("authorRank", authi + 1);
+                    }                    
+                }
+            } catch (JSONException e) {
+                log.info(jsonObj.toString(2));
+                throw (e);
+            }
+            return jsonObj.toString(2);
         }
         
         private String getPatents(String grid, String token, int skip) throws InterruptedException {

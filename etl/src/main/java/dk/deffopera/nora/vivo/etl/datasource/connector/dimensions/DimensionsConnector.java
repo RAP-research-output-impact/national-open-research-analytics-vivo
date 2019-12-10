@@ -134,7 +134,7 @@ public class DimensionsConnector extends ConnectorDataSource
     
     private class DimensionsIterator implements IteratorWithSize<Model> {
 
-        private static final int RESULTS_PER_REQUEST = 200;
+        private static final int RESULTS_PER_REQUEST = 250;
         private String token;
         private final String[] sources = {
                 "publications", "grants", "patents", "clinical_trials"};
@@ -403,7 +403,7 @@ public class DimensionsConnector extends ConnectorDataSource
             String queryStr = "search grants where"
                     + " (start_year >= 2014 and start_year <= 2017 and research_orgs.id = \"" + grid + "\")"
                     + " return grants[active_year + end_date + funders + id + project_num + start_date + start_year + title + abstract + funding_eur + grant_number + investigator_details + research_orgs]"
-                    + " limit 200 skip " + skip;
+                    + " limit " + RESULTS_PER_REQUEST + " skip " + skip;
             log.debug(queryStr);
             return getDslResponse(queryStr, token);
         }
@@ -411,15 +411,14 @@ public class DimensionsConnector extends ConnectorDataSource
         private String getPubs(String grid, String token, int skip) throws InterruptedException {
             String queryStr = "search publications where"
                     + " (year >= 2014 and year <= 2017 and research_orgs.id = \"" + grid + "\" and type in [\"article\", \"chapter\", \"proceeding\"])"
-                    //+ " return publications"
-                    + " return publications[id + type + title + authors + doi + "
+                    + " return publications[id + type + title + authors + researchers + doi + "
                     + "pmid + pmcid + date + year + mesh_terms + "
                     + "journal + issn + volume + issue + publisher + "
                     + "open_access_categories + funders + funder_countries + "
                     + "supporting_grant_ids + category_for + category_rcdc + category_hrcs_rac + "
                     + "field_citation_ratio + relative_citation_ratio + times_cited " 
                     + "]"
-                    + " limit 200 skip " + skip;
+                    + " limit " + RESULTS_PER_REQUEST + " skip " + skip;
             log.debug(queryStr);
             String data = getDslResponse(queryStr, token);
             JSONObject jsonObj = new JSONObject(data);
@@ -444,7 +443,7 @@ public class DimensionsConnector extends ConnectorDataSource
             String queryStr = "search patents where"
                     + " (granted_year >= 2014 and granted_year <= 2017 and assignees.id = \"" + grid + "\")"
                     + " return patents[assignees + granted_year + id + title + inventor_names + funders + abstract + associated_grant_ids]"
-                    + " limit 200 skip " + skip;
+                    + " limit " + RESULTS_PER_REQUEST + " skip " + skip;
             log.debug(queryStr);
             return getDslResponse(queryStr, token);
         }
@@ -453,7 +452,7 @@ public class DimensionsConnector extends ConnectorDataSource
             String queryStr = "search clinical_trials where"
                     + " (active_years >= 2014 and active_years <= 2017 and organizations.id = \"" + grid + "\")"
                     + " return clinical_trials[id + title + abstract + active_years + associated_grant_ids + date + researchers + organizations + funders]"
-                    + " limit 200 skip " + skip;
+                    + " limit " + RESULTS_PER_REQUEST + " skip " + skip;
             log.debug(queryStr);
             return getDslResponse(queryStr, token);
         }        
@@ -496,14 +495,7 @@ public class DimensionsConnector extends ConnectorDataSource
                 "110-publicationMetadata.rq"
                 );
         for(String query : queries) {
-            log.info("Executing query " + query);
-            long pre = model.size();
-            log.debug("Pre-query model size: " + pre);
             construct(SPARQL_RESOURCE_DIR + query, model, ABOX + getPrefixName() + "-");
-            log.debug("Post-query model size: " + model.size());
-            if(model.size() - pre == 0 ) {
-                log.info(query + " constructed no triples");
-            }
         }
         model = renameByIdentifier(model, model.getProperty(
                 XmlToRdf.GENERIC_NS + "publication_id"), ABOX, "");
@@ -513,32 +505,25 @@ public class DimensionsConnector extends ConnectorDataSource
                 "140-publicationAuthorship.rq"
                 );
         for(String query : queries) {
-            log.info("Executing query " + query);
-            long pre = model.size();
-            log.debug("Pre-query model size: " + pre);
             construct(SPARQL_RESOURCE_DIR + query, model, ABOX + getPrefixName() + "-");
-            log.debug("Post-query model size: " + model.size());
-            if(model.size() - pre == 0 ) {
-                log.info(query + " constructed no triples");
-            }
         }
         model = renameByIdentifier(model, model.getProperty(
                XmlToRdf.GENERIC_NS + "person_researcher_id"), ABOX, "");
-        model = renameByIdentifier(model, model.getProperty(
-                XmlToRdf.GENERIC_NS + "person_orcidStr"), ABOX, "orcid-");
+        //model = renameByIdentifier(model, model.getProperty(
+        //        XmlToRdf.GENERIC_NS + "person_orcidStr"), ABOX, "orcid-");
         queries = Arrays.asList(         
                 "150-publicationAuthor.rq",
-                "160-publicationAuthorPosition.rq"
+                "160-publicationAuthorPosition.rq",
+                "170-publisher.rq",
+                "180-mesh.rq",
+                "190-for.rq",
+                "200-rcdc.rq",
+                "210-hrcs.rq",
+                "220-openAccess.rq",
+                "230-funding.rq"
                 );
         for(String query : queries) {
-            log.info("Executing query " + query);
-            long pre = model.size();
-            log.debug("Pre-query model size: " + pre);
-            construct(SPARQL_RESOURCE_DIR + query, model, ABOX + getPrefixName() + "-");
-            log.debug("Post-query model size: " + model.size());
-            if(model.size() - pre == 0 ) {
-                log.info(query + " constructed no triples");
-            }
+            construct(SPARQL_RESOURCE_DIR + query, model, ABOX + getPrefixName() + "-");            
         }
         model = renameByIdentifier(model, model.getProperty(
                 XmlToRdf.GENERIC_NS + "org_id"), ABOX, "");

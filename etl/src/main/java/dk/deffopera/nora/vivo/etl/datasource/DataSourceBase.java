@@ -109,9 +109,18 @@ public abstract class DataSourceBase {
      * @return model with new data added by CONSTRUCT query
      */
     protected Model construct(String queryName, Model m, String namespaceEtc) {
+        log.info("Executing query " + queryName);
+        long pre = m.size();
+        log.debug("Pre-query model size: " + pre);
+        long start = System.currentTimeMillis();
         Model n = constructQuery(queryName, m, namespaceEtc, null);
+        log.info((System.currentTimeMillis() - start) + " ms");
         log.debug("Query " + queryName + " constructed " + n.size() + " triples.");
         m.add(n);
+        log.debug("Post-query model size: " + m.size());
+        if(n.size() == 0 ) {
+            log.info(queryName + " constructed no triples");
+        }
         return m;
     }
     

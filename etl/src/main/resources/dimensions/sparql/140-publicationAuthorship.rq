@@ -35,9 +35,11 @@ CONSTRUCT {
     ?person g:person_researcher_id ?researcherId .
     ?authorship osrap:relatedToOrganization ?affiliation .
     ?affiliation osrap:relatedByAuthorship ?authorship .
+    ?authorship vivo:isCorrespondingAuthor ?correspondingAuthor .
 } WHERE {
     ?x g:authors ?author .
     ?author g:authorRank ?position .
+    OPTIONAL { ?author g:corresponding ?corresponding . BIND(true AS ?correspondingAuthor) }
     ?author g:affiliations ?affiliation .
     ?author ?authorP ?authorO .
     OPTIONAL {

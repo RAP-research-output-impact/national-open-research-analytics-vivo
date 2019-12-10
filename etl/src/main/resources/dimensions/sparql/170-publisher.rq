@@ -21,45 +21,13 @@ PREFIX vitro-public: <http://vitro.mannlib.cornell.edu/ns/vitro/public#>
 PREFIX vivo:     <http://vivoweb.org/ontology/core#>
 PREFIX scires:   <http://vivoweb.org/ontology/scientific-research#>
 PREFIX g:        <http://ingest.mannlib.cornell.edu/generalizedXMLtoRDF/0.1/> 
-PREFIX osrap:    <http://vivo.deffopera.dk/ontology/osrap/>
+PREFIX abox:     <http://vivo.deffopera.dk/individual/>
 
 CONSTRUCT {
-    ?x bibo:doi ?doi .
-    ?x bibo:pmid ?pmid .
-    ?x vivo:pmcid ?pmcid .
-    ?x vivo:identifier ?id .
-    ?x rdfs:label ?title .
-    ?x bibo:volume ?volume .
-    ?x bibo:issue ?issue .
-    ?x g:publication_id ?id .
-    ?x osrap:timesCited ?timesCited .
-    ?x osrap:relativeCitationRatio ?relativeCitationRatio .
-    ?x osrap:fieldCitationRatio ?fieldCitationRatio .
+  ?x vivo:publisher ?publisher .
+  ?publisher a vivo:Publisher .
+  ?publisher rdfs:label ?publisherValue .
 } WHERE {
-    ?x g:title ?title .
-    ?x g:id ?id 
-    OPTIONAL {
-      ?x g:doi ?doi .
-    }
-    OPTIONAL {
-      ?x g:pmid ?pmid .
-    }
-    OPTIONAL {
-      ?x g:pmcid ?pmcid .
-    }
-    OPTIONAL {
-      ?x g:volume ?volume .
-    }
-    OPTIONAL {
-      ?x g:issue ?issue .
-    }
-    OPTIONAL {
-      ?x g:times_cited ?timesCited 
-    }
-    OPTIONAL {
-      ?x g:relative_citation_ratio ?relativeCitationRatio
-    }
-    OPTIONAL {
-      ?x g:field_citation_ratio ?fieldCitationRatio
-    }
+  ?x g:publisher ?publisherValue .
+  BIND(IRI(CONCAT(STR(abox:), "publisher-", REPLACE(?publisherValue, "\\W", "-"))) AS ?publisher)
 }

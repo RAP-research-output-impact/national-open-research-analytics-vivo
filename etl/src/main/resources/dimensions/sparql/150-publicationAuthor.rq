@@ -21,6 +21,7 @@ PREFIX vitro-public: <http://vitro.mannlib.cornell.edu/ns/vitro/public#>
 PREFIX vivo:     <http://vivoweb.org/ontology/core#>
 PREFIX scires:   <http://vivoweb.org/ontology/scientific-research#>
 PREFIX g:        <http://ingest.mannlib.cornell.edu/generalizedXMLtoRDF/0.1/> 
+PREFIX abox:     <http://vivo.deffopera.dk/individual/>
 
 CONSTRUCT {
     ?x rdfs:label ?label .
@@ -30,9 +31,12 @@ CONSTRUCT {
     ?name a vcard:Name .
     ?name vcard:familyName ?lastName .
     ?name vcard:givenName ?firstName .
+    ?x vivo:orcidId ?orcidId .
+    ?orcidId a owl:Thing .
 } WHERE {
     ?x a foaf:Person .
     OPTIONAL { ?x g:first_name ?firstName }
+    OPTIONAL { ?x g:orcid ?orcid . BIND(IRI(CONCAT(STR(abox:), "orcid-", STR(?orcid))) AS ?orcidId) }    
     ?x g:last_name ?lastName .
     BIND(IRI(CONCAT(STR(?x), "-vcard")) AS ?vcard)
     BIND(IRI(CONCAT(STR(?x), "-vcard-name")) AS ?name)

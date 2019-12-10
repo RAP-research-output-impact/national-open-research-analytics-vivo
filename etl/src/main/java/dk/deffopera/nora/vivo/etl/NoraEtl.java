@@ -45,8 +45,10 @@ public class NoraEtl {
         connector.getConfiguration().setEndpointParameters(endpointParameters);
         connector.getConfiguration().setLimit(limit);
         connector.getConfiguration().setResultsGraphURI(getParameter(queryTerms, "graphURI"));
+        long start = System.currentTimeMillis();
         connector.run();
         Model result = connector.getResult();
+        log.info(((System.currentTimeMillis() - start) / 1000) + " s to run");
         if(result == null) {
             log.warn("result is null");
         } else {

@@ -22,44 +22,34 @@ PREFIX vivo:     <http://vivoweb.org/ontology/core#>
 PREFIX scires:   <http://vivoweb.org/ontology/scientific-research#>
 PREFIX g:        <http://ingest.mannlib.cornell.edu/generalizedXMLtoRDF/0.1/> 
 PREFIX osrap:    <http://vivo.deffopera.dk/ontology/osrap/>
+PREFIX abox:     <http://vivo.deffopera.dk/individual/>
 
 CONSTRUCT {
-    ?x bibo:doi ?doi .
-    ?x bibo:pmid ?pmid .
-    ?x vivo:pmcid ?pmcid .
-    ?x vivo:identifier ?id .
-    ?x rdfs:label ?title .
-    ?x bibo:volume ?volume .
-    ?x bibo:issue ?issue .
-    ?x g:publication_id ?id .
-    ?x osrap:timesCited ?timesCited .
-    ?x osrap:relativeCitationRatio ?relativeCitationRatio .
-    ?x osrap:fieldCitationRatio ?fieldCitationRatio .
+    ?x vivo:informationResourceSupportedBy ?grantInd .
+    ?grantInd a vivo:Grant .
+    ?grantInd rdfs:label ?title .
+    ?grantInd vivo:sponsorAwardId ?grantNumber .
+    ?grantInd vivo:totalAwardAmount ?fundingEur .
+    ?grantInd bibo:abstract ?abstract .
+    ?grantInd vivo:assignedBy ?fundingOrg .
+    ?fundingOrg a vivo:FundingOrganization .
+    ?fundingOrg rdfs:label ?funderName .
+    ?fundingOrg vivo:abbreviaton ?acronym .
+    ?fundingOrg osrap:countryName ?countryName .
 } WHERE {
-    ?x g:title ?title .
-    ?x g:id ?id 
+    ?x g:supporting_grant_ids ?id .
+    ?grant g:id ?id .
+    ?grant g:title ?title .
+    ?grant g:grant_number ?grantNumber .
+    ?grant g:funding_eur ?fundingEur .
     OPTIONAL {
-      ?x g:doi ?doi .
+        ?grant g:abstract ?abstract 
     }
-    OPTIONAL {
-      ?x g:pmid ?pmid .
-    }
-    OPTIONAL {
-      ?x g:pmcid ?pmcid .
-    }
-    OPTIONAL {
-      ?x g:volume ?volume .
-    }
-    OPTIONAL {
-      ?x g:issue ?issue .
-    }
-    OPTIONAL {
-      ?x g:times_cited ?timesCited 
-    }
-    OPTIONAL {
-      ?x g:relative_citation_ratio ?relativeCitationRatio
-    }
-    OPTIONAL {
-      ?x g:field_citation_ratio ?fieldCitationRatio
-    }
+    ?grant g:funders ?funder .
+    ?funder g:name ?funderName 
+    OPTIONAL { ?funder g:acronym ?acronym }
+    ?funder g:id ?funderId .
+    ?funder g:country_name ?countryName 
+    BIND(IRI(CONCAT(STR(abox:), "grant-", STR(?id))) AS ?grantInd) .
+    BIND(IRI(CONCAT(STR(abox:), STR(?funderId))) AS ?fundingOrg) .
 }

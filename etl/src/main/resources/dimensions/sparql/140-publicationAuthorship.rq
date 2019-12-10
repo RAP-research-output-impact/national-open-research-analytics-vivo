@@ -36,16 +36,30 @@ CONSTRUCT {
     ?authorship osrap:relatedToOrganization ?affiliation .
     ?affiliation osrap:relatedByAuthorship ?authorship .
     ?authorship vivo:isCorrespondingAuthor ?correspondingAuthor .
+    ?authorship g:affiliations ?affiliation .
+    ?person g:orcid ?orcid .
+    ?person g:first_name ?preferredFirstName .
+    ?person g:last_name ?preferredLastName .
 } WHERE {
     ?x g:authors ?author .
     ?author g:authorRank ?position .
     OPTIONAL { ?author g:corresponding ?corresponding . BIND(true AS ?correspondingAuthor) }
     ?author g:affiliations ?affiliation .
-    ?author ?authorP ?authorO .
     OPTIONAL {
       ?author g:researcher_id ?researcherId 
     }
-    FILTER(?authorP != vitro:position)
+    OPTIONAL {
+      ?author g:orcid ?orcid .
+    }
+    ?author g:last_name ?uncontrolledLastName .
+    OPTIONAL { ?author g:first_name ?uncontrolledFirstName }
+    OPTIONAL { ?author g:researcher_id ?researcherId .
+               ?x g:researchers ?researcher .
+	       ?researcher g:id ?researcherId .
+	       ?researcher g:last_name ?controlledLastName .
+	       ?researcher g:first_name ?controlledFirstName }
+    BIND(COALESCE(?controlledLastName, ?uncontrolledLastName) AS ?preferredLastName)
+    BIND(COALESCE(?controlledFirstName, ?uncontrolledFirstName, "") AS ?preferredFirstName)
     BIND(xsd:integer(?position) AS ?rank)
     BIND(IRI(CONCAT(STR(?x), "-authorship-", ?position)) AS ?authorship)
     BIND(IRI(CONCAT(STR(?x), "-author-", ?position)) AS ?person)

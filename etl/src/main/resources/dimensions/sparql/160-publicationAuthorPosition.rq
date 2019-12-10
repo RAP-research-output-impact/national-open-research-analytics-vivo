@@ -22,24 +22,26 @@ PREFIX vivo:     <http://vivoweb.org/ontology/core#>
 PREFIX scires:   <http://vivoweb.org/ontology/scientific-research#>
 PREFIX g:        <http://ingest.mannlib.cornell.edu/generalizedXMLtoRDF/0.1/> 
 PREFIX abox:     <http://vivo.deffopera.dk/individual/>
+PREFIX osrap:    <http://vivo.deffopera.dk/ontology/osrap/>
 
 CONSTRUCT {
     ?x vivo:relatedBy ?position .
     ?position a vivo:Position .
     ?position vivo:relates ?x .
     ?position vivo:relates ?org .
+    ?authorship osrap:authorAffiliation ?position .
     ?org a foaf:Organization .
     ?org rdfs:label ?orgame . 
     ?org vivo:relatedBy ?position .
-    ?org ?orgP ?orgO .
     ?org g:org_id ?orgId .
     ?org vivo:identifier ?id .
 } WHERE {
     ?x a foaf:Person .
-    ?x g:affiliations ?org .
+    ?x vivo:relatedBy ?authorship .
+    ?authorship a vivo:Authorship .
+    ?authorship g:affiliations ?org .
     OPTIONAL { ?org g:id ?id }
     ?org g:name ?orgame .
-    ?org ?orgP ?orgO .
     BIND(COALESCE(?id, CONCAT("org-", REPLACE(?orgame, "\\W", "-"))) AS ?orgId)
     BIND(IRI(CONCAT(STR(?x), "-position-", STR(COALESCE(?id, REPLACE(?orgame, "\\W", "-"))))) AS ?position)
 }

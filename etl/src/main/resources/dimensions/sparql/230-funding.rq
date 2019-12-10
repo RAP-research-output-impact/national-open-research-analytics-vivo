@@ -50,6 +50,6 @@ CONSTRUCT {
     OPTIONAL { ?funder g:acronym ?acronym }
     ?funder g:id ?funderId .
     ?funder g:country_name ?countryName 
-    BIND(IRI(CONCAT(STR(abox:), "grant-", STR(?id))) AS ?grantInd) .
+    BIND(IRI(CONCAT(STR(abox:), STR(?id))) AS ?grantInd) .
     BIND(IRI(CONCAT(STR(abox:), STR(?funderId))) AS ?fundingOrg) .
 }

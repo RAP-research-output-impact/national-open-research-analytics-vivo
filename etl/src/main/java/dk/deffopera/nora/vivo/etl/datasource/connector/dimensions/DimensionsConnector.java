@@ -326,7 +326,7 @@ public class DimensionsConnector extends ConnectorDataSource
                 JsonToXMLConverter json2xml = new JsonToXMLConverter();
                 XmlToRdf xml2rdf = new XmlToRdf();
                 RdfUtils rdfUtils = new RdfUtils();                
-                log.info(data);
+                //log.info(data);
                 String xml = json2xml.convertJsonToXml(data);
                 Model rdf = xml2rdf.toRDF(xml);
                 rdf = removeAlreadyRetrievedPubs(rdf);
@@ -367,12 +367,12 @@ public class DimensionsConnector extends ConnectorDataSource
             }
             //log.info("retrievedPubIds has " + retrievedPubIds.size() + " items");
             retrievedPubIds.addAll(newPubIds);
-            log.info("Model size before pruning: " + model.size());
-            log.info("Removing " + resToRemove.size() + " duplicate resources");           
+            log.debug("Model size before pruning: " + model.size());
+            log.debug("Removing " + resToRemove.size() + " duplicate resources");           
             for(Resource toRemove : resToRemove) {
                 model.removeAll(toRemove, null, null);
             }
-            log.info("Model size after pruning: " + model.size());
+            log.debug("Model size after pruning: " + model.size());
             return model;
         }
         
@@ -394,7 +394,7 @@ public class DimensionsConnector extends ConnectorDataSource
             }
             queryStr += 
                     " return grants[id + active_year + end_date + funders + start_date + start_year + title + abstract + funding_eur + grant_number ]";
-            log.info(queryStr);
+            log.debug(queryStr);
             String data = getDslResponse(queryStr, token);
             return (new JSONObject(data)).toString(2);
         }

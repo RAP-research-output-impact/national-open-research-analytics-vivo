@@ -134,7 +134,7 @@ public class DimensionsConnector extends ConnectorDataSource
     
     private class DimensionsIterator implements IteratorWithSize<Model> {
 
-        private static final int RESULTS_PER_REQUEST = 250;
+        private static final int RESULTS_PER_REQUEST = 200;
         private String token;
         private final String[] sources = {
                 "publications", "grants", "patents", "clinical_trials"};
@@ -276,7 +276,7 @@ public class DimensionsConnector extends ConnectorDataSource
             }
             Iterator<String> allGrantIdsIt = allGrantIds.iterator();
             List<String> batch = new ArrayList<String>();
-            int idBatchSize = 100;
+            int idBatchSize = 200;
             while(allGrantIdsIt.hasNext()) {
                 batch.add(allGrantIdsIt.next());
                 if(batch.size() == idBatchSize || !allGrantIdsIt.hasNext()) {
@@ -394,6 +394,7 @@ public class DimensionsConnector extends ConnectorDataSource
             }
             queryStr += 
                     " return grants[id + active_year + end_date + funders + start_date + start_year + title + abstract + funding_eur + grant_number ]";
+            log.info("Querying for grants");
             log.debug(queryStr);
             String data = getDslResponse(queryStr, token);
             return (new JSONObject(data)).toString(2);

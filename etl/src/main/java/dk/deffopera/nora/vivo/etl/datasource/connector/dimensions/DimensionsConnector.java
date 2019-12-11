@@ -40,7 +40,7 @@ import dk.deffopera.nora.vivo.etl.util.XmlToRdf;
 
 public class DimensionsConnector extends ConnectorDataSource 
         implements DataSource {
-
+    
     protected static final String DIMENSIONS_API = "https://app.dimensions.ai/api/";
     protected static final String ABOX = "http://vivo.deffopera.dk/individual/";
     protected static final String SPARQL_RESOURCE_DIR = "/dimensions/sparql/";
@@ -133,11 +133,12 @@ public class DimensionsConnector extends ConnectorDataSource
     }
     
     private class DimensionsIterator implements IteratorWithSize<Model> {
-
-        private static final int RESULTS_PER_REQUEST = 200;
+        
+        private static final int RESULTS_PER_REQUEST = 75;
         private String token;
-        private final String[] sources = {
-                "publications", "grants", "patents", "clinical_trials"};
+        private final String[] years = {"2014", "2015", "2016", "2017"};
+        //private final String[] sources = {
+        //        "publications", "grants", "patents", "clinical_trials"};
         // number of requests to be made for each data source (pubs, grants, etc.)
         private Map<String, int[]> totals = new HashMap<String, int[]>();
         
@@ -151,7 +152,7 @@ public class DimensionsConnector extends ConnectorDataSource
             grids.addAll(hgrids.values());
             log.info(grids.size() + " grids");
             for(String grid : grids) {
-                int[] total = new int[4];
+                int[] total = new int[years.length];
                 for(int i = 0; i < total.length; i++) {
                     total[i] = 1;
                 }
@@ -160,9 +161,11 @@ public class DimensionsConnector extends ConnectorDataSource
             try {
                 firstIteration = ModelFactory.createDefaultModel();
                 for(String grid : grids) {
-                    Model gridModel = getResults(grid);
-                    setTotals(grid, gridModel);    
-                    firstIteration.add(gridModel);                    
+                    Model[] gridModels = getResults(grid);
+                    setTotals(grid, gridModels);
+                    for(int i = 0; i < gridModels.length; i++) {
+                        firstIteration.add(gridModels[i]);    
+                    }                                        
                 }                                
             } catch (InterruptedException e) {
                 log.error(e, e);
@@ -170,11 +173,14 @@ public class DimensionsConnector extends ConnectorDataSource
             }
         }
         
-        private void setTotals(String grid, Model model) {
-            for(int i = 0; i < sources.length; i++) {
+        private void setTotals(String grid, Model[] models) {
+            // TODO was sources.length; will need multidimensional totals when other data types added
+            for(int i = 0; i < years.length; i++) {
+                Model model = models[i];
+                // TODO was GENERIC_NS + sources[i] 
                 StmtIterator sit = model.listStatements(
                         null, model.getProperty(
-                                XmlToRdf.GENERIC_NS + sources[i]), (RDFNode) null);
+                                XmlToRdf.GENERIC_NS + "publications"), (RDFNode) null);
                 if(sit.hasNext()) {
                     Statement stmt = sit.next();
                     Resource r = stmt.getSubject();
@@ -192,7 +198,8 @@ public class DimensionsConnector extends ConnectorDataSource
                                 if(totalCountNode.isLiteral()) {
                                     try {
                                         int totalCountInt = totalCountNode.asLiteral().getInt();
-                                        log.info(grid + " " + totalCountInt + " total " + sources[i]);
+                                        // TODO was total + sources[i]
+                                        log.info(grid + " " + totalCountInt + " total publications in " + years[i]);
                                         int[] total = totals.get(grid);
                                         total[i] = totalCountInt / RESULTS_PER_REQUEST + 1;
                                         totals.put(grid, total);
@@ -222,25 +229,31 @@ public class DimensionsConnector extends ConnectorDataSource
         @Override
         public Model next() {
             Model results = ModelFactory.createDefaultModel();
-            if(requestCount == 0) {                
-                results = firstIteration;
-                firstIteration = null;
-            } else {
-                try {
-                    for(String grid : grids) {
-                        results.add(getResults(grid));
+            try {
+                if(requestCount == 0) {                
+                    results = firstIteration;
+                    firstIteration = null;
+                } else {
+                    try {
+                        for(String grid : grids) {
+                            Model[] gridResults = getResults(grid);
+                            for(int i = 0; i < gridResults.length; i++) {
+                                results.add(gridResults[i]);   
+                            }
+                        }
+                    } catch (InterruptedException e) {
+                        log.error(e, e);
+                        throw new RuntimeException(e);
                     }
+                }
+                try {
+                    results = addSupportingGrants(results, token);
                 } catch (InterruptedException e) {
-                    log.error(e, e);
                     throw new RuntimeException(e);
                 }
-            }
-            requestCount++;
-            try {
-                results = addSupportingGrants(results, token);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+            } finally {
+                requestCount++;   
+            }            
             return results;
         }
 
@@ -287,11 +300,16 @@ public class DimensionsConnector extends ConnectorDataSource
             return model;
         }
         
-        private Model getResults(String grid) throws InterruptedException {
-            Model model = ModelFactory.createDefaultModel();
-            if(requestCount < totals.get(grid)[0]) {
-                model.add(toRdf(getPubs(grid, this.token, requestCount * RESULTS_PER_REQUEST)));
+        private Model[] getResults(String grid) throws InterruptedException {
+            Model[] model = new Model[years.length];
+            for(int i = 0; i < years.length; i++) {
+                if(requestCount < totals.get(grid)[i]) {
+                    model[i] = toRdf(getPubs(grid, years[i], this.token, requestCount * RESULTS_PER_REQUEST));
+                } else {
+                    model[i] = ModelFactory.createDefaultModel();
+                }
             }
+            
 //            if(requestCount < totals.get(grid)[1]) {
 //                model.add(toRdf(getGrants(grid, this.token, requestCount * RESULTS_PER_REQUEST)));
 //            }
@@ -301,7 +319,7 @@ public class DimensionsConnector extends ConnectorDataSource
 //            if(requestCount < totals.get(grid)[3]) {
 //                model.add(toRdf(getClinicalTrials(grid, this.token, requestCount * RESULTS_PER_REQUEST)));
 //            }
-            log.debug("Model size " + model.size());
+            //log.debug("Model size " + model.size());
             return model;
         }
         
@@ -409,9 +427,9 @@ public class DimensionsConnector extends ConnectorDataSource
             return getDslResponse(queryStr, token);
         }
         
-        private String getPubs(String grid, String token, int skip) throws InterruptedException {
+        private String getPubs(String grid, String year, String token, int skip) throws InterruptedException {
             String queryStr = "search publications where"
-                    + " (year >= 2014 and year <= 2017 and research_orgs.id = \"" + grid + "\" and type in [\"article\", \"chapter\", \"proceeding\"])"
+                    + "( year = " + year + " and research_orgs.id = \"" + grid + "\" and type in [\"article\", \"chapter\", \"proceeding\"])"
                     + " return publications[id + type + title + authors + researchers + doi + "
                     + "pmid + pmcid + date + year + mesh_terms + "
                     + "journal + issn + volume + issue + publisher + "

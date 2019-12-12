@@ -385,11 +385,14 @@ public class DimensionsByDoiConnector extends DimensionsConnector implements Dat
                 JSONArray pubs = jsonObj.getJSONArray("publications");
                 for(int pubi = 0; pubi < pubs.length(); pubi++) {
                     JSONObject pub = pubs.getJSONObject(pubi);
-                    JSONArray authors = pub.getJSONArray("authors");
-                    for(int authi = 0; authi < authors.length(); authi++) {
-                        JSONObject author = authors.getJSONObject(authi);
-                        author.put("authorRank", authi + 1);
-                    }                    
+                    // sometimes the author property is simply null in the JSON
+                    if(pub.get("authors") != null) {
+                        JSONArray authors = pub.getJSONArray("authors");
+                        for(int authi = 0; authi < authors.length(); authi++) {
+                            JSONObject author = authors.getJSONObject(authi);
+                            author.put("authorRank", authi + 1);
+                        }         
+                    }
                 }
                 data = jsonObj.toString(2);
                 String xml = json2xml.convertJsonToXml(data);

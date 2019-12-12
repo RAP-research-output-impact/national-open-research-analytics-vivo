@@ -380,22 +380,7 @@ public class DimensionsByDoiConnector extends DimensionsConnector implements Dat
             try {
                 JsonToXMLConverter json2xml = new JsonToXMLConverter();
                 XmlToRdf xml2rdf = new XmlToRdf();
-                RdfUtils rdfUtils = new RdfUtils();
-                JSONObject jsonObj = new JSONObject(data);
-                JSONArray pubs = jsonObj.getJSONArray("publications");
-                for(int pubi = 0; pubi < pubs.length(); pubi++) {
-                    JSONObject pub = pubs.getJSONObject(pubi);
-                    // sometimes the author property is simply absent
-                    if(pub.keySet().contains("authors")) {
-                        log.info("Setting author ranks");
-                        JSONArray authors = pub.getJSONArray("authors");
-                        for(int authi = 0; authi < authors.length(); authi++) {
-                            JSONObject author = authors.getJSONObject(authi);
-                            author.put("authorRank", authi + 1);
-                        }         
-                    }
-                }
-                data = jsonObj.toString(2);
+                RdfUtils rdfUtils = new RdfUtils();                
                 String xml = json2xml.convertJsonToXml(data);
                 Model rdf = xml2rdf.toRDF(xml);
                 rdf = rdfUtils.renameBNodes(rdf, ABOX + "n", rdf);
@@ -441,11 +426,19 @@ public class DimensionsByDoiConnector extends DimensionsConnector implements Dat
                 JSONArray pubs = jsonObj.getJSONArray("publications");
                 for(int pubi = 0; pubi < pubs.length(); pubi++) {
                     JSONObject pub = pubs.getJSONObject(pubi);
-                    JSONArray authors = pub.getJSONArray("authors");
-                    for(int authi = 0; authi < authors.length(); authi++) {
-                        JSONObject author = authors.getJSONObject(authi);
-                        author.put("authorRank", authi + 1);
-                    }                    
+                    if(pub.has("authors")) {
+                        try {
+                            JSONArray authors = pub.getJSONArray("authors");
+                            for(int authi = 0; authi < authors.length(); authi++) {
+                                JSONObject author = authors.getJSONObject(authi);
+                                author.put("authorRank", authi + 1);
+                            }
+                            log.info("Author ranks set");
+                        } catch (JSONException e) {
+                            log.error("Property 'authors' present, but ranks unable to be set");
+                            log.error(e, e);
+                        }
+                    }
                 }
             } catch (JSONException e) {
                 log.info(jsonObj.toString(2));

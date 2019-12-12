@@ -40,7 +40,7 @@ public class NoraEtl {
         }
         SparqlEndpointParams endpointParameters = getEndpointParams(queryTerms);
         DataSource connector = getConnector(connectorName, queryTerms);
-        connector.getConfiguration().getParameterMap().put("dataDir", getDataDir(queryTerms));
+        connector.getConfiguration().getParameterMap().put("dataDir", getParameter(queryTerms, "dataDir"));
         //connector.getConfiguration().setQueryTerms(queryTerms);
         connector.getConfiguration().setEndpointParameters(endpointParameters);
         connector.getConfiguration().setLimit(limit);

@@ -27,8 +27,11 @@ import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.RDFNode;
+import org.apache.jena.rdf.model.Statement;
+import org.apache.jena.rdf.model.StmtIterator;
 import org.apache.jena.vocabulary.RDF;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -220,6 +223,7 @@ public class DimensionsByDoiConnector extends DimensionsConnector implements Dat
                 log.info("Total found but not associated: " + foundButNotAssociatedCount);
                 log.info("Total not found in VIVO: " + notFoundCount);
                 log.info("Total not found in Dimensions: " + notFoundInDimensionsCount);
+                model = addSupportingGrants(model, token);
                 return model;
             } catch (FileNotFoundException e) {
                 throw new RuntimeException(e);
@@ -236,6 +240,56 @@ public class DimensionsByDoiConnector extends DimensionsConnector implements Dat
                     }
                 }
             }
+        }
+        
+        // TODO refactor so these methods can be shared between iterator implementations
+        private Model addSupportingGrants(Model model, String token) throws InterruptedException {
+            Set<String> allGrantIds = new HashSet<String>(); 
+            StmtIterator sit = model.listStatements(null, model.getProperty(
+                    XmlToRdf.GENERIC_NS + "supporting_grant_ids"), (RDFNode) null);
+            while(sit.hasNext()) {
+                Statement stmt = sit.next();
+                if(!stmt.getObject().isLiteral()) {
+                    continue;
+                } else {
+                    allGrantIds.add(stmt.getObject().asLiteral().getLexicalForm());
+                }
+            }
+            Iterator<String> allGrantIdsIt = allGrantIds.iterator();
+            List<String> batch = new ArrayList<String>();
+            int idBatchSize = 200;
+            while(allGrantIdsIt.hasNext()) {
+                batch.add(allGrantIdsIt.next());
+                if(batch.size() == idBatchSize || !allGrantIdsIt.hasNext()) {
+                    model.add(toRdf(getSupportingGrants(batch, token)));
+                    batch.clear();
+                }
+            }
+            return model;
+        }
+        
+        private String getSupportingGrants(List<String> grantIds, String token) throws InterruptedException {
+            String queryStr = "search grants where";
+            if(grantIds.size() > 1) {
+                queryStr += " ( ";
+            }
+            boolean first = true;
+            for(String grantId : grantIds) {
+                if(!first) {
+                    queryStr += " or";
+                }
+                queryStr += " id = \"" + grantId + "\"";
+                first = false;
+            }           
+            if(grantIds.size() > 1) {
+                queryStr += " ) ";
+            }
+            queryStr += 
+                    " return grants[id + active_year + end_date + funders + start_date + start_year + title + abstract + funding_eur + grant_number ]";
+            log.info("Querying for grants");
+            log.debug(queryStr);
+            String data = getDslResponse(queryStr, token);
+            return (new JSONObject(data)).toString(2);
         }
         
         private Model associationTriple(String univStr, String pubURI, boolean markRetrieved) {
@@ -368,11 +422,32 @@ public class DimensionsByDoiConnector extends DimensionsConnector implements Dat
                 }
                 queryStr += ") ";
             }
-                    queryStr += "and type in [\"article\", \"chapter\", \"proceeding\"])"
-                    + " return publications[id + type + title + authors + doi + pmid + pmcid + date + year + mesh_terms + journal + issn + volume + issue]"
-                    + " limit 100";
+            queryStr += "and type in [\"article\", \"chapter\", \"proceeding\"])"
+                    + " return publications[id + type + title + authors + researchers + doi + "
+                    + "pmid + pmcid + date + year + mesh_terms + "
+                    + "journal + issn + volume + issue + publisher + "
+                    + "open_access_categories + funders + funder_countries + "
+                    + "supporting_grant_ids + category_for + category_rcdc + category_hrcs_rac + "
+                    + "field_citation_ratio + relative_citation_ratio + times_cited " 
+                    + "]";
             log.info(queryStr);
-            return getDslResponse(queryStr, token);
+            String data = getDslResponse(queryStr, token);
+            JSONObject jsonObj = new JSONObject(data);
+            try {
+                JSONArray pubs = jsonObj.getJSONArray("publications");
+                for(int pubi = 0; pubi < pubs.length(); pubi++) {
+                    JSONObject pub = pubs.getJSONObject(pubi);
+                    JSONArray authors = pub.getJSONArray("authors");
+                    for(int authi = 0; authi < authors.length(); authi++) {
+                        JSONObject author = authors.getJSONObject(authi);
+                        author.put("authorRank", authi + 1);
+                    }                    
+                }
+            } catch (JSONException e) {
+                log.info(jsonObj.toString(2));
+                throw (e);
+            }
+            return jsonObj.toString(2);
         }
                 
     }

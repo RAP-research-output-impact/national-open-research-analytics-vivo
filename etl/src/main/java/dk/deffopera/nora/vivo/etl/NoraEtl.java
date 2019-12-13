@@ -12,6 +12,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.jena.rdf.model.Model;
 
 import dk.deffopera.nora.vivo.etl.datasource.DataSource;
+import dk.deffopera.nora.vivo.etl.datasource.connector.GraphClearer;
 import dk.deffopera.nora.vivo.etl.datasource.connector.dimensions.DimensionsByDoiConnector;
 import dk.deffopera.nora.vivo.etl.datasource.connector.dimensions.DimensionsConnector;
 import dk.deffopera.nora.vivo.etl.util.SparqlEndpoint;
@@ -24,7 +25,7 @@ public class NoraEtl {
     public static void main(String[] args) {
         if(args.length < 3) {
             System.out.println("Usage: " 
-                    + "dimensions|dimensionsByDoi outputfile dimensionsUsername=<username> dimensionsPassword=<password> " 
+                    + "dimensions|dimensionsByDoi|clearGraph outputfile dimensionsUsername=<username> dimensionsPassword=<password> " 
                     + "[sourceEndpointURI= sourceEndpointUsername= sourceEndpointPassword=] "
                     + "[dataDir=] [endpointURI= endpointUpdateURI= username= password=] [authUsername= authPassword=] [graphURI=] "
                     + "[limit]");
@@ -70,7 +71,9 @@ public class NoraEtl {
     
     private static DataSource getConnector(String connectorName, List<String> queryTerms) {
         DataSource connector = null;
-        if ("dimensions".equals(connectorName)) {
+        if("clearGraph".equals(connectorName)) {
+            connector = new GraphClearer();
+        } else if ("dimensions".equals(connectorName)) {
             connector = new DimensionsConnector(
                     getParameter(queryTerms, "dimensionsUsername"), 
                     getParameter(queryTerms, "dimensionsPassword"));

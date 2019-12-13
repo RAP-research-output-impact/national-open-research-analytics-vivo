@@ -418,7 +418,7 @@ public class DimensionsByDoiConnector extends DimensionsConnector implements Dat
                     + "open_access_categories + funders + funder_countries + "
                     + "supporting_grant_ids + category_for + category_rcdc + category_hrcs_rac + "
                     + "field_citation_ratio + relative_citation_ratio + times_cited " 
-                    + "] limit " + DOIS_PER_QUERY;
+                    + "] limit " + (DOIS_PER_QUERY * 4); // apparently there can be multiple pub IDs for the same DOI
             log.info(queryStr);
             String data = getDslResponse(queryStr, token);
             JSONObject jsonObj = new JSONObject(data);

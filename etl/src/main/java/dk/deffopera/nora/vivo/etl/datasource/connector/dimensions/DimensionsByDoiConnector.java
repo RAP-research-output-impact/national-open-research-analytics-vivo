@@ -46,6 +46,7 @@ import dk.deffopera.nora.vivo.etl.util.XmlToRdf;
 public class DimensionsByDoiConnector extends DimensionsConnector implements DataSource {
 
     private static final String DEFAULT_NAMESPACE = "http://vivo.deffopera.dk/individual/";
+    private static final int DOIS_PER_QUERY = 100;
     private static final Map<String, String> ugrids = new HashMap<String, String>();
     
     static {        
@@ -191,14 +192,13 @@ public class DimensionsByDoiConnector extends DimensionsConnector implements Dat
                             doisToRetrieve.add(doi);
                         }                        
                     }
-                }
-                int batchSize = 100;
+                }                
                 int j = 0;
                 List<String> doisToOr = new ArrayList<String>();
                 for(int i = 0; i < doisToRetrieve.size() ; i++) {                    
                     doisToOr.add(doisToRetrieve.get(i));
                     j++;
-                    if(j == batchSize || (i + 1 == doisToRetrieve.size())) {
+                    if(j == DOIS_PER_QUERY || (i + 1 == doisToRetrieve.size())) {
                         String dimensionsData = getPubs(doisToOr, token);                        
                         Model rdf = toRdf(dimensionsData);
                         Map<String, String> foundDois = getFoundDois(rdf);
@@ -418,7 +418,7 @@ public class DimensionsByDoiConnector extends DimensionsConnector implements Dat
                     + "open_access_categories + funders + funder_countries + "
                     + "supporting_grant_ids + category_for + category_rcdc + category_hrcs_rac + "
                     + "field_citation_ratio + relative_citation_ratio + times_cited " 
-                    + "]";
+                    + "] limit " + DOIS_PER_QUERY;
             log.info(queryStr);
             String data = getDslResponse(queryStr, token);
             JSONObject jsonObj = new JSONObject(data);

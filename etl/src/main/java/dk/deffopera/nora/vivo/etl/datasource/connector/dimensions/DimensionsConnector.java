@@ -138,6 +138,11 @@ public class DimensionsConnector extends ConnectorDataSource
         this.mongoCollection = collection;
     }
     
+    @Override
+    public int getBatchSize() {
+        return 100;
+    }
+    
     protected String getToken(String username, String password) {
         ObjectNode json = JsonNodeFactory.instance.objectNode();
         json.put("username", username);

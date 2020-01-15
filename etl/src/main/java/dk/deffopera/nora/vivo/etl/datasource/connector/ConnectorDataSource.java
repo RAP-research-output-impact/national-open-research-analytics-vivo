@@ -123,90 +123,96 @@ public abstract class ConnectorDataSource extends DataSourceBase {
             result = ModelFactory.createDefaultModel();
         }
         IteratorWithSize<Model> it = getSourceModelIterator();
-        Integer totalRecords = it.size();
-        if(totalRecords != null) {
-            this.getStatus().setTotalRecords(totalRecords);
-            log.info(it.size() + " total records");
-        }        
-        Model buffer = ModelFactory.createDefaultModel();
-        this.getStatus().setMessage("harvesting records");
-        boolean dataWrittenToEndpoint = false;
-        int count = 0;
-        while(it.hasNext() && count < this.getConfiguration().getLimit()) {
-            try {
-                if(this.getStatus().isStopRequested()) {
-                    throw new InterruptedException();
-                }
-                count++;                
-                Model model = mapToVIVO(it.next());
-                log.debug(model.size() + " statements before filtering");
-                if(this.getStatus().isStopRequested()) {
-                    throw new InterruptedException();
-                }
-                model = filter(model);
-                log.debug(model.size() + " statements after filtering");
-                if(this.getStatus().isStopRequested()) {
-                    throw new InterruptedException();
-                }
-                String defaultNamespace = getDefaultNamespace(this.getConfiguration());
-                // TODO 2019-07-08 revisit because dangerous: rewrites geopolitical abox entities, etc.
-                //if(defaultNamespace != null) {                    
-                    // model = rewriteUris(model, defaultNamespace, getPrefixName());
-                //}
-                if(this.getStatus().isStopRequested()) {
-                    throw new InterruptedException();
-                }
-                if(activeEndpointForResults()) {
-                    buffer.add(model);                
-                    if(count % getBatchSize() == 0 || !it.hasNext() 
-                            || count == this.getConfiguration().getLimit()) {
-                        if(buffer.size() > 0) {
-                            dataWrittenToEndpoint = true;
-                        }
-                        log.debug("Adding " + buffer.size() + " triples to endpoint");
-                        addToEndpoint(buffer, graphURI + graphTimeSuffix);
-                        buffer.removeAll();
+        try {
+            Integer totalRecords = it.size();
+            if(totalRecords != null) {
+                this.getStatus().setTotalRecords(totalRecords);
+                log.info(it.size() + " total records");
+            }        
+            Model buffer = ModelFactory.createDefaultModel();
+            this.getStatus().setMessage("harvesting records");
+            boolean dataWrittenToEndpoint = false;
+            int count = 0;
+            while(it.hasNext() && count < this.getConfiguration().getLimit()) {
+                try {
+                    if(this.getStatus().isStopRequested()) {
+                        throw new InterruptedException();
                     }
-                } else {
-                    result.add(model);
+                    count++;                
+                    Model model = mapToVIVO(it.next());
+                    log.debug(model.size() + " statements before filtering");
+                    if(this.getStatus().isStopRequested()) {
+                        throw new InterruptedException();
+                    }
+                    model = filter(model);
+                    log.debug(model.size() + " statements after filtering");
+                    if(this.getStatus().isStopRequested()) {
+                        throw new InterruptedException();
+                    }
+                    String defaultNamespace = getDefaultNamespace(this.getConfiguration());
+                    // TODO 2019-07-08 revisit because dangerous: rewrites geopolitical abox entities, etc.
+                    //if(defaultNamespace != null) {                    
+                        // model = rewriteUris(model, defaultNamespace, getPrefixName());
+                    //}
+                    if(this.getStatus().isStopRequested()) {
+                        throw new InterruptedException();
+                    }
+                    if(activeEndpointForResults()) {
+                        buffer.add(model);                
+                        if(count % getBatchSize() == 0 || !it.hasNext() 
+                                || count == this.getConfiguration().getLimit()) {
+                            if(buffer.size() > 0) {
+                                dataWrittenToEndpoint = true;
+                            }
+                            log.debug("Adding " + buffer.size() + " triples to endpoint");
+                            addToEndpoint(buffer, graphURI + graphTimeSuffix);
+                            buffer.removeAll();
+                        }
+                    } else {
+                        result.add(model);
+                    }
+                    this.getStatus().setProcessedRecords(count);                
+                    if(totalRecords != null && totalRecords > 0) {
+                        float completionPercentage = ((float) count / (float) totalRecords) * 100;
+                        log.info("Completion percentage " + completionPercentage);
+                        this.getStatus().setCompletionPercentage((int) completionPercentage);
+                    }
+                } catch (InterruptedException e) {
+                    throw(e); // this is the one exception we want to throw 
+                } catch (Exception e) {
+                    log.error(e, e);
+                    this.getStatus().setErrorRecords(this.getStatus().getErrorRecords() + 1);
                 }
-                this.getStatus().setProcessedRecords(count);                
-                if(totalRecords != null && totalRecords > 0) {
-                    float completionPercentage = ((float) count / (float) totalRecords) * 100;
-                    log.info("Completion percentage " + completionPercentage);
-                    this.getStatus().setCompletionPercentage((int) completionPercentage);
-                }
-            } catch (InterruptedException e) {
-                throw(e); // this is the one exception we want to throw 
-            } catch (Exception e) {
-                log.error(e, e);
-                this.getStatus().setErrorRecords(this.getStatus().getErrorRecords() + 1);
             }
-        }
-        boolean skipClearingOldData = false;
-        if(!dataWrittenToEndpoint) {
-            if(totalRecords == null) {
-                skipClearingOldData = true;
-            } else if (this.getStatus().getErrorRecords() > (totalRecords / 5)) {
-                skipClearingOldData = true;
-            }
-        }
-        if(activeEndpointForResults() && !skipClearingOldData) {
-            this.getStatus().setMessage("removing old data");
-            List<String> allVersionsOfSource = getGraphsWithBaseURI(graphURI, 
-                    getSparqlEndpoint());
-            for(String version : allVersionsOfSource) {
-                if(this.getStatus().isStopRequested()) {
-                    throw new InterruptedException();
-                }
-                if(version.startsWith(graphURI) 
-                        && !version.endsWith(graphTimeSuffix)) {
-                    log.info("Clearing graph " + version);
-                    getSparqlEndpoint().clearGraph(version);
+            boolean skipClearingOldData = false;
+            if(!dataWrittenToEndpoint) {
+                if(totalRecords == null) {
+                    skipClearingOldData = true;
+                } else if (this.getStatus().getErrorRecords() > (totalRecords / 5)) {
+                    skipClearingOldData = true;
                 }
             }
-        }
-        it.close();
+            if(activeEndpointForResults() && !skipClearingOldData) {
+                this.getStatus().setMessage("removing old data");
+                List<String> allVersionsOfSource = getGraphsWithBaseURI(graphURI, 
+                        getSparqlEndpoint());
+                for(String version : allVersionsOfSource) {
+                    if(this.getStatus().isStopRequested()) {
+                        throw new InterruptedException();
+                    }
+                    if(version.startsWith(graphURI) 
+                            && !version.endsWith(graphTimeSuffix)) {
+                        log.info("Clearing graph " + version);
+                        getSparqlEndpoint().clearGraph(version);
+                    }
+                }
+            }
+        } finally {
+            if(it != null) {
+                log.info("CLosing iterator");
+                it.close();       
+            }
+        }        
     }
     
     protected String getDefaultNamespace(DataSourceConfiguration configuration) {

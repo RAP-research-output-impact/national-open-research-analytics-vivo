@@ -177,7 +177,8 @@ public class DimensionsConnector extends ConnectorDataSource
         
         public MongoIterator(MongoCollection<Document> collection) {
             this.collection = collection;
-            cursor = collection.find(Filters.eq("dbname", "publications")).iterator();
+            cursor = collection.find(Filters.eq("dbname", "publications"))
+                    .noCursorTimeout(true).iterator();
         }
         
         @Override
@@ -301,9 +302,11 @@ public class DimensionsConnector extends ConnectorDataSource
         @Override
         public void close() {
             if(cursor != null) {
+                log.info("Closing iterator");
                 cursor.close();
             }
             if(mongoClient != null) {
+                log.info("Closing Mongo client");
                 mongoClient.close();
             }
         }

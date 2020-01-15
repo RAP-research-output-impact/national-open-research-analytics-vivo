@@ -19,6 +19,7 @@ import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.rdf.model.StmtIterator;
 import org.apache.jena.vocabulary.RDF;
+import org.bson.Document;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,6 +29,15 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.mongodb.MongoClientSettings;
+import com.mongodb.MongoCredential;
+import com.mongodb.ServerAddress;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Filters;
 
 import dk.deffopera.nora.vivo.etl.datasource.DataSource;
 import dk.deffopera.nora.vivo.etl.datasource.IteratorWithSize;
@@ -104,9 +114,28 @@ public class DimensionsConnector extends ConnectorDataSource
     private static final Log log = LogFactory.getLog(DimensionsConnector.class);
     protected HttpUtils httpUtils = new HttpUtils();
     protected String token;
+    
+    private MongoClient mongoClient;
+    private MongoCollection<Document> mongoCollection;
         
-    public DimensionsConnector(String username, String password) {
-        this.token = getToken(username, password);    
+    public DimensionsConnector(String username, String password, 
+            String mongoServer, String mongoPort, String mongoCollection, 
+            String mongoUsername, String mongoPassword) {                     
+        this.token = getToken(username, password);
+        MongoCredential credential = MongoCredential.createScramSha256Credential(
+                mongoUsername, "opera", mongoPassword.toCharArray());
+        
+        this.mongoClient = MongoClients.create(
+                MongoClientSettings.builder()
+                        .applyToClusterSettings(builder ->
+                                builder.hosts(Arrays.asList(
+                                        new ServerAddress(
+                                                mongoServer, Integer.parseInt(mongoPort)))))
+                        .credential(credential)
+                        .build());
+        MongoDatabase database = mongoClient.getDatabase("opera");
+        MongoCollection<Document> collection = database.getCollection(mongoCollection);        
+        this.mongoCollection = collection;
     }
     
     protected String getToken(String username, String password) {
@@ -129,7 +158,151 @@ public class DimensionsConnector extends ConnectorDataSource
     
     @Override
     protected IteratorWithSize<Model> getSourceModelIterator() {
-        return new DimensionsIterator(this.token);
+        return new MongoIterator(this.mongoCollection);
+        //return new DimensionsIterator(this.token);
+    }
+    
+    private class MongoIterator implements IteratorWithSize<Model> {
+
+        private MongoCollection<Document> collection;
+        private MongoCursor<Document> cursor;
+        private int toRdfIteration = 0;
+        private long lastRequest = 0;
+        private Map<String, Model> grantsCache = new HashMap<String, Model>();
+        
+        public MongoIterator(MongoCollection<Document> collection) {
+            this.collection = collection;
+            cursor = collection.find(Filters.eq("dbname", "publications")).iterator();
+        }
+        
+        @Override
+        public boolean hasNext() {
+            return cursor.hasNext();
+        }
+
+        @Override
+        public Model next() {
+            Document d = cursor.next();
+            String jsonStr = d.toJson();  
+            JSONObject jsonObj = new JSONObject(jsonStr);
+            if(log.isErrorEnabled()) {
+                log.debug(jsonObj.toString(2));
+            }
+            try {                            
+                JSONArray authors = jsonObj.getJSONArray("authors");
+                for(int authi = 0; authi < authors.length(); authi++) {
+                    JSONObject author = authors.getJSONObject(authi);
+                    author.put("authorRank", authi + 1);
+                }                                    
+            } catch (JSONException e) {
+                log.info(jsonObj.toString(2));
+                throw (e);
+            }
+            String id = jsonObj.getString("id");
+            log.debug(id);
+            if(id.startsWith("grant")) {
+                throw new Error("Found a grant");
+            }
+            Model results = toRdf(jsonObj.toString());
+            try {
+                results = addSupportingGrants(results, token);
+                return results;
+            } catch(InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        
+        private Model toRdf(String data) {                
+            try {
+                JsonToXMLConverter json2xml = new JsonToXMLConverter();
+                XmlToRdf xml2rdf = new XmlToRdf();
+                RdfUtils rdfUtils = new RdfUtils();                
+                String xml = json2xml.convertJsonToXml(data);
+                Model rdf = xml2rdf.toRDF(xml);
+                toRdfIteration++;
+                rdf = rdfUtils.renameBNodes(rdf, ABOX + "n" + toRdfIteration + "-", rdf);
+                return rdf;
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        
+        private Model addSupportingGrants(Model model, String token) throws InterruptedException { 
+            StmtIterator sit = model.listStatements(null, model.getProperty(
+                    XmlToRdf.GENERIC_NS + "supporting_grant_ids"), (RDFNode) null);
+            while(sit.hasNext()) {
+                Statement stmt = sit.next();
+                if(!stmt.getObject().isLiteral()) {
+                    continue;
+                } else {
+                    String grantId = stmt.getObject().asLiteral().getLexicalForm();
+                    Model grantModel = grantsCache.get(grantId);
+                    if(grantModel != null) {
+                        log.info("cache hit");
+                        model.add(grantModel);
+                    } else {
+                        grantModel = getSupportingGrants(Arrays.asList(grantId), token);
+                        model.add(grantModel);
+                        grantsCache.put(grantId, grantModel);
+                    }
+                }
+            }            
+            return model;
+        }
+        
+        private Model getSupportingGrants(List<String> grantIds, String token) throws InterruptedException {
+            String queryStr = "search grants where";
+            if(grantIds.size() > 1) {
+                queryStr += " ( ";
+            }
+            boolean first = true;
+            for(String grantId : grantIds) {
+                if(!first) {
+                    queryStr += " or";
+                }
+                queryStr += " id = \"" + grantId + "\"";
+                first = false;
+            }           
+            if(grantIds.size() > 1) {
+                queryStr += " ) ";
+            }
+            queryStr += 
+                    " return grants[id + active_year + end_date + funders + start_date + start_year + title + abstract + funding_eur + grant_number ]";
+            log.info("Querying for grants");
+            log.debug(queryStr);
+            String data = getDslResponse(queryStr, token);
+            return toRdf(data);
+        }
+        
+        private String getDslResponse(String dslQuery, String token) 
+                throws InterruptedException {
+            long now = System.currentTimeMillis();
+            long toWait = REQUEST_INTERVAL - (now - lastRequest);        
+            if(toWait > 0) {
+                Thread.sleep(toWait);
+            }
+            lastRequest = System.currentTimeMillis();
+            return httpUtils.getHttpPostResponse(DIMENSIONS_API + "dsl.json",
+                    dslQuery, "application/json", token);        
+        }
+
+        @Override
+        public Integer size() {
+            return (int) collection.count();            
+        }
+
+        @Override
+        public void close() {
+            if(cursor != null) {
+                cursor.close();
+            }
+            if(mongoClient != null) {
+                mongoClient.close();
+            }
+        }
+        
     }
     
     private class DimensionsIterator implements IteratorWithSize<Model> {
@@ -174,10 +347,10 @@ public class DimensionsConnector extends ConnectorDataSource
         }
         
         private void setTotals(String grid, Model[] models) {
-            // TODO was sources.length; will need multidimensional totals when other data types added
+            // was sources.length; will need multidimensional totals when other data types added
             for(int i = 0; i < years.length; i++) {
                 Model model = models[i];
-                // TODO was GENERIC_NS + sources[i] 
+                // was GENERIC_NS + sources[i] 
                 StmtIterator sit = model.listStatements(
                         null, model.getProperty(
                                 XmlToRdf.GENERIC_NS + "publications"), (RDFNode) null);
@@ -198,7 +371,7 @@ public class DimensionsConnector extends ConnectorDataSource
                                 if(totalCountNode.isLiteral()) {
                                     try {
                                         int totalCountInt = totalCountNode.asLiteral().getInt();
-                                        // TODO was total + sources[i]
+                                        // was total + sources[i]
                                         log.info(grid + " " + totalCountInt + " total publications in " + years[i]);
                                         int[] total = totals.get(grid);
                                         total[i] = totalCountInt / RESULTS_PER_REQUEST + 1;

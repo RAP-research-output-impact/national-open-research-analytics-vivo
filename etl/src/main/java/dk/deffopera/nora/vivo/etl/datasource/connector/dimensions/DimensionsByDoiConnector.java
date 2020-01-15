@@ -67,7 +67,7 @@ public class DimensionsByDoiConnector extends DimensionsConnector implements Dat
     private Map<String, Set<String>> univToDois = new HashMap<String, Set<String>>();
     
     public DimensionsByDoiConnector(String username, String password, SparqlEndpoint endpoint) {
-        super(username, password);
+        super(username, password, null, null, null, null, null);
         this.sourceEndpoint = endpoint;
         log.info("Getting all DOIs");
         this.allDois = getAllDois();

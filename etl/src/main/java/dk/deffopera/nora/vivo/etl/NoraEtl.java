@@ -76,7 +76,12 @@ public class NoraEtl {
         } else if ("dimensions".equals(connectorName)) {
             connector = new DimensionsConnector(
                     getParameter(queryTerms, "dimensionsUsername"), 
-                    getParameter(queryTerms, "dimensionsPassword"));
+                    getParameter(queryTerms, "dimensionsPassword"),
+                    getParameter(queryTerms, "mongoServer"),
+                    getParameter(queryTerms, "mongoPort"),
+                    getParameter(queryTerms, "mongoCollection"),
+                    getParameter(queryTerms, "mongoUsername"),
+                    getParameter(queryTerms, "mongoPassword"));
         } else if("dimensionsByDoi".equals(connectorName)) {
             String dimensionsUsername = getParameter(queryTerms, "dimensionsUsername"); 
             String dimensionsPassword = getParameter(queryTerms, "dimensionsPassword");

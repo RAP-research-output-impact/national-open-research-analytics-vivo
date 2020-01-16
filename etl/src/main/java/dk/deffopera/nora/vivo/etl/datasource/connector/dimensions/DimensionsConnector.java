@@ -123,7 +123,7 @@ public class DimensionsConnector extends ConnectorDataSource
             String mongoUsername, String mongoPassword) {                     
         this.token = getToken(username, password);
         MongoCredential credential = MongoCredential.createScramSha256Credential(
-                mongoUsername, "opera", mongoPassword.toCharArray());
+                mongoUsername, "opera-release", mongoPassword.toCharArray());
         
         this.mongoClient = MongoClients.create(
                 MongoClientSettings.builder()
@@ -133,7 +133,7 @@ public class DimensionsConnector extends ConnectorDataSource
                                                 mongoServer, Integer.parseInt(mongoPort)))))
                         .credential(credential)
                         .build());
-        MongoDatabase database = mongoClient.getDatabase("opera");
+        MongoDatabase database = mongoClient.getDatabase("opera-release");
         MongoCollection<Document> collection = database.getCollection(mongoCollection);        
         this.mongoCollection = collection;
     }

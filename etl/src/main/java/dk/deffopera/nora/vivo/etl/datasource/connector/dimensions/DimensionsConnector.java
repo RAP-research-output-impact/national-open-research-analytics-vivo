@@ -177,13 +177,7 @@ public class DimensionsConnector extends ConnectorDataSource
         
         public MongoIterator(MongoCollection<Document> collection) {
             this.collection = collection;
-            //cursor = collection.find(Filters.eq("dbname", "publications"))
-            //        .noCursorTimeout(true).iterator();
-            cursor = collection.find(Filters.and(
-                                          Filters.eq("meta.type-raw", "publications"), 
-                                          Filters.eq("meta.raw", "1.0")
-                                                )
-                                    )
+            cursor = collection.find(Filters.eq("meta.raw.dbname", "publications"))
                     .noCursorTimeout(true).iterator();
         }
         
@@ -195,10 +189,11 @@ public class DimensionsConnector extends ConnectorDataSource
         @Override
         public Model next() {
             Document d = cursor.next();
-            String jsonStr = d.toJson();  
+            String jsonStr = d.toJson();            
             JSONObject jsonObj = new JSONObject(jsonStr);
-            if(log.isInfoEnabled()) {
-                log.info(jsonObj.toString(2));
+            jsonObj = jsonObj.getJSONObject("meta").getJSONObject("raw");
+            if(log.isDebugEnabled()) {
+                log.debug(jsonObj.toString(2));
             }
             try {                            
                 JSONArray authors = jsonObj.getJSONArray("authors");

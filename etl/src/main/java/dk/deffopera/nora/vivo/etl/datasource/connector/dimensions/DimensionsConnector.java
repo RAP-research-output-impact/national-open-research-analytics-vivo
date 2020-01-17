@@ -197,8 +197,8 @@ public class DimensionsConnector extends ConnectorDataSource
             Document d = cursor.next();
             String jsonStr = d.toJson();  
             JSONObject jsonObj = new JSONObject(jsonStr);
-            if(log.isErrorEnabled()) {
-                log.debug(jsonObj.toString(2));
+            if(log.isInfoEnabled()) {
+                log.info(jsonObj.toString(2));
             }
             try {                            
                 JSONArray authors = jsonObj.getJSONArray("authors");

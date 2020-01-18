@@ -140,7 +140,7 @@ public class DimensionsConnector extends ConnectorDataSource
     
     @Override
     public int getBatchSize() {
-        return 100;
+        return 1;
     }
     
     protected String getToken(String username, String password) {
@@ -173,6 +173,7 @@ public class DimensionsConnector extends ConnectorDataSource
         private MongoCursor<Document> cursor;
         private int toRdfIteration = 0;
         private long lastRequest = 0;
+        private int MONGO_DOCS_PER_ITERATION = 50;
         private Map<String, Model> grantsCache = new HashMap<String, Model>();
         
         public MongoIterator(MongoCollection<Document> collection) {
@@ -188,29 +189,34 @@ public class DimensionsConnector extends ConnectorDataSource
 
         @Override
         public Model next() {
-            Document d = cursor.next();
-            String jsonStr = d.toJson();            
-            JSONObject jsonObj = new JSONObject(jsonStr);
-            jsonObj = jsonObj.getJSONObject("meta").getJSONObject("raw");
-            if(log.isDebugEnabled()) {
-                log.debug(jsonObj.toString(2));
-            }
-            try {                            
-                JSONArray authors = jsonObj.getJSONArray("authors");
-                for(int authi = 0; authi < authors.length(); authi++) {
-                    JSONObject author = authors.getJSONObject(authi);
-                    author.put("authorRank", authi + 1);
-                }                                    
-            } catch (JSONException e) {
-                log.info(jsonObj.toString(2));
-                throw (e);
-            }
-            String id = jsonObj.getString("id");
-            log.debug(id);
-            if(id.startsWith("grant")) {
-                throw new Error("Found a grant");
-            }
-            Model results = toRdf(jsonObj.toString());
+            Model results = ModelFactory.createDefaultModel();
+            int batch = MONGO_DOCS_PER_ITERATION;
+            while(batch > 0 && cursor.hasNext()) {
+                batch--;
+                Document d = cursor.next();
+                String jsonStr = d.toJson();            
+                JSONObject jsonObj = new JSONObject(jsonStr);
+                jsonObj = jsonObj.getJSONObject("meta").getJSONObject("raw");
+                if(log.isDebugEnabled()) {
+                    log.debug(jsonObj.toString(2));
+                }
+                try {                            
+                    JSONArray authors = jsonObj.getJSONArray("authors");
+                    for(int authi = 0; authi < authors.length(); authi++) {
+                        JSONObject author = authors.getJSONObject(authi);
+                        author.put("authorRank", authi + 1);
+                    }                                    
+                } catch (JSONException e) {
+                    log.info(jsonObj.toString(2));
+                    throw (e);
+                }
+                //String id = jsonObj.getString("id");
+                //log.debug(id);
+                //if(id.startsWith("grant")) {
+                //    throw new Error("Found a grant");
+                //}
+                results.add(toRdf(jsonObj.toString()));
+            }                        
             try {
                 results = addSupportingGrants(results, token);
                 return results;
@@ -236,7 +242,31 @@ public class DimensionsConnector extends ConnectorDataSource
             }
         }
         
-        private Model addSupportingGrants(Model model, String token) throws InterruptedException { 
+//        private Model addSupportingGrants(Model model, String token) throws InterruptedException { 
+//            StmtIterator sit = model.listStatements(null, model.getProperty(
+//                    XmlToRdf.GENERIC_NS + "supporting_grant_ids"), (RDFNode) null);
+//            while(sit.hasNext()) {
+//                Statement stmt = sit.next();
+//                if(!stmt.getObject().isLiteral()) {
+//                    continue;
+//                } else {
+//                    String grantId = stmt.getObject().asLiteral().getLexicalForm();
+//                    Model grantModel = grantsCache.get(grantId);
+//                    if(grantModel != null) {
+//                        log.info("cache hit");
+//                        model.add(grantModel);
+//                    } else {
+//                        grantModel = getSupportingGrants(Arrays.asList(grantId), token);
+//                        model.add(grantModel);
+//                        grantsCache.put(grantId, grantModel);
+//                    }
+//                }
+//            }            
+//            return model;
+//        }
+        
+        private Model addSupportingGrants(Model model, String token) throws InterruptedException {
+            Set<String> allGrantIds = new HashSet<String>(); 
             StmtIterator sit = model.listStatements(null, model.getProperty(
                     XmlToRdf.GENERIC_NS + "supporting_grant_ids"), (RDFNode) null);
             while(sit.hasNext()) {
@@ -244,21 +274,22 @@ public class DimensionsConnector extends ConnectorDataSource
                 if(!stmt.getObject().isLiteral()) {
                     continue;
                 } else {
-                    String grantId = stmt.getObject().asLiteral().getLexicalForm();
-                    Model grantModel = grantsCache.get(grantId);
-                    if(grantModel != null) {
-                        log.info("cache hit");
-                        model.add(grantModel);
-                    } else {
-                        grantModel = getSupportingGrants(Arrays.asList(grantId), token);
-                        model.add(grantModel);
-                        grantsCache.put(grantId, grantModel);
-                    }
+                    allGrantIds.add(stmt.getObject().asLiteral().getLexicalForm());
                 }
-            }            
+            }
+            Iterator<String> allGrantIdsIt = allGrantIds.iterator();
+            List<String> batch = new ArrayList<String>();
+            int idBatchSize = 200;
+            while(allGrantIdsIt.hasNext()) {
+                batch.add(allGrantIdsIt.next());
+                if(batch.size() == idBatchSize || !allGrantIdsIt.hasNext()) {
+                    model.add(getSupportingGrants(batch, token));
+                    batch.clear();
+                }
+            }
             return model;
         }
-        
+                
         private Model getSupportingGrants(List<String> grantIds, String token) throws InterruptedException {
             String queryStr = "search grants where";
             if(grantIds.size() > 1) {
@@ -297,7 +328,7 @@ public class DimensionsConnector extends ConnectorDataSource
 
         @Override
         public Integer size() {
-            return (int) collection.count();            
+            return ((int) collection.count() / MONGO_DOCS_PER_ITERATION) + 1;            
         }
 
         @Override

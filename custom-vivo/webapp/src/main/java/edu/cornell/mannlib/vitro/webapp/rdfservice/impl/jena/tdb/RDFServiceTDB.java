@@ -174,14 +174,21 @@ public class RDFServiceTDB extends RDFServiceJena {
 		}
 	}
 
+	
+	// TODO emergency hack
+	List<String> graphURIsCached = null;
+	
 	@Override
 	public List<String> getGraphURIs() throws RDFServiceException {
-		dataset.begin(ReadWrite.READ);
-		try {
-			return super.getGraphURIs();
-		} finally {
-			dataset.end();
-		}
+	    if(graphURIsCached == null) {
+        	dataset.begin(ReadWrite.READ);
+        	try {
+        		graphURIsCached = super.getGraphURIs();
+        	} finally {
+        		dataset.end();
+        	}
+	    }
+	    return graphURIsCached;
 	}
 
 	@Override

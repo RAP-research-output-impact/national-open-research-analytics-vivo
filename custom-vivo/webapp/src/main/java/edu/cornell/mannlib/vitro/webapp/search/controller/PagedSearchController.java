@@ -603,7 +603,6 @@ public class PagedSearchController extends FreemarkerHttpServlet {
         // ClassGroup filtering param
         String classgroupParam = getParamClassgroup(vreq);
         
-
         // rdf:type filtering param
         String typeParam = vreq.getParameter(PARAM_RDFTYPE);
 
@@ -638,7 +637,7 @@ public class PagedSearchController extends FreemarkerHttpServlet {
     
     protected static String getParamClassgroup(VitroRequest vreq) {
         String classgroupParam = vreq.getParameter(PARAM_CLASSGROUP);
-        if(classgroupParam == null) {
+        if(classgroupParam == null || classgroupParam.trim().isEmpty()) {
             classgroupParam = "http://vivoweb.org/ontology#vitroClassGrouppublications";
         }
         return classgroupParam;

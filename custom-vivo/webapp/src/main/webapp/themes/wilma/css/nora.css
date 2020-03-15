@@ -1,3 +1,23 @@
+/* override wilma */
+h1.vivo-logo {
+  background: url(../images/opera_kvadrat-1-150x150.png) 0 0 no-repeat;
+  height:150px;
+}
+body {
+  background: #888;
+  background-size: 75px 75px;
+}
+#branding {
+  height:102px;
+}
+.displace {
+  left: 120px;
+  top: 20px;
+  color: white;
+  font-size: 1.2em;
+  width:400px;
+}
+
 
 /* general */
 #* {

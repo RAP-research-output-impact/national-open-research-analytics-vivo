@@ -68,7 +68,7 @@ public class PagedSearchController extends FreemarkerHttpServlet {
     private static final long serialVersionUID = 1L;
     private static final Log log = LogFactory.getLog(PagedSearchController.class);
 
-    protected static final int DEFAULT_HITS_PER_PAGE = 25;
+    protected static final int DEFAULT_HITS_PER_PAGE = 10;
     protected static final int DEFAULT_MAX_HIT_COUNT = 1000;
 
     private static final String PARAM_XML_REQUEST = "xml";
@@ -266,7 +266,7 @@ public class PagedSearchController extends FreemarkerHttpServlet {
 
             /* Compile the data for the templates */
 
-            String classGroupParam = vreq.getParameter(PARAM_CLASSGROUP);
+            String classGroupParam = getParamClassgroup(vreq);
             log.debug("ClassGroupParam is \""+ classGroupParam + "\"");
             boolean classGroupFilterRequested = false;
             if (!StringUtils.isEmpty(classGroupParam)) {
@@ -601,7 +601,8 @@ public class PagedSearchController extends FreemarkerHttpServlet {
              .setRows(hitsPerPage);
 
         // ClassGroup filtering param
-        String classgroupParam = vreq.getParameter(PARAM_CLASSGROUP);
+        String classgroupParam = getParamClassgroup(vreq);
+        
 
         // rdf:type filtering param
         String typeParam = vreq.getParameter(PARAM_RDFTYPE);
@@ -633,6 +634,14 @@ public class PagedSearchController extends FreemarkerHttpServlet {
         }
         log.debug("Query = " + query.toString());
         return query;
+    }
+    
+    protected static String getParamClassgroup(VitroRequest vreq) {
+        String classgroupParam = vreq.getParameter(PARAM_CLASSGROUP);
+        if(classgroupParam == null) {
+            classgroupParam = "http://vivoweb.org/ontology#vitroClassGrouppublications";
+        }
+        return classgroupParam;
     }
 
     protected static void addNoraFacetFields(SearchQuery query, VitroRequest vreq) {       
@@ -720,7 +729,7 @@ public class PagedSearchController extends FreemarkerHttpServlet {
         if(!StringUtils.isEmpty(s)) {
             map.put(PARAM_RDFTYPE, s);
         } else {
-            s = vreq.getParameter(PARAM_CLASSGROUP);
+            s = getParamClassgroup(vreq);
             if(!StringUtils.isEmpty(s)) {
                 map.put(PARAM_CLASSGROUP, s);
             }

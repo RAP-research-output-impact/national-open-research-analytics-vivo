@@ -77,7 +77,7 @@ WHERE {
     BIND("Article" AS ?typeLabel)
   }
   OPTIONAL {
-    ?individualUri <http://vivo.deffopera.dk/ontology/osrap/openAccessCategory> ?openAccess .
+    ?individualURI <http://vivo.deffopera.dk/ontology/osrap/openAccessCategory> ?openAccess .
     FILTER(?openAccess != <http://vivo.deffopera.dk/individual/open-access-category-closed>)
   }
 }

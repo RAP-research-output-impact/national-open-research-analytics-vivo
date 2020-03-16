@@ -14,7 +14,9 @@ PREFIX foaf:     <http://xmlns.com/foaf/0.1/>
 PREFIX vitro:    <http://vitro.mannlib.cornell.edu/ns/vitro/0.7#>
 PREFIX vivo:     <http://vivoweb.org/ontology/core#>
 
-SELECT ?affiliation (GROUP_CONCAT(?rank;separator=";") AS ?ranks) (MIN(?affiliationName_) AS ?affiliationName) WHERE {  
+SELECT ?affiliation (GROUP_CONCAT(?rank;separator=";") AS ?ranks) (MIN(?affiliationName_) AS ?affiliationName) 
+(MIN(?rank) AS ?minRank)
+WHERE {  
 {
 SELECT ?rank (MIN(?affiliation_) AS ?affiliation) WHERE {
   ?individualURI a bibo:Document .
@@ -25,7 +27,7 @@ SELECT ?rank (MIN(?affiliation_) AS ?affiliation) WHERE {
 } GROUP BY ?rank ORDER BY ?rank
 }
   ?affiliation rdfs:label ?affiliationName_  
-} GROUP BY ?affiliation ORDER BY ?rank
+} GROUP BY ?affiliation ORDER BY ?minRank
     """ ;                
 	<http://vitro.mannlib.cornell.edu/ontologies/display/1.1#saveToVar>
                 "authorAffiliations" .

@@ -176,17 +176,29 @@
   <p>${abstract}</p>
 </div>
 
+<#if supportingGrants?? && supportingGrants[0]??>
 <!-- Other details -->
 <div class="pub_other-details">
   <h3>Funders and Grants</h3>
   <ul class="pub_meta-list">
-    <#if pg.getProperty(vivo + "relatedBy", vivo + "Grant")??>
-      <@p.objectProperty pg.getProperty(vivo + "relatedBy", vivo + "Grant") false />
-    </#if>
+  <#list supportingGrants as supportingGrant>
+    <li>
+      <#if supportingGrant.funder??>
+        <p><a href="${profileUrl(supportingGrant.funder)">${supportingGrant.funderLabel}</a></p>
+      </#if>
+        <p><a href="${profileUrl(supportingGrant.grant)">${supportingGrant.grantLabel}</a></p>
+      <#if supportingGrant.grantNumber??>
+        <p>${supportingGrant.grantNumber}</p>
+      </#if>
+      <#if supportingGrant.awardAmountEur??>
+        <p>&euro;${supportingGrant.awardAmountEur}</p>
+      </#if>
+    </li>
+  </#list>
   </ul>
-
 </div>
 <!-- end other-details -->
+</#if>
 
 
 <!-- categories/classification -->

@@ -184,14 +184,14 @@
   <#list supportingGrants as supportingGrant>
     <li>
       <#if supportingGrant.funder??>
-        <p><a href="${profileUrl(supportingGrant.funder)}">${supportingGrant.funderLabel}</a></p>
+        <p style="margin-bottom:0.1em;"><a href="${profileUrl(supportingGrant.funder)}">${supportingGrant.funderLabel}</a></p>
       </#if>
-        <p><a href="${profileUrl(supportingGrant.grant)}">${supportingGrant.grantLabel}</a></p>
+        <p style="margin-bottom:0.1em;"><a href="${profileUrl(supportingGrant.grant)}">${supportingGrant.grantLabel}</a></p>
       <#if supportingGrant.grantNumber??>
-        <p>${supportingGrant.grantNumber}</p>
+        <p style="margin-bottom:0.1em;">Grant number ${supportingGrant.grantNumber}</p>
       </#if>
       <#if supportingGrant.awardAmountEur??>
-        <p>&euro;${supportingGrant.awardAmountEur}</p>
+        <p style="margin-bottom:0.1em;">&euro;${supportingGrant.awardAmountEur}</p>
       </#if>
     </li>
   </#list>

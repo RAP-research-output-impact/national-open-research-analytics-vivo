@@ -32,7 +32,7 @@
         <#include "menu.ftl">
 
 <div class="n_main width-l">
-  <h1 class="n_hero-heading">NORA &em; National Open Research Analytics is a platform developed as part of the Open Research Analytics (OPERA) project, funded by the Danish Agency of Higher Education & Science. NORA is build with Dimensions data related to Danish Universities and University Hospitals from 2014-2017 and enhanced with data from Danish Research Indicators.</h1>
+  <h1 class="n_hero-heading">NORA &mdash; National Open Research Analytics is a platform developed as part of the Open Research Analytics (OPERA) project, funded by the Danish Agency of Higher Education & Science. NORA is built with Dimensions data related to Danish Universities and University Hospitals from 2014-2017 and enhanced with data from Danish Research Indicators.</h1>
   <div class="n_cards">
     <article class="n_card">
       <a href="${urls.base}/search" class="n_c-link-img">

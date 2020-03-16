@@ -184,9 +184,9 @@
   <#list supportingGrants as supportingGrant>
     <li>
       <#if supportingGrant.funder??>
-        <p><a href="${profileUrl(supportingGrant.funder)">${supportingGrant.funderLabel}</a></p>
+        <p><a href="${profileUrl(supportingGrant.funder)}">${supportingGrant.funderLabel}</a></p>
       </#if>
-        <p><a href="${profileUrl(supportingGrant.grant)">${supportingGrant.grantLabel}</a></p>
+        <p><a href="${profileUrl(supportingGrant.grant)}">${supportingGrant.grantLabel}</a></p>
       <#if supportingGrant.grantNumber??>
         <p>${supportingGrant.grantNumber}</p>
       </#if>

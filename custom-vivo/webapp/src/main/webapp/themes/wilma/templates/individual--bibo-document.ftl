@@ -98,8 +98,8 @@
 <#assign nameForOtherGroup = "${i18n().other}">
 
 <#assign doi=gdp(doip)!>
-<#assign pmid=gdp(pmidp)!>
-<#assign pmcid=gdp(pmcidp)!>
+<#assign pmid=gdp(pmidp)>
+<#assign pmcid=gdp(pmcidp)>
 <#assign dimensionsid=gdp(dimensionsid)!>
 <#assign wosId=gdp(wosp)!>
 <#assign refs=gdp(refp)!>

@@ -98,8 +98,8 @@
 <#assign nameForOtherGroup = "${i18n().other}">
 
 <#assign doi=gdp(doip)!>
-<#assign pmid=gdp(pmidp)>
-<#assign pmcid=gdp(pmcidp)>
+<#assign pmid=gdp(pmidp)!>
+<#assign pmcid=gdp(pmcidp)!>
 <#assign dimensionsid=gdp(dimensionsid)!>
 <#assign wosId=gdp(wosp)!>
 <#assign refs=gdp(refp)!>
@@ -145,10 +145,10 @@
   <#if dimensionsid??>
     <span class="pub_meta-value">Dimensions: <a href="https://app.dimensions.ai/details/publication/${dimensionsid}" title="Publication details from Dimensions" target="external">${dimensionsid}</a>, </span>
   </#if>
-  <#if pmcid??>
+  <#if pmcid?has_content>
     <span class="pub_meta-value">PMC: ${pmcid}, </span>
   </#if>
-  <#if pmid??>
+  <#if pmid?has_content>
     <span class="pub_meta-value">PMID: ${pmid}, </span>
   </#if>
 </p>

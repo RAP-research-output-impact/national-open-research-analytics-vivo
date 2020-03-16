@@ -12,73 +12,22 @@
         PREFIX vcard:  &lt;http://www.w3.org/2006/vcard/ns#&gt;
         PREFIX fn:   &lt;http://www.w3.org/2005/xpath-functions#&gt;
 
-        SELECT DISTINCT ?subclass
+        SELECT DISTINCT 
             ?authorship ?rank
             ?author ?authorName
         WHERE {
             ?subject ?property ?authorship .
             ?authorship a core:Authorship .
-            OPTIONAL {
-                <precise-subquery>?subject ?property ?authorship .
-                ?authorship a core:Authorship .</precise-subquery>
-                ?authorship core:rank ?rank .
-            }
-            OPTIONAL {
-                <precise-subquery>?subject ?property ?authorship .
-                ?authorship a core:Authorship .</precise-subquery>
-                ?authorship core:relates ?author .
-                ?author a foaf:Agent .
-                ?author rdfs:label ?authorName .
-                OPTIONAL {
-                    <precise-subquery>?subject ?property ?authorship .
-                    ?authorship a core:Authorship .
-                    ?authorship core:relates ?author .
-                    ?author a foaf:Agent .</precise-subquery>
-                    ?author vitro:mostSpecificType ?subclass .
-                    ?subclass rdfs:subClassOf foaf:Agent .
-                }
-            }
-            OPTIONAL {
-                <precise-subquery>?subject ?property ?authorship .
-                ?authorship a core:Authorship .</precise-subquery>
-                ?authorship core:relates ?author .
-                ?author a vcard:Kind .
-                ?author vcard:hasName ?vName .
-                ?vName vcard:familyName ?lastName .
-                OPTIONAL {
-                    <precise-subquery>?subject ?property ?authorship .
-                    ?authorship a core:Authorship .
-                    ?authorship core:relates ?author .
-                    ?author a vcard:Kind .
-                    ?author vcard:hasName ?vName .</precise-subquery>
-                    ?vName vcard:givenName ?firstName .
-                }
-                OPTIONAL {
-                    <precise-subquery>?subject ?property ?authorship .
-                    ?authorship a core:Authorship .
-                    ?authorship core:relates ?author .
-                    ?author a vcard:Kind .
-                    ?author vcard:hasName ?vName .</precise-subquery>
-                    ?vName core:middleName ?middleName .
-                }
-                bind ( COALESCE(?firstName, "") As ?firstName1) .
-                bind ( COALESCE(?middleName, "") As ?middleName1) .
-                bind ( COALESCE(?lastName, "") As ?lastName1) .
-                bind (concat(str(?lastName1),", ",str(?firstName1)," ",str(?middleName1)) as ?authorName) .
-
-                OPTIONAL {
-                    <precise-subquery>?subject ?property ?authorship .
-                    ?authorship a core:Authorship .
-                    ?authorship core:relates ?author .
-                    ?author a vcard:Kind .</precise-subquery>
-                    ?author vitro:mostSpecificType ?subclass .
-                    ?subclass rdfs:subClassOf vcard:Kind .
-                }
-            }
+            ?authorship a core:Authorship .
+            ?authorship core:rank ?rank .
+            ?authorship a core:Authorship .
+            ?authorship core:relates ?author .
+            ?author a foaf:Agent .
+            ?author rdfs:label ?authorName .
         <critical-data-required>
             FILTER ( bound(?author) )
         </critical-data-required>
-        } ORDER BY <collated> ?subclass </collated> ?rank (fn:lower-case(?authorName))
+        } ORDER BY ?rank (fn:lower-case(?authorName))
     </query-select>
 
     <template>propStatement-informationResourceInAuthorship.ftl</template>

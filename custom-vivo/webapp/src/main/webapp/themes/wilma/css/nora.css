@@ -1,18 +1,25 @@
+/* temporary refugees from rap.css */
+.pub_author-name {
+    display: inline-block;
+    margin-right: 25px;
+}
+
 /* override wilma */
 h1.vivo-logo {
   background: url(../images/opera_kvadrat-1-150x150.png) 0 0 no-repeat;
   background-size: 75px 75px;
-  height:100px;
+  height:75px;
+  top: 26px;
 }
 body {
   background: #888;
 }
 #branding {
-  height:102px;
+  height:100px;
 }
 .displace {
   left: 120px;
-  top: 20px;
+  top: 25px;
   color: white;
   font-size: 1.2em;
   width:400px;
@@ -20,9 +27,12 @@ body {
 
 
 /* general */
-#* {
-#  box-sizing: border-box;
-#}
+/* 
+* {
+  box-sizing: border-box;
+}
+*/
+
 .icon {
 	display: inline-block;
 	fill: black;
@@ -38,7 +48,7 @@ body {
   font-size: 32px;
 }
 .n_main h1 {
-  font-size: 28px;
+  font-size: 1.3em;
 }
 .n_main h2 {
   font-size: 24px;
@@ -50,14 +60,15 @@ body {
   font-size: 14px;
   font-weight: bold;
 }
+
+/*
 .width-l {
   width: 1280px;
 }
+*/
 
 .n_main a {
   display: inline-block;
-  color: #000;
-  text-decoration: none;
 }
 .n_main p {
 	line-height: 1.4;
@@ -152,9 +163,10 @@ body {
   margin: auto;
 }
 .n_hero-heading {
-  line-height: 40px;
+  line-height: 3ex;
   font-weight: normal;
-  margin-bottom: 80px;
+  margin-bottom: 20px;
+  padding: 1em;
 }
 /** end .n_main */
 

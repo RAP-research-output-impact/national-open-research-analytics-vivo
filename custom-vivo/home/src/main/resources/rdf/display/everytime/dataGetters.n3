@@ -1,0 +1,90 @@
+<freemarker:individual--bibo-document.ftl> 
+        <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#hasDataGetter> 
+                 <http://vitro.mannlib.cornell.edu/ns/default#authorAffiliationsDataGetter> .
+
+<http://vitro.mannlib.cornell.edu/ns/default#authorAffiliationsDataGetter>
+        a       <java:edu.cornell.mannlib.vitro.webapp.utils.dataGetter.SparqlQueryDataGetter> ;
+        <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#query> """
+PREFIX rdfs:     <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd:      <http://www.w3.org/2001/XMLSchema#>
+PREFIX owl:      <http://www.w3.org/2002/07/owl#>
+PREFIX obo:      <http://purl.obolibrary.org/obo/>
+PREFIX bibo:     <http://purl.org/ontology/bibo/>
+PREFIX foaf:     <http://xmlns.com/foaf/0.1/>
+PREFIX vitro:    <http://vitro.mannlib.cornell.edu/ns/vitro/0.7#>
+PREFIX vivo:     <http://vivoweb.org/ontology/core#>
+
+SELECT ?affiliation (GROUP_CONCAT(?rank;separator=";") AS ?ranks) (MIN(?affiliationName_) AS ?affiliationName) WHERE {
+  ?affiliation rdfs:label ?affiliationName_
+  
+{
+SELECT ?rank (MIN(?affiliation_) AS ?affiliation) WHERE {
+  ?individualURI a bibo:Document .
+  ?individualURI vivo:relatedBy ?authorship .
+  ?authorship a vivo:Authorship .
+  ?authorship vivo:rank ?rank .
+  ?authorship <http://vivo.deffopera.dk/ontology/osrap/relatedToOrganization> ?affiliation_ .
+} GROUP BY ?rank ORDER BY ?rank
+}
+  
+} GROUP BY ?affiliation ORDER BY ?rank
+    """ ;                
+	<http://vitro.mannlib.cornell.edu/ontologies/display/1.1#saveToVar>
+                "authorAffiliations" .
+
+<freemarker:individual--bibo-document.ftl> 
+        <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#hasDataGetter> 
+                 <http://vitro.mannlib.cornell.edu/ns/default#pubMetaDataGetter> .
+
+<http://vitro.mannlib.cornell.edu/ns/default#pubMetaDataGetter>
+        a       <java:edu.cornell.mannlib.vitro.webapp.utils.dataGetter.SparqlQueryDataGetter> ;
+        <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#query> """
+PREFIX rdfs:     <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd:      <http://www.w3.org/2001/XMLSchema#>
+PREFIX owl:      <http://www.w3.org/2002/07/owl#>
+PREFIX obo:      <http://purl.obolibrary.org/obo/>
+PREFIX bibo:     <http://purl.org/ontology/bibo/>
+PREFIX foaf:     <http://xmlns.com/foaf/0.1/>
+PREFIX vitro:    <http://vitro.mannlib.cornell.edu/ns/vitro/0.7#>
+PREFIX vivo:     <http://vivoweb.org/ontology/core#>
+
+SELECT ?publisher ?publisherName ?issn ?year ?timesCited ?fieldCitationRatio ?relativeCitationRatio
+       ?typeLabel ?openAccess
+WHERE {
+  ?individualURI a bibo:Document .
+  OPTIONAL {
+    ?individualURI vivo:publisher ?publisher .
+    ?publisher rdfs:label ?publisherName .
+  }
+  OPTIONAL {
+    ?individualURI vivo:hasPublicationVenue ?journal .
+    ?journal bibo:issn ?issn .
+  }
+  OPTIONAL {
+    ?individualURI vivo:dateTimeValue ?dtv .
+    ?dtv vivo:dateTime ?dateTime .
+    BIND(STRBEFORE(STR(?dateTime), "-") AS ?year)
+  }
+  OPTIONAL {
+    ?individualURI <http://vivo.deffopera.dk/ontology/osrap/timesCited> ?timesCited
+  }
+  OPTIONAL {
+    ?individualURI <http://vivo.deffopera.dk/ontology/osrap/fieldCitationRatio> ?fieldCitationRatio
+  }
+  OPTIONAL {
+    ?individualURI <http://vivo.deffopera.dk/ontology/osrap/relativeCitationRatio> ?relativeCitationRatio
+  }
+  OPTIONAL { 
+    ?individualURI vitro:mostSpecificType bibo:AcademicArticle .
+    BIND("Article" AS ?typeLabel)
+  }
+  OPTIONAL {
+    ?individualUri <http://vivo.deffopera.dk/ontology/osrap/openAccessCategory> ?openAccess .
+    FILTER(?openAccess != <http://vivo.deffopera.dk/individual/open-access-category-closed>)
+  }
+}
+    """ ;                
+	<http://vitro.mannlib.cornell.edu/ontologies/display/1.1#saveToVar>
+                "pubMeta" .
+
+

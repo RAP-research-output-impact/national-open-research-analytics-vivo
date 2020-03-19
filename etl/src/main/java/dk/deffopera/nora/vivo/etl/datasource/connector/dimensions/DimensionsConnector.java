@@ -4,21 +4,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.RDFNode;
-import org.apache.jena.rdf.model.Resource;
-import org.apache.jena.rdf.model.Statement;
-import org.apache.jena.rdf.model.StmtIterator;
-import org.apache.jena.vocabulary.RDF;
 import org.bson.Document;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -41,7 +34,6 @@ import com.mongodb.client.model.Filters;
 
 import dk.deffopera.nora.vivo.etl.datasource.DataSource;
 import dk.deffopera.nora.vivo.etl.datasource.IteratorWithSize;
-import dk.deffopera.nora.vivo.etl.datasource.VivoVocabulary;
 import dk.deffopera.nora.vivo.etl.datasource.connector.ConnectorDataSource;
 import dk.deffopera.nora.vivo.etl.util.HttpUtils;
 import dk.deffopera.nora.vivo.etl.util.JsonToXMLConverter;
@@ -55,10 +47,8 @@ public class DimensionsConnector extends ConnectorDataSource
     protected static final String ABOX = "http://vivo.deffopera.dk/individual/";
     protected static final String SPARQL_RESOURCE_DIR = "/dimensions/sparql/";
     protected static final long REQUEST_INTERVAL = 2000; // ms
-    private static final Map<String, String> ugrids = new HashMap<String, String>();
-    private static final Map<String, String> hgrids = new HashMap<String, String>();
-    
-    private Set<String> retrievedPubIds = new HashSet<String>();
+    protected static final Map<String, String> ugrids = new HashMap<String, String>();
+    protected static final Map<String, String> hgrids = new HashMap<String, String>();    
     
     static {
         // TODO load dynamically from a CSV
@@ -116,7 +106,7 @@ public class DimensionsConnector extends ConnectorDataSource
     protected String token;
     
     private MongoClient mongoClient;
-    private MongoCollection<Document> mongoCollection;
+    protected MongoCollection<Document> mongoCollection;
         
     public DimensionsConnector(String username, String password, 
             String mongoServer, String mongoPort, String mongoCollection, 
@@ -164,21 +154,30 @@ public class DimensionsConnector extends ConnectorDataSource
     @Override
     protected IteratorWithSize<Model> getSourceModelIterator() {
         return new MongoIterator(this.mongoCollection);
-        //return new DimensionsIterator(this.token);
     }
     
-    private class MongoIterator implements IteratorWithSize<Model> {
+    protected class MongoIterator implements IteratorWithSize<Model> {
 
-        private MongoCollection<Document> collection;
-        private MongoCursor<Document> cursor;
-        private int toRdfIteration = 0;
-        private long lastRequest = 0;
-        private int MONGO_DOCS_PER_ITERATION = 50;
-        private Map<String, Model> grantsCache = new HashMap<String, Model>();
+        protected MongoCollection<Document> collection;
+        protected MongoCursor<Document> cursor;
+        protected int toRdfIteration = 0;
+        protected int MONGO_DOCS_PER_ITERATION = 50;
+               
+        protected MongoIterator() {}
         
         public MongoIterator(MongoCollection<Document> collection) {
             this.collection = collection;
-            cursor = collection.find(Filters.eq("meta.raw.dbname", "publications"))
+            Iterator<String> distincts = collection.distinct("meta.raw.dbname", String.class).iterator();
+            while(distincts.hasNext()) {
+                String distinct = distincts.next();
+                log.info("dbname: " + distinct);
+            }
+            cursor = collection.find(
+                    //Filters.and(
+                            Filters.eq("meta.raw.dbname", "publications")
+                    //        Filters.eq("meta.matchingstatus", "dim-ddf")
+                    //)
+                 )
                     .noCursorTimeout(true).iterator();
         }
         
@@ -194,9 +193,45 @@ public class DimensionsConnector extends ConnectorDataSource
             while(batch > 0 && cursor.hasNext()) {
                 batch--;
                 Document d = cursor.next();
-                String jsonStr = d.toJson();            
+                String jsonStr = d.toJson();   
                 JSONObject jsonObj = new JSONObject(jsonStr);
+                log.info(jsonObj.toString(2));
+                JSONArray organisations = jsonObj.getJSONObject("who").getJSONArray("organisations");
+                List<String> whoGrids = new ArrayList<String>();
+                for(int orgi = 0; orgi < organisations.length(); orgi++) {
+                    String grid = organisations.getJSONObject(orgi).getString("gridid");
+                    if(grid != null) {
+                        whoGrids.add(grid);
+                    }
+                }
+                log.info(whoGrids.size() + " grids in who " + whoGrids);
                 jsonObj = jsonObj.getJSONObject("meta").getJSONObject("raw");
+                JSONArray authorAffiliations = jsonObj.getJSONArray("author_affiliations");
+                List<String> affiliationGrids = new ArrayList<String>(); 
+                for(int aai = 0; aai < authorAffiliations.length(); aai++) {
+                    JSONArray authorAffiliationsInner = authorAffiliations.getJSONArray(aai);
+                    for(int aaj = 0; aaj < authorAffiliationsInner.length(); aaj++) {
+                        JSONObject authorAffiliation = authorAffiliationsInner.getJSONObject(aaj);
+                        JSONArray affiliations = authorAffiliation.getJSONArray("affiliations");
+                        for(int aak = 0; aak < affiliations.length(); aak++) {
+                            JSONObject affiliation = affiliations.getJSONObject(aak);
+                            if(affiliation.has("id")) {
+                                String id = affiliation.getString("id");
+                                if(id != null && id.startsWith("grid")) {
+                                    affiliationGrids.add(id);
+                                }
+                            } 
+                        }
+                    }
+                }
+                log.info(affiliationGrids.size() + " grids in affiliations " + affiliationGrids);
+                for(String whoGrid : whoGrids) {
+                    if(!affiliationGrids.contains(whoGrid) 
+                            && (ugrids.values().contains(whoGrid) 
+                                    || hgrids.values().contains(whoGrid))) {                        
+                        log.info("***** Grid only from who: " + whoGrid);
+                    }
+                }
                 if(log.isDebugEnabled()) {
                     log.debug(jsonObj.toString(2));
                 }
@@ -210,22 +245,12 @@ public class DimensionsConnector extends ConnectorDataSource
                     log.info(jsonObj.toString(2));
                     throw (e);
                 }
-                //String id = jsonObj.getString("id");
-                //log.debug(id);
-                //if(id.startsWith("grant")) {
-                //    throw new Error("Found a grant");
-                //}
                 results.add(toRdf(jsonObj.toString()));
-            }                        
-            try {
-                results = addSupportingGrants(results, token);
-                return results;
-            } catch(InterruptedException e) {
-                throw new RuntimeException(e);
             }
+            return results;
         }
         
-        private Model toRdf(String data) {                
+        protected Model toRdf(String data) {                
             try {
                 JsonToXMLConverter json2xml = new JsonToXMLConverter();
                 XmlToRdf xml2rdf = new XmlToRdf();
@@ -240,90 +265,6 @@ public class DimensionsConnector extends ConnectorDataSource
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-        }
-        
-//        private Model addSupportingGrants(Model model, String token) throws InterruptedException { 
-//            StmtIterator sit = model.listStatements(null, model.getProperty(
-//                    XmlToRdf.GENERIC_NS + "supporting_grant_ids"), (RDFNode) null);
-//            while(sit.hasNext()) {
-//                Statement stmt = sit.next();
-//                if(!stmt.getObject().isLiteral()) {
-//                    continue;
-//                } else {
-//                    String grantId = stmt.getObject().asLiteral().getLexicalForm();
-//                    Model grantModel = grantsCache.get(grantId);
-//                    if(grantModel != null) {
-//                        log.info("cache hit");
-//                        model.add(grantModel);
-//                    } else {
-//                        grantModel = getSupportingGrants(Arrays.asList(grantId), token);
-//                        model.add(grantModel);
-//                        grantsCache.put(grantId, grantModel);
-//                    }
-//                }
-//            }            
-//            return model;
-//        }
-        
-        private Model addSupportingGrants(Model model, String token) throws InterruptedException {
-            Set<String> allGrantIds = new HashSet<String>(); 
-            StmtIterator sit = model.listStatements(null, model.getProperty(
-                    XmlToRdf.GENERIC_NS + "supporting_grant_ids"), (RDFNode) null);
-            while(sit.hasNext()) {
-                Statement stmt = sit.next();
-                if(!stmt.getObject().isLiteral()) {
-                    continue;
-                } else {
-                    allGrantIds.add(stmt.getObject().asLiteral().getLexicalForm());
-                }
-            }
-            Iterator<String> allGrantIdsIt = allGrantIds.iterator();
-            List<String> batch = new ArrayList<String>();
-            int idBatchSize = 200;
-            while(allGrantIdsIt.hasNext()) {
-                batch.add(allGrantIdsIt.next());
-                if(batch.size() == idBatchSize || !allGrantIdsIt.hasNext()) {
-                    model.add(getSupportingGrants(batch, token));
-                    batch.clear();
-                }
-            }
-            return model;
-        }
-                
-        private Model getSupportingGrants(List<String> grantIds, String token) throws InterruptedException {
-            String queryStr = "search grants where";
-            if(grantIds.size() > 1) {
-                queryStr += " ( ";
-            }
-            boolean first = true;
-            for(String grantId : grantIds) {
-                if(!first) {
-                    queryStr += " or";
-                }
-                queryStr += " id = \"" + grantId + "\"";
-                first = false;
-            }           
-            if(grantIds.size() > 1) {
-                queryStr += " ) ";
-            }
-            queryStr += 
-                    " return grants[id + active_year + end_date + funders + start_date + start_year + title + abstract + funding_eur + grant_number ]";
-            log.info("Querying for grants");
-            log.debug(queryStr);
-            String data = getDslResponse(queryStr, token);
-            return toRdf(data);
-        }
-        
-        private String getDslResponse(String dslQuery, String token) 
-                throws InterruptedException {
-            long now = System.currentTimeMillis();
-            long toWait = REQUEST_INTERVAL - (now - lastRequest);        
-            if(toWait > 0) {
-                Thread.sleep(toWait);
-            }
-            lastRequest = System.currentTimeMillis();
-            return httpUtils.getHttpPostResponse(DIMENSIONS_API + "dsl.json",
-                    dslQuery, "application/json", token);        
         }
 
         @Override
@@ -345,352 +286,6 @@ public class DimensionsConnector extends ConnectorDataSource
         
     }
     
-    private class DimensionsIterator implements IteratorWithSize<Model> {
-        
-        private static final int RESULTS_PER_REQUEST = 75;
-        private String token;
-        private final String[] years = {"2014", "2015", "2016", "2017"};
-        //private final String[] sources = {
-        //        "publications", "grants", "patents", "clinical_trials"};
-        // number of requests to be made for each data source (pubs, grants, etc.)
-        private Map<String, int[]> totals = new HashMap<String, int[]>();
-        
-        List<String> grids = new ArrayList<String>();
-        private int requestCount;       
-        private Model firstIteration;
-        
-        public DimensionsIterator(String token) {
-            this.token = token;
-            grids.addAll(ugrids.values());
-            grids.addAll(hgrids.values());
-            log.info(grids.size() + " grids");
-            for(String grid : grids) {
-                int[] total = new int[years.length];
-                for(int i = 0; i < total.length; i++) {
-                    total[i] = 1;
-                }
-                totals.put(grid, total);
-            }
-            try {
-                firstIteration = ModelFactory.createDefaultModel();
-                for(String grid : grids) {
-                    Model[] gridModels = getResults(grid);
-                    setTotals(grid, gridModels);
-                    for(int i = 0; i < gridModels.length; i++) {
-                        firstIteration.add(gridModels[i]);    
-                    }                                        
-                }                                
-            } catch (InterruptedException e) {
-                log.error(e, e);
-                throw new RuntimeException(e);
-            }
-        }
-        
-        private void setTotals(String grid, Model[] models) {
-            // was sources.length; will need multidimensional totals when other data types added
-            for(int i = 0; i < years.length; i++) {
-                Model model = models[i];
-                // was GENERIC_NS + sources[i] 
-                StmtIterator sit = model.listStatements(
-                        null, model.getProperty(
-                                XmlToRdf.GENERIC_NS + "publications"), (RDFNode) null);
-                if(sit.hasNext()) {
-                    Statement stmt = sit.next();
-                    Resource r = stmt.getSubject();
-                    Statement stats = r.getProperty(model.getProperty(
-                            XmlToRdf.GENERIC_NS + "_stats"));
-                    if(stats != null) {
-                        RDFNode statsNode = stats.getObject();
-                        if(statsNode.isResource()) {
-                            Resource statsRes = statsNode.asResource();
-                            Statement totalCount = statsRes.getProperty(
-                                    model.getProperty(
-                                            XmlToRdf.GENERIC_NS + "total_count"));
-                            if(totalCount != null) {
-                                RDFNode totalCountNode = totalCount.getObject();
-                                if(totalCountNode.isLiteral()) {
-                                    try {
-                                        int totalCountInt = totalCountNode.asLiteral().getInt();
-                                        // was total + sources[i]
-                                        log.info(grid + " " + totalCountInt + " total publications in " + years[i]);
-                                        int[] total = totals.get(grid);
-                                        total[i] = totalCountInt / RESULTS_PER_REQUEST + 1;
-                                        totals.put(grid, total);
-                                    } catch (Exception e) {
-                                        log.error(e, e);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        
-        @Override
-        public boolean hasNext() {
-            for(String grid : grids) {
-                for(int i = 0; i < totals.get(grid).length; i++) {
-                   if(requestCount < totals.get(grid)[i]) {
-                       return true;
-                   }
-                }
-            }
-            return false;
-        }
-
-        @Override
-        public Model next() {
-            Model results = ModelFactory.createDefaultModel();
-            try {
-                if(requestCount == 0) {                
-                    results = firstIteration;
-                    firstIteration = null;
-                } else {
-                    try {
-                        for(String grid : grids) {
-                            Model[] gridResults = getResults(grid);
-                            for(int i = 0; i < gridResults.length; i++) {
-                                results.add(gridResults[i]);   
-                            }
-                        }
-                    } catch (InterruptedException e) {
-                        log.error(e, e);
-                        throw new RuntimeException(e);
-                    }
-                }
-                try {
-                    results = addSupportingGrants(results, token);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-            } finally {
-                requestCount++;   
-            }            
-            return results;
-        }
-
-        @Override
-        public Integer size() {
-            int size = 0;
-            for(String grid : grids) {
-                for(int i = 0; i < totals.get(grid).length; i++) {
-                    if(totals.get(grid)[i] > size) {
-                        size = totals.get(grid)[i];
-                    }
-                }
-            }
-            return size;
-        }
-
-        @Override
-        public void close() {
-            // no API method for logging out; nothing to do for now
-        }
-        
-        private Model addSupportingGrants(Model model, String token) throws InterruptedException {
-            Set<String> allGrantIds = new HashSet<String>(); 
-            StmtIterator sit = model.listStatements(null, model.getProperty(
-                    XmlToRdf.GENERIC_NS + "supporting_grant_ids"), (RDFNode) null);
-            while(sit.hasNext()) {
-                Statement stmt = sit.next();
-                if(!stmt.getObject().isLiteral()) {
-                    continue;
-                } else {
-                    allGrantIds.add(stmt.getObject().asLiteral().getLexicalForm());
-                }
-            }
-            Iterator<String> allGrantIdsIt = allGrantIds.iterator();
-            List<String> batch = new ArrayList<String>();
-            int idBatchSize = 200;
-            while(allGrantIdsIt.hasNext()) {
-                batch.add(allGrantIdsIt.next());
-                if(batch.size() == idBatchSize || !allGrantIdsIt.hasNext()) {
-                    model.add(toRdf(getSupportingGrants(batch, token)));
-                    batch.clear();
-                }
-            }
-            return model;
-        }
-        
-        private Model[] getResults(String grid) throws InterruptedException {
-            Model[] model = new Model[years.length];
-            for(int i = 0; i < years.length; i++) {
-                if(requestCount < totals.get(grid)[i]) {
-                    model[i] = toRdf(getPubs(grid, years[i], this.token, requestCount * RESULTS_PER_REQUEST));
-                } else {
-                    model[i] = ModelFactory.createDefaultModel();
-                }
-            }
-            
-//            if(requestCount < totals.get(grid)[1]) {
-//                model.add(toRdf(getGrants(grid, this.token, requestCount * RESULTS_PER_REQUEST)));
-//            }
-//            if(requestCount < totals.get(grid)[2]) {
-//                model.add(toRdf(getPatents(grid, this.token, requestCount * RESULTS_PER_REQUEST)));
-//            }
-//            if(requestCount < totals.get(grid)[3]) {
-//                model.add(toRdf(getClinicalTrials(grid, this.token, requestCount * RESULTS_PER_REQUEST)));
-//            }
-            //log.debug("Model size " + model.size());
-            return model;
-        }
-        
-        long lastRequest = 0;
-        
-        private String getDslResponse(String dslQuery, String token) 
-                throws InterruptedException {
-            long now = System.currentTimeMillis();
-            long toWait = REQUEST_INTERVAL - (now - lastRequest);        
-            if(toWait > 0) {
-                Thread.sleep(toWait);
-            }
-            lastRequest = System.currentTimeMillis();
-            return httpUtils.getHttpPostResponse(DIMENSIONS_API + "dsl.json",
-                    dslQuery, "application/json", token);        
-        }
-        
-        private int toRdfIteration = 0;
-        
-        private Model toRdf(String data) {                
-            try {
-                JsonToXMLConverter json2xml = new JsonToXMLConverter();
-                XmlToRdf xml2rdf = new XmlToRdf();
-                RdfUtils rdfUtils = new RdfUtils();                
-                //log.info(data);
-                String xml = json2xml.convertJsonToXml(data);
-                Model rdf = xml2rdf.toRDF(xml);
-                rdf = removeAlreadyRetrievedPubs(rdf);
-                toRdfIteration++;
-                rdf = rdfUtils.renameBNodes(rdf, ABOX + "n" + toRdfIteration + "-", rdf);
-                //rdf = renameByIdentifier(rdf, rdf.getProperty(
-                //        XmlToRdf.GENERIC_NS + "id"), ABOX, "");
-                return rdf;
-            } catch (JsonProcessingException e) {
-                throw new RuntimeException(e);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        
-        protected Model removeAlreadyRetrievedPubs(Model model) {
-            List<String> newPubIds = new ArrayList<String>();
-            List<Resource> resToRemove = new ArrayList<Resource>();
-            StmtIterator idIt = model.listStatements(
-                    null, model.getProperty(XmlToRdf.GENERIC_NS + "id"), (RDFNode) null);
-            while(idIt.hasNext()) {
-                Statement stmt = idIt.next();
-                if(!stmt.getObject().isLiteral()) {
-                    continue;
-                } else {
-                    String idVal = stmt.getObject().asLiteral().getLexicalForm();
-                    if(!idVal.startsWith("pub")) {
-                        continue;
-                    } else {
-                        if(retrievedPubIds.contains(idVal)) {
-                            resToRemove.add(stmt.getSubject());
-                        } else {
-                            //log.info("Adding " + idVal + " to retrieved pub ids");
-                            newPubIds.add(idVal);
-                        }
-                    }
-                }
-            }
-            //log.info("retrievedPubIds has " + retrievedPubIds.size() + " items");
-            retrievedPubIds.addAll(newPubIds);
-            log.debug("Model size before pruning: " + model.size());
-            log.debug("Removing " + resToRemove.size() + " duplicate resources");           
-            for(Resource toRemove : resToRemove) {
-                model.removeAll(toRemove, null, null);
-            }
-            log.debug("Model size after pruning: " + model.size());
-            return model;
-        }
-        
-        private String getSupportingGrants(List<String> grantIds, String token) throws InterruptedException {
-            String queryStr = "search grants where";
-            if(grantIds.size() > 1) {
-                queryStr += " ( ";
-            }
-            boolean first = true;
-            for(String grantId : grantIds) {
-                if(!first) {
-                    queryStr += " or";
-                }
-                queryStr += " id = \"" + grantId + "\"";
-                first = false;
-            }           
-            if(grantIds.size() > 1) {
-                queryStr += " ) ";
-            }
-            queryStr += 
-                    " return grants[id + active_year + end_date + funders + start_date + start_year + title + abstract + funding_eur + grant_number ]";
-            log.info("Querying for grants");
-            log.debug(queryStr);
-            String data = getDslResponse(queryStr, token);
-            return (new JSONObject(data)).toString(2);
-        }
-        
-        private String getGrants(String grid, String token, int skip) throws InterruptedException {
-            String queryStr = "search grants where"
-                    + " (start_year >= 2014 and start_year <= 2017 and research_orgs.id = \"" + grid + "\")"
-                    + " return grants[active_year + end_date + funders + id + project_num + start_date + start_year + title + abstract + funding_eur + grant_number + investigator_details + research_orgs]"
-                    + " limit " + RESULTS_PER_REQUEST + " skip " + skip;
-            log.debug(queryStr);
-            return getDslResponse(queryStr, token);
-        }
-        
-        private String getPubs(String grid, String year, String token, int skip) throws InterruptedException {
-            String queryStr = "search publications where"
-                    + "( year = " + year + " and research_orgs.id = \"" + grid + "\" and type in [\"article\", \"chapter\", \"proceeding\"])"
-                    + " return publications[id + type + title + authors + researchers + doi + "
-                    + "pmid + pmcid + date + year + mesh_terms + "
-                    + "journal + issn + volume + issue + publisher + "
-                    + "open_access_categories + funders + funder_countries + "
-                    + "supporting_grant_ids + category_for + category_rcdc + category_hrcs_rac + "
-                    + "field_citation_ratio + relative_citation_ratio + times_cited " 
-                    + "]"
-                    + " limit " + RESULTS_PER_REQUEST + " skip " + skip;
-            log.debug(queryStr);
-            String data = getDslResponse(queryStr, token);
-            JSONObject jsonObj = new JSONObject(data);
-            try {
-                JSONArray pubs = jsonObj.getJSONArray("publications");
-                for(int pubi = 0; pubi < pubs.length(); pubi++) {
-                    JSONObject pub = pubs.getJSONObject(pubi);
-                    JSONArray authors = pub.getJSONArray("authors");
-                    for(int authi = 0; authi < authors.length(); authi++) {
-                        JSONObject author = authors.getJSONObject(authi);
-                        author.put("authorRank", authi + 1);
-                    }                    
-                }
-            } catch (JSONException e) {
-                log.info(jsonObj.toString(2));
-                throw (e);
-            }
-            return jsonObj.toString(2);
-        }
-        
-        private String getPatents(String grid, String token, int skip) throws InterruptedException {
-            String queryStr = "search patents where"
-                    + " (granted_year >= 2014 and granted_year <= 2017 and assignees.id = \"" + grid + "\")"
-                    + " return patents[assignees + granted_year + id + title + inventor_names + funders + abstract + associated_grant_ids]"
-                    + " limit " + RESULTS_PER_REQUEST + " skip " + skip;
-            log.debug(queryStr);
-            return getDslResponse(queryStr, token);
-        }
-        
-        private String getClinicalTrials(String grid, String token, int skip) throws InterruptedException {
-            String queryStr = "search clinical_trials where"
-                    + " (active_years >= 2014 and active_years <= 2017 and organizations.id = \"" + grid + "\")"
-                    + " return clinical_trials[id + title + abstract + active_years + associated_grant_ids + date + researchers + organizations + funders]"
-                    + " limit " + RESULTS_PER_REQUEST + " skip " + skip;
-            log.debug(queryStr);
-            return getDslResponse(queryStr, token);
-        }        
-        
-    }
-
     @Override
     protected Model filter(Model model) {
         if(true) {
@@ -702,23 +297,6 @@ public class DimensionsConnector extends ConnectorDataSource
         }
     }
     
-    private Model generateOrgs() {
-        Model orgs = ModelFactory.createDefaultModel();
-        for(Map<String, String> map : Arrays.asList(ugrids, hgrids)) {
-            for(String key : map.keySet()) {
-                String grid = map.get(key);
-                Resource res = orgs.getResource("http://vivo.deffopera.dk/individual/" + grid);
-                if(ugrids.equals(map)) {
-                    orgs.add(res, RDF.type, orgs.getResource(VivoVocabulary.VIVO + "University"));
-                } else if(hgrids.equals(map)) {
-                    orgs.add(res, RDF.type, orgs.getResource(VivoVocabulary.VIVO + "Hospital"));
-                }
-                //orgs.add(res, RDFS.label, key);
-            }
-        }
-        return orgs;
-    }
-
     @Override
     protected Model mapToVIVO(Model model) {
         List<String> queries = Arrays.asList(

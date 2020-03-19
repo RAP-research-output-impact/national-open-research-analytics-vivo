@@ -1,0 +1,96 @@
+PREFIX rdf:      <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:     <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd:      <http://www.w3.org/2001/XMLSchema#>
+PREFIX owl:      <http://www.w3.org/2002/07/owl#>
+PREFIX swrl:     <http://www.w3.org/2003/11/swrl#>
+PREFIX swrlb:    <http://www.w3.org/2003/11/swrlb#>
+PREFIX vitro:    <http://vitro.mannlib.cornell.edu/ns/vitro/0.7#>
+PREFIX bibo:     <http://purl.org/ontology/bibo/>
+PREFIX c4o:      <http://purl.org/spar/c4o/>
+PREFIX cito:     <http://purl.org/spar/cito/>
+PREFIX event:    <http://purl.org/NET/c4dm/event.owl#>
+PREFIX fabio:    <http://purl.org/spar/fabio/>
+PREFIX foaf:     <http://xmlns.com/foaf/0.1/>
+PREFIX geo:      <http://aims.fao.org/aos/geopolitical.owl#>
+PREFIX obo:      <http://purl.obolibrary.org/obo/>
+PREFIX ocrer:    <http://purl.org/net/OCRe/research.owl#>
+PREFIX ocresd:   <http://purl.org/net/OCRe/study_design.owl#>
+PREFIX skos:     <http://www.w3.org/2004/02/skos/core#>
+PREFIX vcard:    <http://www.w3.org/2006/vcard/ns#>
+PREFIX vitro-public: <http://vitro.mannlib.cornell.edu/ns/vitro/public#>
+PREFIX vivo:     <http://vivoweb.org/ontology/core#>
+PREFIX scires:   <http://vivoweb.org/ontology/scientific-research#>
+PREFIX g:        <http://ingest.mannlib.cornell.edu/generalizedXMLtoRDF/0.1/> 
+PREFIX osrap:    <http://vivo.deffopera.dk/ontology/osrap/>
+PREFIX abox:     <http://vivo.deffopera.dk/individual/>
+
+CONSTRUCT {
+    ?pub vivo:informationResourceSupportedBy ?grant .
+    ?grant a vivo:Grant .
+    ?grant rdfs:label ?title .
+    ?grant vivo:sponsorAwardId ?grantNumber .
+    ?grant vivo:totalAwardAmount ?fundingEur .
+    ?grant bibo:abstract ?abstract .
+    ?grant vivo:assignedBy ?fundingOrg .
+    ?grant vivo:dateTimeInterval ?dti .
+    ?dti a vivo:DateTimeInterval .
+    ?dti vivo:start ?start .
+    ?start a vivo:DateTimeValue.
+    ?start vivo:dateTime ?startDt .
+    ?start vivo:dateTimePrecision vivo:yearPrecision .
+    ?dti vivo:end ?end .
+    ?end a vivo:DateTimeValue .
+    ?end vivo:dateTime ?endDt .
+    ?end vivo:dateTimePrecision vivo:yearPrecision .
+    ?fundingOrg a vivo:FundingOrganization .
+    ?fundingOrg rdfs:label ?funderName .
+    ?fundingOrg vivo:abbreviaton ?acronym .
+    ?fundingOrg osrap:countryName ?countryName .
+    ?grant obo:ARG_2000028 ?vcard .
+    ?vcard a vcard:Kind .
+    ?vcard vcard:hasURL ?url .
+    ?url a vcard:URL .
+    ?url vcard:url ?linkoutUrl 
+} WHERE {
+    ?grant g:dbname "grants" .
+    ?grant g:id ?id .
+    ?grant g:title ?title .
+    OPTIONAL {
+      ?grant g:grant_number ?grantNumber .
+      FILTER(?grantNumber != "N/A")
+    }
+    OPTIONAL {
+      ?grant g:funding_eur ?fundingEur .
+    }
+    OPTIONAL {
+        ?grant g:abstract ?abstract 
+    }
+    OPTIONAL {
+        ?grant g:id ?id .
+        ?grant g:start_year ?startYear .
+	?grant g:end_date ?endDate .
+	BIND(STRBEFORE(STR(?endDate), "-") AS ?endYear)
+	BIND(xsd:dateTime(CONCAT(STR(?startYear), "-01-01T00:00:00")) AS ?startDt)
+	BIND(xsd:dateTime(CONCAT(STR(?endYear), "-01-01T00:00:00")) AS ?endDt)
+	BIND(IRI(CONCAT(STR(?grant), "-dti")) AS ?dti)
+	BIND(IRI(CONCAT(STR(?grant), "-dti-start")) AS ?start)
+	BIND(IRI(CONCAT(STR(?grant), "-dti-end")) AS ?end)
+    }
+    OPTIONAL {
+        ?grant g:linkout ?linkout .
+        ?grant g:id ?id .
+	BIND(IRI(CONCAT(STR(?grant), "-vcard")) AS ?vcard) 
+	BIND(IRI(CONCAT(STR(?grant), "-vcard-url")) AS ?url)
+	BIND(xsd:anyURI(?linkout) AS ?linkoutUrl)
+    }
+    OPTIONAL {
+        ?grant g:resulting_publication_ids ?resultingPubId .
+	BIND(IRI(CONCAT(STR(abox:), ?resultingPubId)) AS ?pub)
+    }
+    ?grant g:funders ?funder .
+    ?funder g:name ?funderName 
+    OPTIONAL { ?funder g:acronym ?acronym }
+    ?funder g:id ?funderId .
+    ?funder g:country_name ?countryName 
+    BIND(IRI(CONCAT(STR(abox:), STR(?funderId))) AS ?fundingOrg) .
+}

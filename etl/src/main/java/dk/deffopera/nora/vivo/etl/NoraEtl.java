@@ -15,6 +15,8 @@ import dk.deffopera.nora.vivo.etl.datasource.DataSource;
 import dk.deffopera.nora.vivo.etl.datasource.connector.GraphClearer;
 import dk.deffopera.nora.vivo.etl.datasource.connector.dimensions.DimensionsByDoiConnector;
 import dk.deffopera.nora.vivo.etl.datasource.connector.dimensions.DimensionsConnector;
+import dk.deffopera.nora.vivo.etl.datasource.connector.dimensions.DimensionsDatasetsConnector;
+import dk.deffopera.nora.vivo.etl.datasource.connector.dimensions.DimensionsGrantsConnector;
 import dk.deffopera.nora.vivo.etl.util.SparqlEndpoint;
 import dk.deffopera.nora.vivo.etl.util.SparqlEndpointParams;
 
@@ -25,7 +27,8 @@ public class NoraEtl {
     public static void main(String[] args) {
         if(args.length < 3) {
             System.out.println("Usage: " 
-                    + "dimensions|dimensionsByDoi|clearGraph outputfile dimensionsUsername=<username> dimensionsPassword=<password> " 
+                    + "dimensions|dimensionsByDoi|clearGraph|grants|datasets "
+                    + "outputfile dimensionsUsername=<username> dimensionsPassword=<password> " 
                     + "[sourceEndpointURI= sourceEndpointUsername= sourceEndpointPassword=] "
                     + "[dataDir=] [endpointURI= endpointUpdateURI= username= password=] [authUsername= authPassword=] [graphURI=] "
                     + "[limit]");
@@ -91,6 +94,24 @@ public class NoraEtl {
             params.setPassword(getParameter(queryTerms, "sourceEndpointPassword"));
             connector = new DimensionsByDoiConnector(
                     dimensionsUsername, dimensionsPassword, new SparqlEndpoint(params));
+        } else if ("grants".equals(connectorName)) {
+            connector = new DimensionsGrantsConnector(
+                    getParameter(queryTerms, "dimensionsUsername"), 
+                    getParameter(queryTerms, "dimensionsPassword"),
+                    getParameter(queryTerms, "mongoServer"),
+                    getParameter(queryTerms, "mongoPort"),
+                    getParameter(queryTerms, "mongoCollection"),
+                    getParameter(queryTerms, "mongoUsername"),
+                    getParameter(queryTerms, "mongoPassword"));
+        } else if ("datasets".equals(connectorName)) {
+            connector = new DimensionsDatasetsConnector(
+                    getParameter(queryTerms, "dimensionsUsername"), 
+                    getParameter(queryTerms, "dimensionsPassword"),
+                    getParameter(queryTerms, "mongoServer"),
+                    getParameter(queryTerms, "mongoPort"),
+                    getParameter(queryTerms, "mongoCollection"),
+                    getParameter(queryTerms, "mongoUsername"),
+                    getParameter(queryTerms, "mongoPassword"));
         } else {
             throw new RuntimeException("Connector not found: " 
                     + connectorName);

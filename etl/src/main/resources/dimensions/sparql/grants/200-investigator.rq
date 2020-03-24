@@ -1,0 +1,92 @@
+PREFIX rdf:      <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:     <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd:      <http://www.w3.org/2001/XMLSchema#>
+PREFIX owl:      <http://www.w3.org/2002/07/owl#>
+PREFIX swrl:     <http://www.w3.org/2003/11/swrl#>
+PREFIX swrlb:    <http://www.w3.org/2003/11/swrlb#>
+PREFIX vitro:    <http://vitro.mannlib.cornell.edu/ns/vitro/0.7#>
+PREFIX bibo:     <http://purl.org/ontology/bibo/>
+PREFIX c4o:      <http://purl.org/spar/c4o/>
+PREFIX cito:     <http://purl.org/spar/cito/>
+PREFIX event:    <http://purl.org/NET/c4dm/event.owl#>
+PREFIX fabio:    <http://purl.org/spar/fabio/>
+PREFIX foaf:     <http://xmlns.com/foaf/0.1/>
+PREFIX geo:      <http://aims.fao.org/aos/geopolitical.owl#>
+PREFIX obo:      <http://purl.obolibrary.org/obo/>
+PREFIX ocrer:    <http://purl.org/net/OCRe/research.owl#>
+PREFIX ocresd:   <http://purl.org/net/OCRe/study_design.owl#>
+PREFIX skos:     <http://www.w3.org/2004/02/skos/core#>
+PREFIX vcard:    <http://www.w3.org/2006/vcard/ns#>
+PREFIX vitro-public: <http://vitro.mannlib.cornell.edu/ns/vitro/public#>
+PREFIX vivo:     <http://vivoweb.org/ontology/core#>
+PREFIX scires:   <http://vivoweb.org/ontology/scientific-research#>
+PREFIX g:        <http://ingest.mannlib.cornell.edu/generalizedXMLtoRDF/0.1/> 
+PREFIX osrap:    <http://vivo.deffopera.dk/ontology/osrap/>
+PREFIX abox:     <http://vivo.deffopera.dk/individual/>
+
+CONSTRUCT {
+    ?person a foaf:Person .
+    ?person rdfs:label ?label .
+    ?person obo:ARG_2000028 ?vcard .
+    ?vcard a vcard:Individual .
+    ?vcard vcard:hasName ?name .
+    ?name a vcard:Name .
+    ?name vcard:familyName ?lastName .
+    ?name vcard:givenName ?firstName .
+    ?grant vivo:relates ?person .
+    ?grant vivo:relates ?role .
+    ?role a obo:BFO_0000023 .
+    ?role a ?roleType .
+    ?role obo:RO_0000052 ?person .
+    ?role obo:BFO_0000054 ?project .
+    ?role osrap:relatedToOrganization ?affiliationOrg .
+    ?affiliationOrg a foaf:Organization .
+    ?affiliationOrg rdfs:label ?affiliationName .
+} WHERE {
+    ?grant g:dbname "grants" .
+    ?grant g:id ?id .
+    ?grant g:researcher_details ?details .
+    ?details g:last_name ?lastName .
+    ?details g:first_name ?firstName .
+    ?details g:id ?personId .
+    #OPTIONAL { ?details g:middle_name ?middleName }
+    OPTIONAL {
+      ?details g:role "PI" .
+      BIND(vivo:PrincipalInvestigatorRole AS ?roleType)
+    }
+    OPTIONAL {
+      ?details g:role "Co-PI" .
+      BIND(vivo:CoPrincipalInvestigatorRole AS ?roleType)
+    }
+    OPTIONAL {
+      ?details g:affiliations ?affiliation .
+      ?affiliation g:id ?grid .
+      ?affiliationWho g:gridid ?grid .
+      ?affiliationWho g:title ?affiliationName .
+      BIND(IRI(CONCAT(STR(abox:), STR(?grid))) AS ?affiliationOrg)
+    }
+    # If there is no explicit affiliation, but there a research_org listed
+    # and no other researchers listed, assume that the researcher is affiliated
+    # with that research_org.
+    OPTIONAL {
+      FILTER NOT EXISTS { ?details g:affiliations ?someAffiliation }
+      FILTER NOT EXISTS { 
+          ?grant g:researcher_details ?details2 .
+	  FILTER(?details != ?details2)
+      }
+      ?grant g:research_orgs ?researchOrg .
+      FILTER NOT EXISTS {
+        ?researchOrg g:research_orgs ?researchOrg2 .
+	FILTER (?researchOrg2 != ?researchOrg)
+      }
+      ?researchOrg g:id ?grid .
+      ?affiliationWho g:gridid ?grid .
+      ?affiliationWho g:title ?affiliationName .
+      BIND(IRI(CONCAT(STR(abox:), STR(?grid))) AS ?affiliationOrg)
+    }
+    BIND(CONCAT(STR(?lastName), ", ", STR(?firstName)) AS ?label)
+    BIND(IRI(CONCAT(STR(abox:), STR(?persondId))) AS ?person)
+    BIND(IRI(CONCAT(STR(abox:), STR(?persondId), "-vcard")) AS ?vcard)
+    BIND(IRI(CONCAT(STR(abox:), STR(?persondId), "-vcard-name")) AS ?name)
+    BIND(IRI(CONCAT(STR(?grant), "-role-", ?personId)) AS ?role)
+}

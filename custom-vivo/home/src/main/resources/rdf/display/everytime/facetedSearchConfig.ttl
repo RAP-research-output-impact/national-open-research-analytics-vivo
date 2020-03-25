@@ -52,6 +52,7 @@
 	PREFIX wos: <http://webofscience.com/ontology/wos#> 
 	PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 	PREFIX nora:    <http://vivo.deffopera.dk/ontology/osrap/>
+	PREFIX obo: <http://purl.obolibrary.org/obo/> 
         SELECT DISTINCT ?org
         WHERE {
 	  {
@@ -82,6 +83,7 @@
 	PREFIX wos: <http://webofscience.com/ontology/wos#> 
 	PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 	PREFIX nora:    <http://vivo.deffopera.dk/ontology/osrap/>
+	PREFIX obo: <http://purl.obolibrary.org/obo/> 
         SELECT DISTINCT ?org
         WHERE {
 	  {
@@ -112,6 +114,7 @@
 	PREFIX wos: <http://webofscience.com/ontology/wos#> 
 	PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 	PREFIX nora:    <http://vivo.deffopera.dk/ontology/osrap/>
+	PREFIX obo: <http://purl.obolibrary.org/obo/> 
         SELECT DISTINCT ?org
         WHERE {
 	  {

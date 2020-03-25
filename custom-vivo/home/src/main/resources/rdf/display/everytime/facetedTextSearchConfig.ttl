@@ -61,7 +61,6 @@
             <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.DocumentModifier> ;
     rdfs:label "Organization document modifier" ;
     :hasTargetField "facetext_organization_en" ;
-    :hasTypeRestriction "http://purl.obolibrary.org/obo/IAO_0000030";
     :hasSelectQuery """
         PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#> 
 	PREFIX vivo: <http://vivoweb.org/ontology/core#>
@@ -70,6 +69,7 @@
 	PREFIX nora: <http://vivo.deffopera.dk/ontology/osrap/>
         SELECT (MIN(?rawLabel) AS ?orgLabel)
         WHERE {
+	  {
             ?authorship vivo:relates ?uri .
             ?authorship a vivo:Authorship .
             ?authorship nora:relatedToOrganization ?org .
@@ -77,6 +77,15 @@
 	    ?org rdfs:label ?rawLabel
 	    FILTER NOT EXISTS { ?org a vivo:University }
 	    FILTER NOT EXISTS { ?org a vivo:Hospital }
+	  } UNION {
+            ?uri a vivo:Grant .
+            ?uri vivo:relates ?role .
+            ?role a obo:BFO_0000023 .
+            ?role nora:relatedToOrganization ?org .
+            ?org rdfs:label ?rawLabel 
+	    FILTER NOT EXISTS { ?org a vivo:University }
+	    FILTER NOT EXISTS { ?org a vivo:Hospital }
+	  }
         } GROUP BY ?org
     """ .
 
@@ -114,12 +123,22 @@
 	PREFIX nora: <http://vivo.deffopera.dk/ontology/osrap/>
         SELECT (MIN(?rawLabel) AS ?orgLabel)
         WHERE {
+	  {
             ?authorship vivo:relates ?uri .
             ?authorship a vivo:Authorship .
             ?authorship nora:relatedToOrganization ?org .
             ?org a vivo:University .
 	    ?org rdfs:label ?rawLabel
-        } GROUP BY ?org
+	  } UNION {
+            ?uri a vivo:Grant .
+            ?uri vivo:relates ?role .
+            ?role a obo:BFO_0000023 .
+            ?role nora:relatedToOrganization ?org .
+	    ?org a vivo:University .
+            ?org rdfs:label ?rawLabel 
+	  }
+        } 
+	GROUP BY ?org
     """ .
 
 :documentModifier_facetext_hospital
@@ -136,11 +155,20 @@
 	PREFIX nora: <http://vivo.deffopera.dk/ontology/osrap/>
         SELECT (MIN(?rawLabel) AS ?orgLabel)
         WHERE {
+	  {
             ?authorship vivo:relates ?uri .
             ?authorship a vivo:Authorship .
             ?authorship nora:relatedToOrganization ?org .
             ?org a vivo:Hospital .
 	    ?org rdfs:label ?rawLabel
+	  } UNION {
+            ?uri a vivo:Grant .
+            ?uri vivo:relates ?role .
+            ?role a obo:BFO_0000023 .
+            ?role nora:relatedToOrganization ?org .
+	    ?org a vivo:Hospital .
+            ?org rdfs:label ?rawLabel 
+	  }
         } GROUP BY ?org
     """ .
 
@@ -160,6 +188,26 @@
 	    ?journal a bibo:Journal .
 	    ?journal rdfs:label ?journalLabel
         }
+    """ .
+
+:documentModifier_facet_funder
+    a   <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.SelectQueryDocumentModifier> ,
+                <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.DocumentModifier> ;
+    rdfs:label "Funder document modifier" ;
+    :hasTargetField "facet_funder_ss" ;
+    :hasTypeRestriction "http://vivoweb.org/ontology/core#Grant";
+    :hasSelectQuery """
+        PREFIX vitro: <http://vitro.mannlib.cornell.edu/ns/vitro/0.7#>
+        PREFIX vivo: <http://vivoweb.org/ontology/core#>
+        PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#> 
+        PREFIX bibo:   <http://purl.org/ontology/bibo/>
+        PREFIX wos: <http://webofscience.com/ontology/wos#>
+        SELECT (MIN(?rawLabel) AS ?funderLabel)
+        WHERE {
+            ?uri a vivo:Grant .
+            ?uri vivo:assignedBy ?funder .
+	    ?funder rdfs:label ?rawLabel 
+        } GROUP BY ?funder
     """ .
 
 :uriFinder_label_facetext_journal

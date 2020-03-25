@@ -8,6 +8,8 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.bson.Document;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.mongodb.client.MongoCollection;
@@ -44,15 +46,33 @@ public class DimensionsDatasetsConnector extends DimensionsConnector {
             int batch = MONGO_DOCS_PER_ITERATION;
             while(batch > 0 && cursor.hasNext()) {
                 batch--;
+                long start = System.currentTimeMillis();
+                log.info("Getting next document from cursor");
                 Document d = cursor.next();
+                log.info((System.currentTimeMillis() - start) + " ms to retrieve document");
                 String jsonStr = d.toJson();   
-                JSONObject jsonObj = new JSONObject(jsonStr);
-                log.info(jsonObj.toString(2));                
-                jsonObj = jsonObj.getJSONObject("meta").getJSONObject("raw");
+                JSONObject fullJsonObj = new JSONObject(jsonStr);
+                log.info(fullJsonObj.toString(2));                
+                JSONObject jsonObj = fullJsonObj.getJSONObject("meta").getJSONObject("raw");
                 if(log.isDebugEnabled()) {
                     log.debug(jsonObj.toString(2));
                 }                
-                results.add(toRdf(jsonObj.toString()));
+                try {                  
+                    if(!jsonObj.has("researchers")) {
+                        log.info("researchers not found");
+                    } else {
+                        log.info("researchers found");
+                        JSONArray authors = jsonObj.getJSONArray("researchers");
+                        for(int authi = 0; authi < authors.length(); authi++) {
+                            JSONObject author = authors.getJSONObject(authi);
+                            author.put("authorRank", authi + 1);
+                        }    
+                    }                                                        
+                } catch (JSONException e) {
+                    log.info(jsonObj.toString(2));
+                    throw (e);
+                }
+                results.add(toRdf(fullJsonObj.toString()));
             }
             return results;
         }                
@@ -61,7 +81,16 @@ public class DimensionsDatasetsConnector extends DimensionsConnector {
     
     @Override
     protected Model mapToVIVO(Model model) {
-        List<String> queries = Arrays.asList();
+        List<String> queries = Arrays.asList("050-datasetId.rq");
+        for(String query : queries) {
+            construct(SPARQL_RESOURCE_DIR + "datasets/" + query, model, ABOX + getPrefixName() + "-");
+        }        
+        model = renameByIdentifier(model, model.getProperty("tmp:datasetId"), ABOX, "dataset.");
+        queries = Arrays.asList(
+                "100-dataset.rq",
+                "140-datasetAuthorship.rq",
+                "190-for.rq"
+                );
         for(String query : queries) {
             construct(SPARQL_RESOURCE_DIR + "datasets/" + query, model, ABOX + getPrefixName() + "-");
         }

@@ -19,7 +19,8 @@ public class NoraSearchFacets {
         searchFacets.add(new SearchFacet("facet_hospital_ss", "Hospitals"));
         searchFacets.add(new SearchFacet("facet_organization_ss", "Organizations"));
         searchFacets.add(new SearchFacet("facet_journal_ss", "Journals"));  
-        searchFacets.add(new SearchFacet("facet_retrieval_ss", "Retrieval"));  
+        searchFacets.add(new SearchFacet("facet_funder_ss", "Funder"));
+        searchFacets.add(new SearchFacet("facet_retrieval_ss", "Retrieval"));         
         for(SearchFacet facet : searchFacets) {
             facetsByFieldName.put(facet.getFieldName(), facet);
             String textFieldName = facet.getFieldName().replaceAll(

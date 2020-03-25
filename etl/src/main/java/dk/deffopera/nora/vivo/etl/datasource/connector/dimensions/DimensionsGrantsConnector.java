@@ -10,13 +10,14 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.bson.Document;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Filters;
 
 import dk.deffopera.nora.vivo.etl.datasource.IteratorWithSize;
-import dk.deffopera.nora.vivo.etl.util.XmlToRdf;
 
 public class DimensionsGrantsConnector extends DimensionsConnector {
 
@@ -37,10 +38,10 @@ public class DimensionsGrantsConnector extends DimensionsConnector {
 
         public GrantsIterator(MongoCollection<Document> collection) {
             this.collection = collection;
-            Iterator<String> distincts = collection.distinct("meta.raw.dbname", String.class).iterator();
+            Iterator<String> distincts = collection.distinct("meta.raw.investigator_details.role", String.class).iterator();
             while(distincts.hasNext()) {
                 String distinct = distincts.next();
-                log.info("dbname: " + distinct);
+                log.info("role: " + distinct);
             }
             this.cursor = collection.find(Filters.eq("meta.raw.dbname", "grants"))
                     .noCursorTimeout(true).iterator();
@@ -55,12 +56,35 @@ public class DimensionsGrantsConnector extends DimensionsConnector {
                 Document d = cursor.next();
                 String jsonStr = d.toJson();   
                 JSONObject jsonObj = new JSONObject(jsonStr);
-                log.info(jsonObj.toString(2));                
-                jsonObj = jsonObj.getJSONObject("meta").getJSONObject("raw");
+                log.info(jsonObj.toString(2));  
+                // Use the whole JSON so we can access the 'who'
+                //jsonObj = jsonObj.getJSONObject("meta").getJSONObject("raw");
                 if(log.isDebugEnabled()) {
                     log.debug(jsonObj.toString(2));
                 }                
                 results.add(toRdf(jsonObj.toString()));
+//                JSONObject raw = jsonObj.getJSONObject("meta").getJSONObject("raw");
+//                if(raw.has("resulting_publication_ids")) {
+//                    JSONArray pubs = raw.getJSONArray("resulting_publication_ids");
+//                    for(int i = 0; i < pubs.length(); i++) {
+//                        String pubId = pubs.getString(i);
+//                        log.info("Requesting publication " + pubId);
+//                        MongoCursor<Document> pubCursor = null;
+//                        try {
+//                            pubCursor = collection.find(Filters.eq(
+//                                    "meta.raw.dbname.id", pubId)).iterator();
+//                            while(pubCursor.hasNext()) {
+//                                String pubJsonStr = pubCursor.next().toJson();
+//                                log.info("Adding pub RDF");
+//                                results.add(toRdf(pubJsonStr));
+//                            }
+//                        } finally {
+//                            if(pubCursor != null) {
+//                                pubCursor.close();
+//                            }
+//                        }                                
+//                    }
+//                }           
             }
             return results;
         }                
@@ -69,9 +93,10 @@ public class DimensionsGrantsConnector extends DimensionsConnector {
     
     @Override
     protected Model mapToVIVO(Model model) {
-        StringWriter out = new StringWriter();
-        model.write(out, "TTL");
-        log.info(out.toString());
+        long start = System.currentTimeMillis();
+        //StringWriter out = new StringWriter();
+        //model.write(out, "TTL");
+        //log.info(out.toString());
         List<String> queries = Arrays.asList("050-grantId.rq");
         for(String query : queries) {
             construct(SPARQL_RESOURCE_DIR + "grants/" + query, model, ABOX + getPrefixName() + "-");
@@ -79,11 +104,13 @@ public class DimensionsGrantsConnector extends DimensionsConnector {
         model = renameByIdentifier(model, model.getProperty("tmp:grantId"), ABOX, "");
         queries = Arrays.asList(
                 "100-grant.rq",
-                "190-for.rq"
+                "190-for.rq",
+                "200-investigator.rq"
                 );
         for(String query : queries) {
             construct(SPARQL_RESOURCE_DIR + "grants/" + query, model, ABOX + getPrefixName() + "-");
         }
+        log.info((System.currentTimeMillis() - start) + " ms to run mappings");
         return model;
     }
 

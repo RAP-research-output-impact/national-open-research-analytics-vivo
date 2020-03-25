@@ -21,72 +21,72 @@ PREFIX vitro-public: <http://vitro.mannlib.cornell.edu/ns/vitro/public#>
 PREFIX vivo:     <http://vivoweb.org/ontology/core#>
 PREFIX scires:   <http://vivoweb.org/ontology/scientific-research#>
 PREFIX g:        <http://ingest.mannlib.cornell.edu/generalizedXMLtoRDF/0.1/> 
-PREFIX osrap:    <http://vivo.deffopera.dk/ontology/osrap/>
+PREFIX osrap:    <http://vivo.deffopera.dk/ontology/osrap/> 
 PREFIX abox:     <http://vivo.deffopera.dk/individual/>
 
 CONSTRUCT {
+    ?authorship a vivo:Authorship .
+    ?x vivo:relatedBy ?authorship .
+    ?authorship vivo:relates ?x .
+    ?authorship vivo:relates ?person .
+    ?authorship vivo:rank ?rank .
+    ?person vivo:relatedBy ?authorship .
     ?person a foaf:Person .
-    ?person rdfs:label ?label .
+    ?authorship osrap:relatedToOrganization ?affiliationOrg .
+    ?affiliationOrg osrap:relatedByAuthorship ?authorship .
+    ?person g:orcid ?orcid .
     ?person obo:ARG_2000028 ?vcard .
     ?vcard a vcard:Individual .
     ?vcard vcard:hasName ?name .
     ?name a vcard:Name .
     ?name vcard:familyName ?lastName .
     ?name vcard:givenName ?firstName .
-    ?grant vivo:relates ?person .
-    ?grant vivo:relates ?role .
-    ?role a obo:BFO_0000023 .
-    ?role a ?roleType .
-    ?role obo:RO_0000052 ?person .
-    ?role obo:BFO_0000054 ?project .
-    ?role osrap:relatedToOrganization ?affiliationOrg .
     ?affiliationOrg a foaf:Organization .
-    ?affiliationOrg rdfs:label ?affiliationName .
+    ?affiliationOrg rdfs:label ?affiliationName .    
 } WHERE {
-    ?grant g:dbname "grants" .
-    ?grant g:id ?id .
-    ?grant g:researcher_details ?details .
-    ?details g:last_name ?lastName .
-    ?details g:first_name ?firstName .
-    ?details g:id ?personId .
-    #OPTIONAL { ?details g:middle_name ?middleName }
+    ?x g:researchers ?author .
+    ?author g:authorRank ?position .
     OPTIONAL {
-      ?details g:role "PI" .
-      BIND(vivo:PrincipalInvestigatorRole AS ?roleType)
+      ?author g:id ?researcherId 
     }
     OPTIONAL {
-      ?details g:role "Co-PI" .
-      BIND(vivo:CoPrincipalInvestigatorRole AS ?roleType)
+      ?author g:orcid ?orcid .
     }
+    ?author g:last_name ?lastName .
+    ?author g:first_name ?firstName .
     OPTIONAL {
-      ?details g:affiliations ?affiliation .
-      ?affiliation g:id ?grid .
-      ?affiliationWho g:gridid ?grid .
-      ?affiliationWho g:title ?affiliationName .
+      ?author g:research_orgs ?grid .
+      FILTER NOT EXISTS {
+          ?author g:research_orgs ?grid2 .
+          FILTER(?grid2 != ?grid)
+      }
+      ?researchOrg g:id ?grid .
+      ?x g:research_orgs ?researchOrg .
+      ?researchOrg g:name ?affiliationName
       BIND(IRI(CONCAT(STR(abox:), STR(?grid))) AS ?affiliationOrg)
     }
     # If there is no explicit affiliation, but there a research_org listed
     # and no other researchers listed, assume that the researcher is affiliated
     # with that research_org.
     OPTIONAL {
-      FILTER NOT EXISTS { ?details g:affiliations ?someAffiliation }
+      FILTER NOT EXISTS { ?author g:research_orgs ?someAffiliation }
       FILTER NOT EXISTS { 
-          ?grant g:researcher_details ?details2 .
-	  FILTER(?details != ?details2)
+          ?x g:researchers ?author2 .
+          FILTER(?author2 != ?author)
       }
-      ?grant g:research_orgs ?researchOrg .
+      ?x g:research_orgs ?researchOrg .
       FILTER NOT EXISTS {
-        ?researchOrg g:research_orgs ?researchOrg2 .
-	FILTER (?researchOrg2 != ?researchOrg)
+          ?researchOrg g:research_orgs ?researchOrg2 .
+          FILTER (?researchOrg2 != ?researchOrg)
       }
       ?researchOrg g:id ?grid .
-      ?affiliationWho g:gridid ?grid .
-      ?affiliationWho g:title ?affiliationName .
+      ?x g:research_orgs ?researchOrg .
+      ?researchOrg g:name ?affiliationName
       BIND(IRI(CONCAT(STR(abox:), STR(?grid))) AS ?affiliationOrg)
     }
-    BIND(CONCAT(STR(?lastName), ", ", STR(?firstName)) AS ?label)
-    BIND(IRI(CONCAT(STR(abox:), STR(?personId))) AS ?person)
-    BIND(IRI(CONCAT(STR(abox:), STR(?personId), "-vcard")) AS ?vcard)
-    BIND(IRI(CONCAT(STR(abox:), STR(?personId), "-vcard-name")) AS ?name)
-    BIND(IRI(CONCAT(STR(?grant), "-role-", ?personId)) AS ?role)
+    BIND(xsd:integer(?position) AS ?rank)
+    BIND(IRI(CONCAT(STR(?x), "-authorship-", ?position)) AS ?authorship)
+    BIND(IRI(CONCAT(STR(abox:), STR(?researcherId))) AS ?person)
+    BIND(IRI(CONCAT(STR(abox:), STR(?researcherId), "-vcard")) AS ?vcard)
+    BIND(IRI(CONCAT(STR(abox:), STR(?researcherId), "-vcard-name")) AS ?name)
 }

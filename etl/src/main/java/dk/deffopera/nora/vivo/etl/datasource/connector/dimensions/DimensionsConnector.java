@@ -192,7 +192,10 @@ public class DimensionsConnector extends ConnectorDataSource
             int batch = MONGO_DOCS_PER_ITERATION;
             while(batch > 0 && cursor.hasNext()) {
                 batch--;
+                long start = System.currentTimeMillis();
+                log.info("Getting next document from cursor");
                 Document d = cursor.next();
+                log.info((System.currentTimeMillis() - start) + " ms to retrieve document");
                 String jsonStr = d.toJson();   
                 JSONObject jsonObj = new JSONObject(jsonStr);
                 log.info(jsonObj.toString(2));

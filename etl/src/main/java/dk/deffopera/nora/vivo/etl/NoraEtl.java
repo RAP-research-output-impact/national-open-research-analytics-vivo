@@ -14,9 +14,11 @@ import org.apache.jena.rdf.model.Model;
 import dk.deffopera.nora.vivo.etl.datasource.DataSource;
 import dk.deffopera.nora.vivo.etl.datasource.connector.GraphClearer;
 import dk.deffopera.nora.vivo.etl.datasource.connector.dimensions.DimensionsByDoiConnector;
+import dk.deffopera.nora.vivo.etl.datasource.connector.dimensions.DimensionsClinicalTrialsConnector;
 import dk.deffopera.nora.vivo.etl.datasource.connector.dimensions.DimensionsConnector;
 import dk.deffopera.nora.vivo.etl.datasource.connector.dimensions.DimensionsDatasetsConnector;
 import dk.deffopera.nora.vivo.etl.datasource.connector.dimensions.DimensionsGrantsConnector;
+import dk.deffopera.nora.vivo.etl.datasource.connector.dimensions.DimensionsPatentsConnector;
 import dk.deffopera.nora.vivo.etl.util.SparqlEndpoint;
 import dk.deffopera.nora.vivo.etl.util.SparqlEndpointParams;
 
@@ -27,7 +29,7 @@ public class NoraEtl {
     public static void main(String[] args) {
         if(args.length < 3) {
             System.out.println("Usage: " 
-                    + "dimensions|dimensionsByDoi|clearGraph|grants|datasets "
+                    + "dimensions|dimensionsByDoi|clearGraph|grants|datasets|patents "
                     + "outputfile dimensionsUsername=<username> dimensionsPassword=<password> " 
                     + "[sourceEndpointURI= sourceEndpointUsername= sourceEndpointPassword=] "
                     + "[dataDir=] [endpointURI= endpointUpdateURI= username= password=] [authUsername= authPassword=] [graphURI=] "
@@ -105,6 +107,24 @@ public class NoraEtl {
                     getParameter(queryTerms, "mongoPassword"));
         } else if ("datasets".equals(connectorName)) {
             connector = new DimensionsDatasetsConnector(
+                    getParameter(queryTerms, "dimensionsUsername"), 
+                    getParameter(queryTerms, "dimensionsPassword"),
+                    getParameter(queryTerms, "mongoServer"),
+                    getParameter(queryTerms, "mongoPort"),
+                    getParameter(queryTerms, "mongoCollection"),
+                    getParameter(queryTerms, "mongoUsername"),
+                    getParameter(queryTerms, "mongoPassword"));
+        } else if ("patents".equals(connectorName)) {
+            connector = new DimensionsPatentsConnector(
+                    getParameter(queryTerms, "dimensionsUsername"), 
+                    getParameter(queryTerms, "dimensionsPassword"),
+                    getParameter(queryTerms, "mongoServer"),
+                    getParameter(queryTerms, "mongoPort"),
+                    getParameter(queryTerms, "mongoCollection"),
+                    getParameter(queryTerms, "mongoUsername"),
+                    getParameter(queryTerms, "mongoPassword"));
+        } else if ("clinical_trials".equals(connectorName)) {
+            connector = new DimensionsClinicalTrialsConnector(
                     getParameter(queryTerms, "dimensionsUsername"), 
                     getParameter(queryTerms, "dimensionsPassword"),
                     getParameter(queryTerms, "mongoServer"),

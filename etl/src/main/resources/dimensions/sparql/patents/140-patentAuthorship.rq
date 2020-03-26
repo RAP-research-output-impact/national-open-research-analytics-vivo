@@ -33,62 +33,37 @@ CONSTRUCT {
     ?person vivo:relatedBy ?authorship .
     ?person a foaf:Person .
     ?person rdfs:label ?personLabel .
-    ?authorship osrap:relatedToOrganization ?affiliationOrg .
-    ?affiliationOrg osrap:relatedByAuthorship ?authorship .
-    ?person g:orcid ?orcid .
     ?person obo:ARG_2000028 ?vcard .
     ?vcard a vcard:Individual .
     ?vcard vcard:hasName ?name .
     ?name a vcard:Name .
     ?name vcard:familyName ?lastName .
     ?name vcard:givenName ?firstName .
-    ?affiliationOrg a foaf:Organization .
-    ?affiliationOrg rdfs:label ?affiliationName .    
 } WHERE {
-    ?x g:researchers ?author .
-    ?author g:authorRank ?position .
+    ?x g:inventors ?author .
+    ?author g:authorRank ?rank .
+    ?author g:name ?authorFullName .
+    ?author g:uncontrolledName ?authorUncontrolledName .
+    BIND(IRI(CONCAT(STR(?x), "-authorship", STR(?rank))) AS ?authorship)
+    BIND(IRI(CONCAT(STR(?x), "-author", STR(?rank))) AS ?uncontrolledAuthorInd)
     OPTIONAL {
-      ?author g:id ?researcherId 
-    }
-    OPTIONAL {
-      ?author g:orcid ?orcid .
-    }
-    ?author g:last_name ?lastName .
-    ?author g:first_name ?firstName .
-    BIND(CONCAT(STR(?lastName), ", ", ?firstName) AS ?personLabel)
-    OPTIONAL {
-      ?author g:research_orgs ?grid .
+      ?x g:researchers ?researcher .
+      ?researcher g:last_name_lower ?researcherLastNameLower .
+      FILTER(REGEX(?authorFullName, ?researcherLastNameLower))
       FILTER NOT EXISTS {
-          ?author g:research_orgs ?grid2 .
-          FILTER(?grid2 != ?grid)
+        ?x g:researchers ?researcher2 .
+        ?researcher2 g:last_name_lower ?researcher2LastNameLower .
+        FILTER(REGEX(?authorFullName, ?researcher2LastNameLower))
+	FILTER(?researcher != ?researcher2)
       }
-      ?researchOrg g:id ?grid .
-      ?x g:research_orgs ?researchOrg .
-      ?researchOrg g:name ?affiliationName
-      BIND(IRI(CONCAT(STR(abox:), STR(?grid))) AS ?affiliationOrg)
+      ?researcher g:id ?researcherId .
+      ?researcher g:last_name ?lastName .
+      ?researcher g:first_name ?firstName .
+      BIND(CONCAT(STR(?lastName), ", ", STR(?firstName)) AS ?controlledPersonLabel) 
+      BIND(IRI(CONCAT(STR(abox:), ?researcherId)) AS ?controlledAuthorInd)
+      BIND(IRI(CONCAT(STR(abox:), ?researcherId, "-vcard")) AS ?vcard)
+      BIND(IRI(CONCAT(STR(abox:), ?researcherId, "-vcard-name")) AS ?name)
     }
-    # If there is no explicit affiliation, but there a research_org listed
-    # and no other researchers listed, assume that the researcher is affiliated
-    # with that research_org.
-    OPTIONAL {
-      FILTER NOT EXISTS { ?author g:research_orgs ?someAffiliation }
-      FILTER NOT EXISTS { 
-          ?x g:researchers ?author2 .
-          FILTER(?author2 != ?author)
-      }
-      ?x g:research_orgs ?researchOrg .
-      FILTER NOT EXISTS {
-          ?researchOrg g:research_orgs ?researchOrg2 .
-          FILTER (?researchOrg2 != ?researchOrg)
-      }
-      ?researchOrg g:id ?grid .
-      ?x g:research_orgs ?researchOrg .
-      ?researchOrg g:name ?affiliationName
-      BIND(IRI(CONCAT(STR(abox:), STR(?grid))) AS ?affiliationOrg)
-    }
-    BIND(xsd:integer(?position) AS ?rank)
-    BIND(IRI(CONCAT(STR(?x), "-authorship-", ?position)) AS ?authorship)
-    BIND(IRI(CONCAT(STR(abox:), STR(?researcherId))) AS ?person)
-    BIND(IRI(CONCAT(STR(abox:), STR(?researcherId), "-vcard")) AS ?vcard)
-    BIND(IRI(CONCAT(STR(abox:), STR(?researcherId), "-vcard-name")) AS ?name)
+    BIND(COALESCE(?controlledAuthorInd, ?uncontrolledAuthorInd) AS ?person)
+    BIND(COALESCE(?controlledPersonLabel, ?authorUncontrolledName) AS ?personLabel)
 }

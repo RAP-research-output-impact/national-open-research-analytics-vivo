@@ -1,0 +1,101 @@
+PREFIX rdf:      <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:     <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd:      <http://www.w3.org/2001/XMLSchema#>
+PREFIX owl:      <http://www.w3.org/2002/07/owl#>
+PREFIX swrl:     <http://www.w3.org/2003/11/swrl#>
+PREFIX swrlb:    <http://www.w3.org/2003/11/swrlb#>
+PREFIX vitro:    <http://vitro.mannlib.cornell.edu/ns/vitro/0.7#>
+PREFIX bibo:     <http://purl.org/ontology/bibo/>
+PREFIX c4o:      <http://purl.org/spar/c4o/>
+PREFIX cito:     <http://purl.org/spar/cito/>
+PREFIX event:    <http://purl.org/NET/c4dm/event.owl#>
+PREFIX fabio:    <http://purl.org/spar/fabio/>
+PREFIX foaf:     <http://xmlns.com/foaf/0.1/>
+PREFIX geo:      <http://aims.fao.org/aos/geopolitical.owl#>
+PREFIX obo:      <http://purl.obolibrary.org/obo/>
+PREFIX ocrer:    <http://purl.org/net/OCRe/research.owl#>
+PREFIX ocresd:   <http://purl.org/net/OCRe/study_design.owl#>
+PREFIX skos:     <http://www.w3.org/2004/02/skos/core#>
+PREFIX vcard:    <http://www.w3.org/2006/vcard/ns#>
+PREFIX vitro-public: <http://vitro.mannlib.cornell.edu/ns/vitro/public#>
+PREFIX vivo:     <http://vivoweb.org/ontology/core#>
+PREFIX scires:   <http://vivoweb.org/ontology/scientific-research#>
+PREFIX g:        <http://ingest.mannlib.cornell.edu/generalizedXMLtoRDF/0.1/> 
+PREFIX osrap:    <http://vivo.deffopera.dk/ontology/osrap/>
+PREFIX abox:     <http://vivo.deffopera.dk/individual/>
+
+CONSTRUCT {
+    ?patent a bibo:Patent .
+    ?patent rdfs:label ?title .
+    ?patent bibo:abstract ?abstract .
+    ?patent vivo:identifier ?id .
+    ?patent osrap:jurisdiction ?jurisdiction .
+    ?patent osrap:filingStatus ?filingStatusInd .
+    ?patent osrap:legalStatus ?legalStatusInd .
+    ?patent vivo:dateIssued ?grantedDtv .
+    ?grantedDtv a vivo:DateTimeValue .
+    ?grantedDtv vivo:dateTime ?grantedDt .
+    ?grantedDtv vivo:dateTimePrecision vivo:yearPrecision .
+    ?patent vivo:dateTimeValue ?dtv .
+    ?dtv a vivo:DateTimeValue .
+    ?dtv vivo:dateTime ?dt .
+    ?dtv vivo:dateTimePrecision vivo:yearPrecision .
+    ?patent vivo:assignee ?assigneeOrg .
+    ?assigneeOrg a foaf:Organization .
+    ?assigneeOrg rdfs:label ?assigneeName .
+    ?patent osrap:assigneeOriginal ?originalAssigneeOrg .
+    ?originalAssigneeOrg a foaf:Organization .
+    ?originalAssigneeOrg rdfs:label ?originalAssigneeName .
+    ?patent osrap:funder ?funderOrg .
+    ?funderOrg a vivo:FundingOrganization .
+    ?funderOrg rdfs:label ?funderName .
+} WHERE {
+    ?patent g:dbname "patents" .
+    ?patent g:id ?id .
+    BIND(STRBEFORE(STR(?id), "-") AS ?jurisdiction)
+    ?patent g:title ?title .
+    OPTIONAL {
+        ?patent g:abstract ?abstract 
+    }
+    OPTIONAL {
+        ?patent g:filing_status ?filingStatus .
+	BIND(IRI(CONCAT(STR(osrap:), REPLACE(LCASE(STR(?filingStatus)), "\\W", ""))) AS ?filingStatusInd)
+    }
+    OPTIONAL {
+        ?patent g:legal_status ?legalStatus .
+	BIND(IRI(CONCAT(STR(osrap:), REPLACE(LCASE(STR(?legalStatus)), "\\W", ""))) AS ?legalStatusInd)
+    }
+    OPTIONAL {
+        ?patent g:id ?id .
+        ?patent g:granted_year ?grantedYear .
+	BIND(xsd:dateTime(CONCAT(STR(?grantedYear), "-01-01T00:00:00")) AS ?grantedDt)
+	BIND(IRI(CONCAT(STR(?patent), "-granted-dtv")) AS ?grantedDtv)
+    }
+    OPTIONAL {
+        ?patent g:id ?id .
+        ?patent g:publication_year ?year .
+	BIND(xsd:dateTime(CONCAT(STR(?year), "-01-01T00:00:00")) AS ?dt)
+	BIND(IRI(CONCAT(STR(?patent), "-dtv")) AS ?dtv)
+    }
+    OPTIONAL {
+        ?patent g:id ?id .
+	?patent g:original_assignees ?originalAssignee .
+	?originalAssignee g:id ?originalAssigneeGrid .
+	?originalAssignee g:name ?originalAssigneeName .
+	BIND(IRI(CONCAT(STR(abox:), ?originalAssigneeGrid)) AS ?originalAssigneeOrg)
+    }
+    OPTIONAL {
+        ?patent g:id ?id .
+	?patent g:assignees ?assignee .
+	?assignee g:id ?assigneeGrid .
+	?assignee g:name ?assigneeName .
+	BIND(IRI(CONCAT(STR(abox:), ?assigneeGrid)) AS ?assigneeOrg)
+    }
+    OPTIONAL {
+        ?patent g:id ?id .
+	?patent g:funders ?funder .
+	?funder g:id ?funderGrid .
+	?funder g:name ?funderName 
+	BIND(IRI(CONCAT(STR(abox:), ?funderGrid)) AS ?funderOrg)
+    }
+}

@@ -18,7 +18,7 @@ SELECT ?affiliation (GROUP_CONCAT(?rank;separator=";") AS ?ranks) (MIN(?affiliat
 (MIN(?rank) AS ?minRank)
 WHERE {  
 {
-SELECT ?rank (MIN(?affiliation_) AS ?affiliation) WHERE {
+SELECT ?rank (COALESCE(MIN(?affiliation_), owl:Nothing) AS ?affiliation) WHERE {
   ?individualURI a bibo:Document .
   ?individualURI vivo:relatedBy ?authorship .
   ?authorship a vivo:Authorship .

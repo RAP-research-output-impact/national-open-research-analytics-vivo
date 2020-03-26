@@ -166,7 +166,9 @@
 <#if authorAffiliations??>
 <ol style="margin-top:2ex;">
 <#list authorAffiliations as authorAffiliation>
-  <li>(${authorAffiliation?index + 1}) <a href="${profileUrl(authorAffiliation.affiliation)}">${authorAffiliation.affiliationName}</a></li>  
+  <#if authorAffiliation.affiliation?has_content && authorAffiliation.affiliationName?has_content>
+    <li>(${authorAffiliation?index + 1}) <a href="${profileUrl(authorAffiliation.affiliation)}">${authorAffiliation.affiliationName}</a></li>
+  </#if>
 </#list>
 </ol>
 </#if>

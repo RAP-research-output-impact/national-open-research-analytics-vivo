@@ -4,7 +4,7 @@
 
 <script src="${urls.theme}/js/jquery.corner.js"></script>
 
-<a href="${urls.base}/search?classgroup=http%3A%2F%2Fvivoweb.org%2Fontology%23vitroClassGrouppublications&controller=Classgroup&type=http%3A%2F%2Fvivoweb.org%2Fontology%2Fcore%23Dataset">Dataset</a>
+<a href="${urls.base}/search?classgroup=http%3A%2F%2Fvivoweb.org%2Fontology%23vitroClassGrouppublications&controller=Classgroup&type=http%3A%2F%2Fvivoweb.org%2Fontology%2Fcore%23Dataset&facet_document-type_ss=http%3A%2F%2Fvivoweb.org%2Fontology%2Fcore%23Dataset">Datasets</a>
 
 <a href="${urls.base}/search?classgroup=http%3A%2F%2Fvivoweb.org%2Fontology%23vitroClassGroupactivities&controller=Classgroup&type=http%3A%2F%2Fvivoweb.org%2Fontology%2Fcore%23Grant">Grants</a>
 

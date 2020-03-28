@@ -27,6 +27,7 @@
             </tr>
             <#if facets?has_content>
                 <#list facets as facet>
+		  <#if facet.categories?has_content>
                     <tr class="search-facets-head">
                         <td style="align: left">
                             <h4 class="search-facets-title"><div class="search-facets-toggle">+</div>${facet.publicName}</h4>
@@ -36,13 +37,14 @@
                         <td>
                             <ul>
                                 <#list facet.categories as category>
-                                    <#if category.text != 'Journal' && category.text != 'Book' && category.text != 'Conference'>
+                                    <#if category.text?has_content && category.text != 'Journal' && category.text != 'Book' && category.text != 'Conference'>
                                         <li><a href="${category.url}" title="${category.text}">${category.text}</a><span>(${category.count})</span></li>
                                     </#if>
                                 </#list>
                             </ul>
                         </td>
                     </tr>
+		  </#if>
                 </#list>
             </#if>
         </table>

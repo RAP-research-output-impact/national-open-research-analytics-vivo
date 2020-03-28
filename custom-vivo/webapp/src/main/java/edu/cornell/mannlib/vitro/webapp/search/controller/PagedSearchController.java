@@ -606,22 +606,20 @@ public class PagedSearchController extends FreemarkerHttpServlet {
         // rdf:type filtering param
         String typeParam = vreq.getParameter(PARAM_RDFTYPE);
 
-        if ( ! StringUtils.isBlank(classgroupParam) ) {
-            // ClassGroup filtering
-            log.debug("Firing classgroup query ");
-            log.debug("request.getParameter(classgroup) is "+ classgroupParam);
-            query.addFilterQuery(VitroSearchTermNames.CLASSGROUP_URI + ":\"" + classgroupParam + "\"");
-
-            //with ClassGroup filtering we want type facets
-            query.addFacetFields(VitroSearchTermNames.RDFTYPE).setFacetLimit(-1);
-
-        }else if (  ! StringUtils.isBlank(typeParam) ) {
+        if (  ! StringUtils.isBlank(typeParam) ) {
             // rdf:type filtering
             log.debug("Firing type query ");
             log.debug("request.getParameter(type) is "+ typeParam);
             query.addFilterQuery(VitroSearchTermNames.RDFTYPE + ":\"" + typeParam + "\"");
             //with type filtering we don't have facets.
-        }else{
+        } else if ( ! StringUtils.isBlank(classgroupParam) ) {
+            // ClassGroup filtering
+            log.debug("Firing classgroup query ");
+            log.debug("request.getParameter(classgroup) is "+ classgroupParam);
+            query.addFilterQuery(VitroSearchTermNames.CLASSGROUP_URI + ":\"" + classgroupParam + "\"");
+            //with ClassGroup filtering we want type facets
+            query.addFacetFields(VitroSearchTermNames.RDFTYPE).setFacetLimit(-1);
+        } else {
             //When no filtering is set, we want ClassGroup facets
             query.addFacetFields(VitroSearchTermNames.CLASSGROUP_URI).setFacetLimit(-1);
         }

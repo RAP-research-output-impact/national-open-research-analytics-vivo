@@ -251,7 +251,7 @@
 	PREFIX bibo: <http://purl.org/ontology/bibo/> 
         SELECT DISTINCT ?filingStatus
         WHERE {
-	    ?uri <http://vivo.deffopera.dk/ontology/osrap/jurisdiction> ?filingStatus .
+	    ?uri <http://vivo.deffopera.dk/ontology/osrap/filingStatus> ?filingStatus .
         }
     """ .
 
@@ -266,7 +266,7 @@
 	PREFIX bibo: <http://purl.org/ontology/bibo/> 
         SELECT DISTINCT ?legalStatus
         WHERE {
-	    ?uri <http://vivo.deffopera.dk/ontology/osrap/jurisdiction> ?legalStatus .
+	    ?uri <http://vivo.deffopera.dk/ontology/osrap/legalStatus> ?legalStatus .
         }
     """ .
 
@@ -350,7 +350,6 @@
             <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.DocumentModifier> ;
     rdfs:label "Funder document modifier" ;
     :hasTargetField "facet_funder_ss" ;
-    :hasTypeRestriction "http://vivoweb.org/ontology/core#Grant";
     :hasSelectQuery """
 	PREFIX vitro: <http://vitro.mannlib.cornell.edu/ns/vitro/0.7#>
 	PREFIX vivo: <http://vivoweb.org/ontology/core#>

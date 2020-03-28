@@ -1,0 +1,132 @@
+PREFIX rdf:      <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:     <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd:      <http://www.w3.org/2001/XMLSchema#>
+PREFIX owl:      <http://www.w3.org/2002/07/owl#>
+PREFIX swrl:     <http://www.w3.org/2003/11/swrl#>
+PREFIX swrlb:    <http://www.w3.org/2003/11/swrlb#>
+PREFIX vitro:    <http://vitro.mannlib.cornell.edu/ns/vitro/0.7#>
+PREFIX bibo:     <http://purl.org/ontology/bibo/>
+PREFIX c4o:      <http://purl.org/spar/c4o/>
+PREFIX cito:     <http://purl.org/spar/cito/>
+PREFIX event:    <http://purl.org/NET/c4dm/event.owl#>
+PREFIX fabio:    <http://purl.org/spar/fabio/>
+PREFIX foaf:     <http://xmlns.com/foaf/0.1/>
+PREFIX geo:      <http://aims.fao.org/aos/geopolitical.owl#>
+PREFIX obo:      <http://purl.obolibrary.org/obo/>
+PREFIX ocrer:    <http://purl.org/net/OCRe/research.owl#>
+PREFIX ocresd:   <http://purl.org/net/OCRe/study_design.owl#>
+PREFIX skos:     <http://www.w3.org/2004/02/skos/core#>
+PREFIX vcard:    <http://www.w3.org/2006/vcard/ns#>
+PREFIX vitro-public: <http://vitro.mannlib.cornell.edu/ns/vitro/public#>
+PREFIX vivo:     <http://vivoweb.org/ontology/core#>
+PREFIX scires:   <http://vivoweb.org/ontology/scientific-research#>
+PREFIX g:        <http://ingest.mannlib.cornell.edu/generalizedXMLtoRDF/0.1/> 
+PREFIX osrap:    <http://vivo.deffopera.dk/ontology/osrap/>
+PREFIX abox:     <http://vivo.deffopera.dk/individual/>
+
+CONSTRUCT {
+    ?person a foaf:Person .
+    ?person rdfs:label ?label .
+    ?person obo:ARG_2000028 ?vcard .
+    ?vcard a vcard:Individual .
+    ?vcard vcard:hasName ?name .
+    ?name a vcard:Name .
+    ?name vcard:familyName ?lastName .
+    ?name vcard:givenName ?firstName .
+    ?role a obo:BFO_0000023 .
+    ?role a ?roleType .
+    ?role vivo:rank ?rank .
+    ?role obo:RO_0000052 ?person .
+    ?role obo:BFO_0000054 ?clinicalTrial .
+    ?clinicalTrial obo:BFO_0000055 ?role .
+    ?role osrap:relatedToOrganization ?affiliationOrg .
+    ?affiliationOrg a foaf:Organization .
+    ?affiliationOrg rdfs:label ?affiliationName .
+} WHERE {
+    ?clinicalTrial g:dbname "clinical_trials" .
+    ?clinicalTrial g:id ?id .
+    ?clinicalTrial g:investigators_parsed ?investigator .
+    ?investigator g:authorRank ?authorRank .
+    BIND(xsd:integer(?authorRank) AS ?rank)
+    OPTIONAL {
+        ?investigator g:grid ?grid .
+	?affiliationWho g:gridid ?grid .
+	?affiliationWho g:title ?affiliationName
+        BIND(IRI(CONCAT(STR(abox:), STR(?grid))) AS ?affiliationOrg)
+    }
+    OPTIONAL {
+      ?investigator g:role "Principal Investigator" .
+      BIND(vivo:PrincipalInvestigatorRole AS ?roleType)
+    }
+    OPTIONAL {
+      ?investigator g:role "Sub-Investigator" .
+      BIND(osrap:LeaderRole AS ?roleType)
+    }
+    OPTIONAL {
+      ?investigator g:role "Study leader" .
+      BIND(vivo:LeaderRole AS ?roleType)
+    }
+    OPTIONAL {
+      ?investigator g:role "Study Director" .
+      BIND(vivo:LeaderRole AS ?roleType)
+    }
+    OPTIONAL {
+      ?investigator g:role ?roleStr .
+      FILTER(REGEX(STR(?roleStr), "contact", "i"))
+      BIND(osrap:ContactRole AS ?roleType)
+    }
+    OPTIONAL {
+      ?investigator g:role ?roleStr 
+      FILTER(REGEX(STR(?roleStr), "primary", "i") && REGEX(STR(?roleStr), "scientific", "i"))
+      BIND(osrap:PrimaryScientificContactRole AS ?roleType)
+    }
+    OPTIONAL {
+      ?investigator g:role ?roleStr 
+      FILTER(REGEX(STR(?roleStr), "additional", "i") && REGEX(STR(?roleStr), "scientific", "i"))
+      BIND(osrap:AdditionalScientificContactRole AS ?roleType)
+    }
+    OPTIONAL {
+      ?investigator g:role ?roleStr 
+      FILTER(REGEX(STR(?roleStr), "primary", "i") && REGEX(STR(?roleStr), "public", "i"))
+      BIND(osrap:PrimaryPublicContactRole AS ?roleType)
+    }
+    OPTIONAL {
+      ?investigator g:role ?roleStr 
+      FILTER(REGEX(STR(?roleStr), "additional", "i") && REGEX(STR(?roleStr), "public", "i"))
+      BIND(osrap:AdditionalPublicContactRole AS ?roleType)
+    }
+    OPTIONAL {
+      ?investigator g:role ?roleStr 
+      FILTER(!REGEX(STR(?roleStr), "primary", "i") && !REGEX(STR(?roleStr), "additional", "i") && REGEX(STR(?roleStr), "scientific", "i"))
+      BIND(osrap:ScientificContactRole AS ?roleType)
+    }
+    OPTIONAL {
+      ?investigator g:role ?roleStr 
+      FILTER(!REGEX(STR(?roleStr), "additional", "i") && !REGEX(STR(?roleStr), "primary", "i") && REGEX(STR(?roleStr), "public", "i"))
+      BIND(osrap:PublicContactRole AS ?roleType)
+    }
+    BIND(IRI(CONCAT(STR(?clinicalTrial), "-role", STR(?authorRank), "-bearer")) AS ?uncontrolledPerson)
+    ?investigator g:name ?uncontrolledLabel .
+    ?investigator g:name_normalized ?nameNormalized .
+    OPTIONAL {
+        ?clinicalTrial g:researchers ?researcher .
+	?researcher g:last_name_normalized ?lastNameNormalized .
+	FILTER(REGEX(STR(?nameNormalized), STR(?lastNameNormalized)))
+	FILTER NOT EXISTS {
+            ?clinicalTrial g:researchers ?researcher2 .
+	    FILTER(?researcher2 != ?researcher)
+            ?researcher2 g:last_name_normalized ?lastNameNormalized2
+	    FILTER(REGEX(STR(?nameNormalized), STR(?lastNameNormalized2)))
+	}
+	?researcher g:id ?personId .
+	?researcher g:last_name ?lastName .
+	?researcher g:first_name ?firstName .
+        BIND(IRI(CONCAT(STR(abox:), STR(?personId))) AS ?controlledPerson)
+        BIND(CONCAT(STR(?lastName), ", ", STR(?firstName)) AS ?controlledLabel)
+        BIND(IRI(CONCAT(STR(abox:), STR(?personId), "-vcard")) AS ?vcard)
+        BIND(IRI(CONCAT(STR(abox:), STR(?personId), "-vcard-name")) AS ?name)
+    }
+    BIND(COALESCE(?controlledLabel, ?uncontrolledLabel) AS ?label)
+    BIND(COALESCE(?controlledPerson, ?uncontrolledPerson) AS ?person)
+    BIND(IRI(CONCAT(STR(?clinicalTrial), "-role", ?authorRank)) AS ?role)
+}

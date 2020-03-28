@@ -1,0 +1,92 @@
+PREFIX rdf:      <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:     <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd:      <http://www.w3.org/2001/XMLSchema#>
+PREFIX owl:      <http://www.w3.org/2002/07/owl#>
+PREFIX swrl:     <http://www.w3.org/2003/11/swrl#>
+PREFIX swrlb:    <http://www.w3.org/2003/11/swrlb#>
+PREFIX vitro:    <http://vitro.mannlib.cornell.edu/ns/vitro/0.7#>
+PREFIX bibo:     <http://purl.org/ontology/bibo/>
+PREFIX c4o:      <http://purl.org/spar/c4o/>
+PREFIX cito:     <http://purl.org/spar/cito/>
+PREFIX event:    <http://purl.org/NET/c4dm/event.owl#>
+PREFIX fabio:    <http://purl.org/spar/fabio/>
+PREFIX foaf:     <http://xmlns.com/foaf/0.1/>
+PREFIX geo:      <http://aims.fao.org/aos/geopolitical.owl#>
+PREFIX obo:      <http://purl.obolibrary.org/obo/>
+PREFIX ocrer:    <http://purl.org/net/OCRe/research.owl#>
+PREFIX ocresd:   <http://purl.org/net/OCRe/study_design.owl#>
+PREFIX skos:     <http://www.w3.org/2004/02/skos/core#>
+PREFIX vcard:    <http://www.w3.org/2006/vcard/ns#>
+PREFIX vitro-public: <http://vitro.mannlib.cornell.edu/ns/vitro/public#>
+PREFIX vivo:     <http://vivoweb.org/ontology/core#>
+PREFIX scires:   <http://vivoweb.org/ontology/scientific-research#>
+PREFIX g:        <http://ingest.mannlib.cornell.edu/generalizedXMLtoRDF/0.1/> 
+PREFIX osrap:    <http://vivo.deffopera.dk/ontology/osrap/>
+PREFIX abox:     <http://vivo.deffopera.dk/individual/>
+
+CONSTRUCT {
+    ?clinicalTrial a obo:ERO_0000016 .
+    ?clinicalTrial rdfs:label ?title .
+    ?clinicalTrial vivo:abbreviation ?acronym .
+    ?clinicalTrial bibo:abstract ?abstract .
+    ?clinicalTrial vivo:identifier ?id .
+    ?clinicalTrial obo:ERO_0001518 ?phaseInd .
+    ?clinicalTrial osrap:condition ?condition .
+    ?clinicalTrial osrap:intervention ?interventionDescription .
+    ?clinicalTrial osrap:gender ?gender .
+    ?clinicalTrial vivo:dateTimeInterval ?dti .
+    ?dti a vivo:DateTimeInterval .
+    ?dti vivo:start ?startDtv .
+    ?startDtv a vivo:DateTimeValue .
+    ?startDtv vivo:dateTime ?startDt .
+    ?startDtv vivo:dateTimeValuePrecision vivo:yearPrecision .
+    ?dti vivo:end ?endDtv .
+    ?endDtv a vivo:DateTimeValue .
+    ?endDtv vivo:dateTime ?endDt .
+    ?endDtv vivo:dateTimeValuePrecision vivo:yearPrecision .
+    ?clinicalTrial obo:ARG_2000028 ?vcard .
+    ?vcard a vcard:Kind .
+    ?vcard vcard:hasURL ?vcardUrl .
+    ?vcardUrl a vcard:URL .
+    ?vcardUrl vcard:url ?url .
+} WHERE {
+    ?clinicalTrial g:dbname "clinical_trials" .
+    ?clinicalTrial g:id ?id .
+    ?clinicalTrial g:title ?title .
+    OPTIONAL {
+        ?clinicalTrial g:acronym ?acronym .
+    }
+    OPTIONAL {
+        ?clinicalTrial g:abstract ?abstract 
+    }
+    OPTIONAL {
+        ?clinicalTrial g:phase ?phase .
+	BIND(IRI(CONCAT("http://purl.org/net/OCRe/study_design.owl#", REPLACE(STR(?phase), "\\W", "_"))) AS ?phaseInd)
+    }
+    OPTIONAL {
+        ?clinicalTrial g:conditions ?condition .
+    }
+    OPTIONAL {
+        ?clinicalTrial g:interventions ?intervention .
+	?intervention g:description ?interventionDescription .
+    } 
+    OPTIONAL {
+        ?clinicalTrial g:gender ?gender .
+    }
+    OPTIONAL {
+        ?clinicalTrial g:id ?id .
+        ?clinicalTrial g:start_year ?startYear .
+	?clinicalTrial g:end_year ?endYear .
+	BIND(xsd:dateTime(CONCAT(STR(?startYear), "-01-01T00:00:00")) AS ?startDt)
+	BIND(xsd:dateTime(CONCAT(STR(?endYear), "-01-01T00:00:00")) AS ?endDt)
+	BIND(IRI(CONCAT(STR(?clinicalTrial), "-start-dtv")) AS ?startDtv)
+	BIND(IRI(CONCAT(STR(?clinicalTrial), "-end-dtv")) AS ?endDtv)
+	BIND(IRI(CONCAT(STR(?clinicalTrial), "-dti")) AS ?dti)
+    }
+    OPTIONAL {
+        ?clinicalTrial g:linkout ?linkout .
+        BIND(xsd:anyURI(?linkout) AS ?url)
+	BIND(IRI(CONCAT(STR(?clinicalTrial), "-vcard")) AS ?vcard)
+	BIND(IRI(CONCAT(STR(?clinicalTrial), "-vcard-url")) AS ?vcardUrl)
+    }
+}

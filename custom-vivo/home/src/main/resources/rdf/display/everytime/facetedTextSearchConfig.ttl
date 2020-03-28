@@ -1,246 +1,246 @@
-@prefix : <http://vitro.mannlib.cornell.edu/ns/vitro/ApplicationSetup#> .
-@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-
-# A version of the faceting where the facet values are recorded as searchable text strings
-# instead of their RDF IRIs
-
-:documentModifier_facetext_document-type
-    a   <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.SelectQueryDocumentModifier> ,
-            <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.DocumentModifier> ;
-    rdfs:label "Document type document modifier" ;
-    :hasTargetField "facetext_document-type_en" ;
-    :hasTypeRestriction "http://purl.obolibrary.org/obo/IAO_0000030";
-    :hasSelectQuery """
-        PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#> 
-	PREFIX vitro: <http://vitro.mannlib.cornell.edu/ns/vitro/0.7#>
-	PREFIX bibo:   <http://purl.org/ontology/bibo/>
-	PREFIX wos: <http://webofscience.com/ontology/wos#>
-        SELECT DISTINCT ?typeLabel
-        WHERE {
-            ?uri vitro:mostSpecificType ?type .
-	    ?type rdfs:label ?typeLabel
-	    FILTER (?type != bibo:Journal)
-            FILTER (?type != bibo:Book)
-            FILTER (?type != wos:Conference)
-        }
-    """ .
-
-:uriFinder_label_facetext_document-type
-    a   <java:edu.cornell.mannlib.vitro.webapp.searchindex.indexing.IndexingUriFinder> ,
-            <java:edu.cornell.mannlib.vitro.webapp.searchindex.indexing.SelectQueryUriFinder> ;
-    rdfs:label "Document type label uri finder" ;
-    :hasPredicateRestriction "http://www.w3.org/2000/01#label" ;
-    :hasSelectQuery """
-        PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#> 
-	PREFIX vitro: <http://vitro.mannlib.cornell.edu/ns/vitro/0.7#>
-        SELECT DISTINCT ?uri
-        WHERE {
-            ?uri vitro:mostSpecificType ?subject .
-        }
-    """ .
-
-:documentModifier_facetext_publication-year
-    a   <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.SelectQueryDocumentModifier> ,
-            <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.DocumentModifier> ;
-    rdfs:label "Publication year document modifier" ;
-    :hasTargetField "facetext_publication-year_en" ;
-    :hasTypeRestriction "http://purl.obolibrary.org/obo/IAO_0000030";
-    :hasSelectQuery """
-	PREFIX vivo: <http://vivoweb.org/ontology/core#>
-        SELECT DISTINCT ?year
-        WHERE {
-            ?uri vivo:dateTimeValue ?dtv .
-	    ?dtv vivo:dateTime ?dateTime .
-	    BIND(substr(str(?dateTime), 1, 4) AS ?year)
-        }
-    """ .
-
-:documentModifier_facetext_organization
-    a   <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.SelectQueryDocumentModifier> ,
-            <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.DocumentModifier> ;
-    rdfs:label "Organization document modifier" ;
-    :hasTargetField "facetext_organization_en" ;
-    :hasSelectQuery """
-        PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#> 
-	PREFIX vivo: <http://vivoweb.org/ontology/core#>
-	PREFIX wos: <http://webofscience.com/ontology/wos#> 
-	PREFIX foaf: <http://xmlns.com/foaf/0.1/>
-	PREFIX nora: <http://vivo.deffopera.dk/ontology/osrap/>
-	PREFIX obo:      <http://purl.obolibrary.org/obo/>
-        SELECT (MIN(?rawLabel) AS ?orgLabel)
-        WHERE {
-	  {
-            ?authorship vivo:relates ?uri .
-            ?authorship a vivo:Authorship .
-            ?authorship nora:relatedToOrganization ?org .
-            ?org a foaf:Organization .
-	    ?org rdfs:label ?rawLabel
-	    FILTER NOT EXISTS { ?org a vivo:University }
-	    FILTER NOT EXISTS { ?org a vivo:Hospital }
-	  } UNION {
-            ?uri a vivo:Grant .
-            ?uri vivo:relates ?role .
-            ?role a obo:BFO_0000023 .
-            ?role nora:relatedToOrganization ?org .
-            ?org rdfs:label ?rawLabel 
-	    FILTER NOT EXISTS { ?org a vivo:University }
-	    FILTER NOT EXISTS { ?org a vivo:Hospital }
-	  }
-        } GROUP BY ?org
-    """ .
-
-:uriFinder_label_facetext_organization
-    a   <java:edu.cornell.mannlib.vitro.webapp.searchindex.indexing.IndexingUriFinder> ,
-            <java:edu.cornell.mannlib.vitro.webapp.searchindex.indexing.SelectQueryUriFinder> ;
-    rdfs:label "Organization enhanced label uri finder" ;
-    :hasPredicateRestriction "http://www.w3.org/2000/01#label" ;
-    :hasSelectQuery """
-        PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#> 
-	PREFIX vivo: <http://vivoweb.org/ontology/core#>
-	PREFIX wos: <http://webofscience.com/ontology/wos#> 
-	PREFIX foaf: <http://xmlns.com/foaf/0.1/>
-	PREFIX nora: <http://vivo.deffopera.dk/ontology/osrap/>
-	PREFIX obo:      <http://purl.obolibrary.org/obo/>
-        SELECT DISTINCT ?uri
-        WHERE {
-            ?subject a foaf:Organization .
-            ?authorship nora:relatedToOrganization ?subject .
-            ?authorship a vivo:Authorship .
-            ?authorship vivo:relates ?uri .
-        }
-    """ .
-
-:documentModifier_facetext_university
-    a   <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.SelectQueryDocumentModifier> ,
-            <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.DocumentModifier> ;
-    rdfs:label "University document modifier" ;
-    :hasTargetField "facetext_university_en" ;
-    :hasTypeRestriction "http://purl.obolibrary.org/obo/IAO_0000030";
-    :hasSelectQuery """
-        PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#> 
-	PREFIX vivo: <http://vivoweb.org/ontology/core#>
-	PREFIX wos: <http://webofscience.com/ontology/wos#> 
-	PREFIX foaf: <http://xmlns.com/foaf/0.1/>
-	PREFIX nora: <http://vivo.deffopera.dk/ontology/osrap/>
-	PREFIX obo:      <http://purl.obolibrary.org/obo/>
-        SELECT (MIN(?rawLabel) AS ?orgLabel)
-        WHERE {
-	  {
-            ?authorship vivo:relates ?uri .
-            ?authorship a vivo:Authorship .
-            ?authorship nora:relatedToOrganization ?org .
-            ?org a vivo:University .
-	    ?org rdfs:label ?rawLabel
-	  } UNION {
-            ?uri a vivo:Grant .
-            ?uri vivo:relates ?role .
-            ?role a obo:BFO_0000023 .
-            ?role nora:relatedToOrganization ?org .
-	    ?org a vivo:University .
-            ?org rdfs:label ?rawLabel 
-	  }
-        } 
-	GROUP BY ?org
-    """ .
-
-:documentModifier_facetext_hospital
-    a   <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.SelectQueryDocumentModifier> ,
-            <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.DocumentModifier> ;
-    rdfs:label "Hospital document modifier" ;
-    :hasTargetField "facetext_hospital_en" ;
-    :hasTypeRestriction "http://purl.obolibrary.org/obo/IAO_0000030";
-    :hasSelectQuery """
-        PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#> 
-	PREFIX vivo: <http://vivoweb.org/ontology/core#>
-	PREFIX wos: <http://webofscience.com/ontology/wos#> 
-	PREFIX foaf: <http://xmlns.com/foaf/0.1/>
-	PREFIX nora: <http://vivo.deffopera.dk/ontology/osrap/>
-	PREFIX obo:      <http://purl.obolibrary.org/obo/>
-        SELECT (MIN(?rawLabel) AS ?orgLabel)
-        WHERE {
-	  {
-            ?authorship vivo:relates ?uri .
-            ?authorship a vivo:Authorship .
-            ?authorship nora:relatedToOrganization ?org .
-            ?org a vivo:Hospital .
-	    ?org rdfs:label ?rawLabel
-	  } UNION {
-            ?uri a vivo:Grant .
-            ?uri vivo:relates ?role .
-            ?role a obo:BFO_0000023 .
-            ?role nora:relatedToOrganization ?org .
-	    ?org a vivo:Hospital .
-            ?org rdfs:label ?rawLabel 
-	  }
-        } GROUP BY ?org
-    """ .
-
-:documentModifier_facetext_journal
-    a   <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.SelectQueryDocumentModifier> ,
-            <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.DocumentModifier> ;
-    rdfs:label "Journal document modifier" ;
-    :hasTargetField "facetext_journal_en" ;
-    :hasTypeRestriction "http://purl.obolibrary.org/obo/IAO_0000030";
-    :hasSelectQuery """
-        PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#> 
-	PREFIX vivo: <http://vivoweb.org/ontology/core#>
-	PREFIX bibo: <http://purl.org/ontology/bibo/> 
-        SELECT DISTINCT ?journalLabel
-        WHERE {
-            ?uri vivo:hasPublicationVenue ?journal .
-	    ?journal a bibo:Journal .
-	    ?journal rdfs:label ?journalLabel
-        }
-    """ .
-
-:documentModifier_facet_funder
-    a   <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.SelectQueryDocumentModifier> ,
-                <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.DocumentModifier> ;
-    rdfs:label "Funder document modifier" ;
-    :hasTargetField "facet_funder_ss" ;
-    :hasTypeRestriction "http://vivoweb.org/ontology/core#Grant";
-    :hasSelectQuery """
-        PREFIX vitro: <http://vitro.mannlib.cornell.edu/ns/vitro/0.7#>
-        PREFIX vivo: <http://vivoweb.org/ontology/core#>
-        PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#> 
-        PREFIX bibo:   <http://purl.org/ontology/bibo/>
-        PREFIX wos: <http://webofscience.com/ontology/wos#>
-        SELECT (MIN(?rawLabel) AS ?funderLabel)
-        WHERE {
-            ?uri a vivo:Grant .
-            ?uri vivo:assignedBy ?funder .
-	    ?funder rdfs:label ?rawLabel 
-        } GROUP BY ?funder
-    """ .
-
-:uriFinder_label_facetext_journal
-    a   <java:edu.cornell.mannlib.vitro.webapp.searchindex.indexing.IndexingUriFinder> ,
-            <java:edu.cornell.mannlib.vitro.webapp.searchindex.indexing.SelectQueryUriFinder> ;
-    rdfs:label "Journal label uri finder" ;
-    :hasPredicateRestriction "http://www.w3.org/2000/01#label" ;
-    :hasSelectQuery """
-        PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#> 
-	PREFIX vivo: <http://vivoweb.org/ontology/core#>
-	PREFIX bibo: <http://purl.org/ontology/bibo/> 
-        SELECT DISTINCT ?uri
-        WHERE {
-            ?uri vivo:hasPublicationVenue ?subject .
-	    ?subject a bibo:Journal .
-        }
-    """ .
-
-:uriFinder_facetext_publication-year
-    a   <java:edu.cornell.mannlib.vitro.webapp.searchindex.indexing.IndexingUriFinder> ,
-            <java:edu.cornell.mannlib.vitro.webapp.searchindex.indexing.SelectQueryUriFinder> ;
-    rdfs:label "Organization-enhanced uri finder" ;
-    :hasPredicateRestriction "http://vivoweb.org/ontology/core#dateTime" ;
-    :hasSelectQuery """
-	PREFIX vivo: <http://vivoweb.org/ontology/core#>
-        SELECT DISTINCT ?uri
-        WHERE {
-            ?uri vivo:dateTimeValue ?subject .
-        }
-    """ .
-
-
+#@prefix : <http://vitro.mannlib.cornell.edu/ns/vitro/ApplicationSetup#> .
+#@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+#@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+#
+## A version of the faceting where the facet values are recorded as searchable text strings
+## instead of their RDF IRIs
+#
+#:documentModifier_facetext_document-type
+#    a   <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.SelectQueryDocumentModifier> ,
+#            <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.DocumentModifier> ;
+#    rdfs:label "Document type document modifier" ;
+#    :hasTargetField "facetext_document-type_en" ;
+#    :hasTypeRestriction "http://purl.obolibrary.org/obo/IAO_0000030";
+#    :hasSelectQuery """
+#        PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#> 
+#	PREFIX vitro: <http://vitro.mannlib.cornell.edu/ns/vitro/0.7#>
+#	PREFIX bibo:   <http://purl.org/ontology/bibo/>
+#	PREFIX wos: <http://webofscience.com/ontology/wos#>
+#        SELECT DISTINCT ?typeLabel
+#        WHERE {
+#            ?uri vitro:mostSpecificType ?type .
+#	    ?type rdfs:label ?typeLabel
+#	    FILTER (?type != bibo:Journal)
+#            FILTER (?type != bibo:Book)
+#            FILTER (?type != wos:Conference)
+#        }
+#    """ .
+#
+#:uriFinder_label_facetext_document-type
+#    a   <java:edu.cornell.mannlib.vitro.webapp.searchindex.indexing.IndexingUriFinder> ,
+#            <java:edu.cornell.mannlib.vitro.webapp.searchindex.indexing.SelectQueryUriFinder> ;
+#    rdfs:label "Document type label uri finder" ;
+#    :hasPredicateRestriction "http://www.w3.org/2000/01#label" ;
+#    :hasSelectQuery """
+#        PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#> 
+#	PREFIX vitro: <http://vitro.mannlib.cornell.edu/ns/vitro/0.7#>
+#        SELECT DISTINCT ?uri
+#        WHERE {
+#            ?uri vitro:mostSpecificType ?subject .
+#        }
+#    """ .
+#
+#:documentModifier_facetext_publication-year
+#    a   <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.SelectQueryDocumentModifier> ,
+#            <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.DocumentModifier> ;
+#    rdfs:label "Publication year document modifier" ;
+#    :hasTargetField "facetext_publication-year_en" ;
+#    :hasTypeRestriction "http://purl.obolibrary.org/obo/IAO_0000030";
+#    :hasSelectQuery """
+#	PREFIX vivo: <http://vivoweb.org/ontology/core#>
+#        SELECT DISTINCT ?year
+#        WHERE {
+#            ?uri vivo:dateTimeValue ?dtv .
+#	    ?dtv vivo:dateTime ?dateTime .
+#	    BIND(substr(str(?dateTime), 1, 4) AS ?year)
+#        }
+#    """ .
+#
+#:documentModifier_facetext_organization
+#    a   <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.SelectQueryDocumentModifier> ,
+#            <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.DocumentModifier> ;
+#    rdfs:label "Organization document modifier" ;
+#    :hasTargetField "facetext_organization_en" ;
+#    :hasSelectQuery """
+#        PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#> 
+#	PREFIX vivo: <http://vivoweb.org/ontology/core#>
+#	PREFIX wos: <http://webofscience.com/ontology/wos#> 
+#	PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+#	PREFIX nora: <http://vivo.deffopera.dk/ontology/osrap/>
+#	PREFIX obo:      <http://purl.obolibrary.org/obo/>
+#        SELECT (MIN(?rawLabel) AS ?orgLabel)
+#        WHERE {
+#	  {
+#            ?authorship vivo:relates ?uri .
+#            ?authorship a vivo:Authorship .
+#            ?authorship nora:relatedToOrganization ?org .
+#            ?org a foaf:Organization .
+#	    ?org rdfs:label ?rawLabel
+#	    FILTER NOT EXISTS { ?org a vivo:University }
+#	    FILTER NOT EXISTS { ?org a vivo:Hospital }
+#	  } UNION {
+#            ?uri a vivo:Grant .
+#            ?uri vivo:relates ?role .
+#            ?role a obo:BFO_0000023 .
+#            ?role nora:relatedToOrganization ?org .
+#            ?org rdfs:label ?rawLabel 
+#	    FILTER NOT EXISTS { ?org a vivo:University }
+#	    FILTER NOT EXISTS { ?org a vivo:Hospital }
+#	  }
+#        } GROUP BY ?org
+#    """ .
+#
+#:uriFinder_label_facetext_organization
+#    a   <java:edu.cornell.mannlib.vitro.webapp.searchindex.indexing.IndexingUriFinder> ,
+#            <java:edu.cornell.mannlib.vitro.webapp.searchindex.indexing.SelectQueryUriFinder> ;
+#    rdfs:label "Organization enhanced label uri finder" ;
+#    :hasPredicateRestriction "http://www.w3.org/2000/01#label" ;
+#    :hasSelectQuery """
+#        PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#> 
+#	PREFIX vivo: <http://vivoweb.org/ontology/core#>
+#	PREFIX wos: <http://webofscience.com/ontology/wos#> 
+#	PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+#	PREFIX nora: <http://vivo.deffopera.dk/ontology/osrap/>
+#	PREFIX obo:      <http://purl.obolibrary.org/obo/>
+#        SELECT DISTINCT ?uri
+#        WHERE {
+#            ?subject a foaf:Organization .
+#            ?authorship nora:relatedToOrganization ?subject .
+#            ?authorship a vivo:Authorship .
+#            ?authorship vivo:relates ?uri .
+#        }
+#    """ .
+#
+#:documentModifier_facetext_university
+#    a   <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.SelectQueryDocumentModifier> ,
+#            <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.DocumentModifier> ;
+#    rdfs:label "University document modifier" ;
+#    :hasTargetField "facetext_university_en" ;
+#    :hasTypeRestriction "http://purl.obolibrary.org/obo/IAO_0000030";
+#    :hasSelectQuery """
+#        PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#> 
+#	PREFIX vivo: <http://vivoweb.org/ontology/core#>
+#	PREFIX wos: <http://webofscience.com/ontology/wos#> 
+#	PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+#	PREFIX nora: <http://vivo.deffopera.dk/ontology/osrap/>
+#	PREFIX obo:      <http://purl.obolibrary.org/obo/>
+#        SELECT (MIN(?rawLabel) AS ?orgLabel)
+#        WHERE {
+#	  {
+#            ?authorship vivo:relates ?uri .
+#            ?authorship a vivo:Authorship .
+#            ?authorship nora:relatedToOrganization ?org .
+#            ?org a vivo:University .
+#	    ?org rdfs:label ?rawLabel
+#	  } UNION {
+#            ?uri a vivo:Grant .
+#            ?uri vivo:relates ?role .
+#            ?role a obo:BFO_0000023 .
+#            ?role nora:relatedToOrganization ?org .
+#	    ?org a vivo:University .
+#            ?org rdfs:label ?rawLabel 
+#	  }
+#        } 
+#	GROUP BY ?org
+#    """ .
+#
+#:documentModifier_facetext_hospital
+#    a   <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.SelectQueryDocumentModifier> ,
+#            <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.DocumentModifier> ;
+#    rdfs:label "Hospital document modifier" ;
+#    :hasTargetField "facetext_hospital_en" ;
+#    :hasTypeRestriction "http://purl.obolibrary.org/obo/IAO_0000030";
+#    :hasSelectQuery """
+#        PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#> 
+#	PREFIX vivo: <http://vivoweb.org/ontology/core#>
+#	PREFIX wos: <http://webofscience.com/ontology/wos#> 
+#	PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+#	PREFIX nora: <http://vivo.deffopera.dk/ontology/osrap/>
+#	PREFIX obo:      <http://purl.obolibrary.org/obo/>
+#        SELECT (MIN(?rawLabel) AS ?orgLabel)
+#        WHERE {
+#	  {
+#            ?authorship vivo:relates ?uri .
+#            ?authorship a vivo:Authorship .
+#            ?authorship nora:relatedToOrganization ?org .
+#            ?org a vivo:Hospital .
+#	    ?org rdfs:label ?rawLabel
+#	  } UNION {
+#            ?uri a vivo:Grant .
+#            ?uri vivo:relates ?role .
+#            ?role a obo:BFO_0000023 .
+#            ?role nora:relatedToOrganization ?org .
+#	    ?org a vivo:Hospital .
+#            ?org rdfs:label ?rawLabel 
+#	  }
+#        } GROUP BY ?org
+#    """ .
+#
+#:documentModifier_facetext_journal
+#    a   <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.SelectQueryDocumentModifier> ,
+#            <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.DocumentModifier> ;
+#    rdfs:label "Journal document modifier" ;
+#    :hasTargetField "facetext_journal_en" ;
+#    :hasTypeRestriction "http://purl.obolibrary.org/obo/IAO_0000030";
+#    :hasSelectQuery """
+#        PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#> 
+#	PREFIX vivo: <http://vivoweb.org/ontology/core#>
+#	PREFIX bibo: <http://purl.org/ontology/bibo/> 
+#        SELECT DISTINCT ?journalLabel
+#        WHERE {
+#            ?uri vivo:hasPublicationVenue ?journal .
+#	    ?journal a bibo:Journal .
+#	    ?journal rdfs:label ?journalLabel
+#        }
+#    """ .
+#
+#:documentModifier_facet_funder
+#    a   <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.SelectQueryDocumentModifier> ,
+#                <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.DocumentModifier> ;
+#    rdfs:label "Funder document modifier" ;
+#    :hasTargetField "facet_funder_ss" ;
+#    :hasTypeRestriction "http://vivoweb.org/ontology/core#Grant";
+#    :hasSelectQuery """
+#        PREFIX vitro: <http://vitro.mannlib.cornell.edu/ns/vitro/0.7#>
+#        PREFIX vivo: <http://vivoweb.org/ontology/core#>
+#        PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#> 
+#        PREFIX bibo:   <http://purl.org/ontology/bibo/>
+#        PREFIX wos: <http://webofscience.com/ontology/wos#>
+#        SELECT (MIN(?rawLabel) AS ?funderLabel)
+#        WHERE {
+#            ?uri a vivo:Grant .
+#            ?uri vivo:assignedBy ?funder .
+#	    ?funder rdfs:label ?rawLabel 
+#        } GROUP BY ?funder
+#    """ .
+#
+#:uriFinder_label_facetext_journal
+#    a   <java:edu.cornell.mannlib.vitro.webapp.searchindex.indexing.IndexingUriFinder> ,
+#            <java:edu.cornell.mannlib.vitro.webapp.searchindex.indexing.SelectQueryUriFinder> ;
+#    rdfs:label "Journal label uri finder" ;
+#    :hasPredicateRestriction "http://www.w3.org/2000/01#label" ;
+#    :hasSelectQuery """
+#        PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#> 
+#	PREFIX vivo: <http://vivoweb.org/ontology/core#>
+#	PREFIX bibo: <http://purl.org/ontology/bibo/> 
+#        SELECT DISTINCT ?uri
+#        WHERE {
+#            ?uri vivo:hasPublicationVenue ?subject .
+#	    ?subject a bibo:Journal .
+#        }
+#    """ .
+#
+#:uriFinder_facetext_publication-year
+#    a   <java:edu.cornell.mannlib.vitro.webapp.searchindex.indexing.IndexingUriFinder> ,
+#            <java:edu.cornell.mannlib.vitro.webapp.searchindex.indexing.SelectQueryUriFinder> ;
+#    rdfs:label "Organization-enhanced uri finder" ;
+#    :hasPredicateRestriction "http://vivoweb.org/ontology/core#dateTime" ;
+#    :hasSelectQuery """
+#	PREFIX vivo: <http://vivoweb.org/ontology/core#>
+#        SELECT DISTINCT ?uri
+#        WHERE {
+#            ?uri vivo:dateTimeValue ?subject .
+#        }
+#    """ .
+#
+#

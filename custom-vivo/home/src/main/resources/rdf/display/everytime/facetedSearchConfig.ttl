@@ -73,6 +73,7 @@
 	  }
         }
     """ .
+
 :documentModifier_facet_university
     a   <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.SelectQueryDocumentModifier> ,
             <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.DocumentModifier> ;
@@ -149,6 +150,157 @@
         }
     """ .
 
+:documentModifier_facet_publisher
+    a   <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.SelectQueryDocumentModifier> ,
+            <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.DocumentModifier> ;
+    rdfs:label "Publisher document modifier" ;
+    :hasTargetField "facet_publisher_ss" ;
+    :hasSelectQuery """
+	PREFIX vivo: <http://vivoweb.org/ontology/core#>
+	PREFIX bibo: <http://purl.org/ontology/bibo/> 
+        SELECT DISTINCT ?publisher
+        WHERE {
+            ?uri vivo:publisher ?publisher .
+        }
+    """ .
+
+:documentModifier_facet_open-access
+    a   <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.SelectQueryDocumentModifier> ,
+            <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.DocumentModifier> ;
+    rdfs:label "Open access document modifier" ;
+    :hasTargetField "facet_open-access_ss" ;
+    :hasSelectQuery """
+	PREFIX vivo: <http://vivoweb.org/ontology/core#>
+	PREFIX bibo: <http://purl.org/ontology/bibo/> 
+        SELECT DISTINCT ?openAccess
+        WHERE {
+            ?uri <http://vivo.deffopera.dk/ontology/osrap/openAccessCategory> ?openAccess .
+        }
+    """ .
+
+:documentModifier_facet_respository
+    a   <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.SelectQueryDocumentModifier> ,
+            <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.DocumentModifier> ;
+    rdfs:label "Repository document modifier" ;
+    :hasTargetField "facet_repository_ss" ;
+    :hasTypeRestriction "http://vivoweb.org/ontology/core#Dataset" ;
+    :hasSelectQuery """
+	PREFIX vivo: <http://vivoweb.org/ontology/core#>
+	PREFIX bibo: <http://purl.org/ontology/bibo/> 
+        SELECT DISTINCT ?repository
+        WHERE {
+	    ?uri a vivo:Dataset .
+            ?uri vivo:hasPublicationVenue ?repository .
+        }
+    """ .
+
+:documentModifier_facet_grant-status
+    a   <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.SelectQueryDocumentModifier> ,
+            <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.DocumentModifier> ;
+    rdfs:label "Grant status document modifier" ;
+    :hasTargetField "facet_grant-status_ss" ;
+    :hasTypeRestriction "http://vivoweb.org/ontology/core#Grant" ;
+    :hasSelectQuery """
+	PREFIX vivo: <http://vivoweb.org/ontology/core#>
+	PREFIX bibo: <http://purl.org/ontology/bibo/> 
+        SELECT DISTINCT ?status
+        WHERE {
+	    ?uri a vivo:Grant .
+            ?uri bibo:status ?status .
+        }
+    """ .
+
+:documentModifier_facet_original-assignee
+    a   <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.SelectQueryDocumentModifier> ,
+            <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.DocumentModifier> ;
+    rdfs:label "Original assignee document modifier" ;
+    :hasTargetField "facet_original-assignee_ss" ;
+    :hasTypeRestriction "http://purl.org/ontology/bibo/Patent" ;
+    :hasSelectQuery """
+	PREFIX vivo: <http://vivoweb.org/ontology/core#>
+	PREFIX bibo: <http://purl.org/ontology/bibo/> 
+        SELECT DISTINCT ?originalAssignee
+        WHERE {
+	    ?uri <http://vivo.deffopera.dk/ontology/osrap/assigneeOriginal> ?originalAssignee .
+        }
+    """ .
+
+:documentModifier_facet_jurisdiction
+    a   <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.SelectQueryDocumentModifier> ,
+            <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.DocumentModifier> ;
+    rdfs:label "Jurisdiction document modifier" ;
+    :hasTargetField "facet_jurisdiction_ss" ;
+    :hasTypeRestriction "http://purl.org/ontology/bibo/Patent" ;
+    :hasSelectQuery """
+	PREFIX vivo: <http://vivoweb.org/ontology/core#>
+	PREFIX bibo: <http://purl.org/ontology/bibo/> 
+        SELECT DISTINCT ?jurisdiction
+        WHERE {
+	    ?uri <http://vivo.deffopera.dk/ontology/osrap/jurisdiction> ?jurisdiction .
+        }
+    """ .
+
+:documentModifier_facet_filing-status
+    a   <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.SelectQueryDocumentModifier> ,
+            <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.DocumentModifier> ;
+    rdfs:label "Filing status document modifier" ;
+    :hasTargetField "facet_filing-status_ss" ;
+    :hasTypeRestriction "http://purl.org/ontology/bibo/Patent" ;
+    :hasSelectQuery """
+	PREFIX vivo: <http://vivoweb.org/ontology/core#>
+	PREFIX bibo: <http://purl.org/ontology/bibo/> 
+        SELECT DISTINCT ?filingStatus
+        WHERE {
+	    ?uri <http://vivo.deffopera.dk/ontology/osrap/jurisdiction> ?filingStatus .
+        }
+    """ .
+
+:documentModifier_facet_legal-status
+    a   <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.SelectQueryDocumentModifier> ,
+            <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.DocumentModifier> ;
+    rdfs:label "Legal status document modifier" ;
+    :hasTargetField "facet_legal-status_ss" ;
+    :hasTypeRestriction "http://purl.org/ontology/bibo/Patent" ;
+    :hasSelectQuery """
+	PREFIX vivo: <http://vivoweb.org/ontology/core#>
+	PREFIX bibo: <http://purl.org/ontology/bibo/> 
+        SELECT DISTINCT ?legalStatus
+        WHERE {
+	    ?uri <http://vivo.deffopera.dk/ontology/osrap/jurisdiction> ?legalStatus .
+        }
+    """ .
+
+:documentModifier_facet_phase
+    a   <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.SelectQueryDocumentModifier> ,
+            <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.DocumentModifier> ;
+    rdfs:label "Phase document modifier" ;
+    :hasTargetField "facet_phase_ss" ;
+    :hasTypeRestriction "http://purl.obolibrary.org/obo/ERO_0000016" ; # ClinicalTrial
+    :hasSelectQuery """
+	PREFIX vivo: <http://vivoweb.org/ontology/core#>
+	PREFIX bibo: <http://purl.org/ontology/bibo/> 
+        SELECT DISTINCT ?phase
+        WHERE {
+	    ?uri <http://purl.obolibrary.org/obo/ERO_0001518> ?phase .
+        }
+    """ .
+
+:documentModifier_facet_sponsor-collaborator
+    a   <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.SelectQueryDocumentModifier> ,
+            <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.DocumentModifier> ;
+    rdfs:label "Sponsor/collaborator document modifier" ;
+    :hasTargetField "facet_sponsor-collaborator_ss" ;
+    :hasTypeRestriction "http://purl.obolibrary.org/obo/ERO_0000016" ; # ClinicalTrial
+    :hasSelectQuery """
+	PREFIX vivo: <http://vivoweb.org/ontology/core#>
+	PREFIX bibo: <http://purl.org/ontology/bibo/> 
+        SELECT DISTINCT ?sponsorCollaborator
+        WHERE {
+	    ?uri <http://purl.obolibrary.org/obo/BFO_0000055> ?fundingRole .
+	    ?fundingRole <http://purl.obolibrary.org/obo/RO_0000052> ?sponsorCollaborator .
+        }
+    """ .
+
 :documentModifier_facet_retrieval
     a   <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.SelectQueryDocumentModifier> ,
             <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.DocumentModifier> ;
@@ -165,6 +317,20 @@
         }
     """ .
 
+:documentModifier_facet_research-category
+    a   <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.SelectQueryDocumentModifier> ,
+            <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.DocumentModifier> ;
+    rdfs:label "Research category document modifier" ;
+    :hasTargetField "facet_research-category_ss" ;
+    :hasSelectQuery """
+	PREFIX vivo: <http://vivoweb.org/ontology/core#>
+	PREFIX bibo: <http://purl.org/ontology/bibo/> 
+        SELECT DISTINCT ?for
+        WHERE {
+            ?uri vivo:hasSubjectArea ?for .
+	    ?for a <http://vivo.deffopera.dk/ontology/osrap/CategoryFOR> .
+        }
+    """ .
 
 :uriFinder_facet_publication-year
     a   <java:edu.cornell.mannlib.vitro.webapp.searchindex.indexing.IndexingUriFinder> ,
@@ -192,8 +358,14 @@
 	PREFIX wos: <http://webofscience.com/ontology/wos#> 
         SELECT DISTINCT ?funder
         WHERE {
+	  {
             ?uri a vivo:Grant .
 	    ?uri vivo:assignedBy ?funder .
+	  } UNION {
+            ?uri vivo:informationResourceSupportedBy ?grant .
+	    ?grant a vivo:Grant .
+	    ?grant vivo:assignedBy ?funder .
+	  }
         }
     """ .
 

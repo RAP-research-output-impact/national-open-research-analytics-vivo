@@ -40,7 +40,7 @@
       </a>
       <div class="n_c-content">
         <a class="n_c-linkTitle" href="${urls.base}/search"><h3>Search</h3></a>
-        <p>Search for publications</p>
+        <p>Search for publications, datasets, grants, patents and clincal trials</p>
       </div>
     </article>
     <!-- end .n_card -->

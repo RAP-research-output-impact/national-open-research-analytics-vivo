@@ -557,6 +557,10 @@ public class PagedSearchController extends FreemarkerHttpServlet {
     }
 
     private SearchQuery getQuery(boolean includeFacetFields, String queryText, int hitsPerPage, int startIndex, VitroRequest vreq) {
+        if(!queryText.isEmpty()) {
+            queryText+= " AND ";
+        }
+        queryText += "!" + VitroSearchTermNames.RDFTYPE + ":\"http://nora.deffopera.dk/ontology/display/HideFromSearch\" ";
         // Nora: AND in search terms for specific "facet as text" field
         String facetAsText = vreq.getParameter(PARAM_FACET_AS_TEXT);
         if(facetAsText != null) {

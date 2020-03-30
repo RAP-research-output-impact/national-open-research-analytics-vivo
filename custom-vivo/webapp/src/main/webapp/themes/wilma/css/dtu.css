@@ -70,7 +70,7 @@
 table.searchTOC {
     margin-left: 1px;
     margin-right: 6px;
-    width: 340px;
+    width: 370px;
     float: left;
     padding: 2px;
     background: #e2e2e0;
@@ -78,7 +78,7 @@ table.searchTOC {
 .searchTOC-box {
     background: #e2e2e0;
     padding: 5px;
-    width: 340px;
+    width: 370px;
     height: 100%;
     float: left;
     margin-top: 40px;
@@ -116,7 +116,7 @@ table.searchTOC td {
     font-size: 12px;
     margin-left: 10px;
     padding: 0;
-    width: 328px;
+    width: 358px;
 }
 .searchTOC ul li:hover {
     background-color:#f7f9f9;

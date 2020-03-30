@@ -78,7 +78,7 @@
         <span id="searchHelp" style="text-align: right;"><a href="${urls.base}/searchHelp" title="${i18n().search_help}">${i18n().not_expected_results}</a></span>
         -->
     </div>
-    <div style="width: 65%; float: right;">
+    <div style="width: 55%; float: right;">
         <#list noraQueryReduce as link>
             <div class="qr-box">
                 <span class="qr-text">${link.text}</span>
@@ -110,7 +110,7 @@
         });
     </script>
     <#-- Search results -->
-    <div style="float: right; text-align: left; width: 65%;">
+    <div style="float: right; text-align: left; width: 55%;">
         <ul class="searchhits">
             <#list individuals as individual>
                 <li>                        

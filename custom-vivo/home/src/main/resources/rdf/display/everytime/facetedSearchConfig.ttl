@@ -417,6 +417,7 @@
 	PREFIX vivo: <http://vivoweb.org/ontology/core#>
 	PREFIX bibo:   <http://purl.org/ontology/bibo/>
 	PREFIX wos: <http://webofscience.com/ontology/wos#> 
+	PREFIX nora:    <http://vivo.deffopera.dk/ontology/osrap/>
         SELECT DISTINCT ?funder
         WHERE {
 	  {
@@ -426,6 +427,8 @@
             ?uri vivo:informationResourceSupportedBy ?grant .
 	    ?grant a vivo:Grant .
 	    ?grant vivo:assignedBy ?funder .
+	  } UNION {
+            ?uri nora:funder ?funder .
 	  }
         }
     """ .

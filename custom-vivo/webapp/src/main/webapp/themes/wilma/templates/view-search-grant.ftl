@@ -20,8 +20,11 @@
        ${grant.endYear},
     </#if>
     <#if grant.funder??>
+        <#assign funder = ""»
         <#list grantDetails as grantDetail>
-          <#if grantDetail.funder?has_content>${grantDetail.funder},</#if>
+          <#if grantDetail.funder?has_content && grantDetail.funder != funder>${grantDetail.funder},
+	    <#assign funder = grantDetail.funder>
+	  </#if>
 	</#list>
     </#if>
     ${grant.typeLabel!}

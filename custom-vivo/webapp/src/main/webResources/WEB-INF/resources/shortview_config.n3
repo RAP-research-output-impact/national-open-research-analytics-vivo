@@ -83,3 +83,63 @@ SELECT ?p ?title ?typeLabel ?journal ?authorList ?year ?openAccess WHERE {
 }
 
 """ .
+
+
+vivo:Grant display:hasCustomView :grantSearchView .
+
+:grantSearchView
+    a display:customViewForIndividual ;
+    display:appliesToContext "SEARCH" ;
+    display:hasTemplate      "view-search-grant.ftl" ;
+    display:hasDataGetter    :publicationSearchDG .
+
+:publicationSearchDG a datagetter:SparqlQueryDataGetter ;
+    display:saveToVar   "grantDetails" ;
+    display:query       """
+PREFIX rdf:      <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:     <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd:      <http://www.w3.org/2001/XMLSchema#>
+PREFIX owl:      <http://www.w3.org/2002/07/owl#>
+PREFIX obo:      <http://purl.obolibrary.org/obo/>
+PREFIX vivo:     <http://vivoweb.org/ontology/core#>
+PREFIX bibo:     <http://purl.org/ontology/bibo/>
+PREFIX foaf:     <http://xmlns.com/foaf/0.1/>
+PREFIX vitro: <http://vitro.mannlib.cornell.edu/ns/vitro/0.7#> 
+
+SELECT ?p ?title ?typeLabel ?startYear ?endYear ?funder WHERE {
+    ?individualUri rdfs:label ?title 
+    BIND(?individualUri as ?p)
+    OPTIONAL { ?individualUri vitro:mostSpecificType bibo:AcademicArticle .
+        BIND("Article" AS ?typeLabel)
+    }
+    OPTIONAL { ?individualUri vitro:mostSpecificType ?mst .
+        FILTER(?mst != bibo:AcademicArticle)
+	?mst rdfs:label ?mstLabel
+        BIND(?mstLabel AS ?typeLabel)
+    }
+    OPTIONAL {
+      ?individualUri vivo:hasPublicationVenue ?venue .
+      ?venue rdfs:label ?journal .
+    }
+    OPTIONAL {
+      ?individualUri vivo:dateTimeInterval ?dti .
+      ?dti vivo:start ?startDtv
+      ?startDtv vivo:dateTime ?startDateTime .
+      BIND(STRBEFORE(STR(?startDateTime), "-") AS ?startYear)
+    }
+    OPTIONAL {
+      ?individualUri vivo:dateTimeInterval ?dti .
+      ?dti vivo:end ?endDtv
+      ?endDtv vivo:dateTime ?endDateTime .
+      BIND(STRBEFORE(STR(?endDateTime), "-") AS ?endYear)
+    }
+    OPTIONAL {
+      ?individualUri vivo:assignedBy ?funderOrg .
+      ?funderOrg a foaf:Organization .
+      ?funderOrg rdfs:label ?funder .
+    }
+}
+
+""" .
+
+

@@ -6,13 +6,13 @@
 
 <a href="${urls.base}/search?classgroup=http%3A%2F%2Fvivoweb.org%2Fontology%23vitroClassGrouppublications">Publications</a>
 
-<a href="${urls.base}/search?classgroup=http%3A%2F%2Fvivoweb.org%2Fontology%23vitroClassGrouppublications&type=http%3A%2F%2Fvivoweb.org%2Fontology%2Fcore%23Dataset&facet_document-type_ss=http%3A%2F%2Fvivoweb.org%2Fontology%2Fcore%23Dataset">Datasets</a>
+<a href="${urls.base}/search?type=http%3A%2F%2Fvivoweb.org%2Fontology%2Fcore%23Dataset&facet_document-type_ss=http%3A%2F%2Fvivoweb.org%2Fontology%2Fcore%23Dataset">Datasets</a>
 
-<a href="${urls.base}/search?classgroup=http%3A%2F%2Fvivoweb.org%2Fontology%23vitroClassGroupactivities&controller=Classgroup&type=http%3A%2F%2Fvivoweb.org%2Fontology%2Fcore%23Grant">Grants</a>
+<a href="${urls.base}/search?type=http%3A%2F%2Fvivoweb.org%2Fontology%2Fcore%23Grant">Grants</a>
 
-<a href="${urls.base}/search?classgroup=http%3A%2F%2Fvivoweb.org%2Fontology%23vitroClassGroupactivities&type=http%3A%2F%2Fpurl.org%2Fontology%2Fbibo%2FPatent">Patents</a>
+<a href="${urls.base}/search?type=http%3A%2F%2Fpurl.org%2Fontology%2Fbibo%2FPatent">Patents</a>
 
-<a href="${urls.base}/search?classgroup=http%3A%2F%2Fvivoweb.org%2Fontology%23vitroClassGroupactivities&controller=Classgroup&type=http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FERO_0000016">Clinical Trials</a>
+<a href="${urls.base}/search?type=http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FERO_0000016">Clinical Trials</a>
 
 <div class="contentsBrowseGroup">
     <#-- Refinement links -->
@@ -27,7 +27,7 @@
             </tr>
             <#if facets?has_content>
                 <#list facets as facet>
-		  <#if facet.categories?has_content>
+		  <#if facet.categories?has_content && facet.categories?size > 1>
                     <tr class="search-facets-head">
                         <td style="align: left">
                             <h4 class="search-facets-title"><div class="search-facets-toggle">+</div>${facet.publicName}</h4>

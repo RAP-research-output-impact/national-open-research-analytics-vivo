@@ -42,6 +42,38 @@
         }
     """ .
 
+:documentModifier_facet_start-year
+    a   <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.SelectQueryDocumentModifier> ,
+            <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.DocumentModifier> ;
+    rdfs:label "Start year document modifier" ;
+    :hasTargetField "facet_start-year_ss" ;
+    :hasSelectQuery """
+	PREFIX vivo: <http://vivoweb.org/ontology/core#>
+        SELECT DISTINCT ?year
+        WHERE {
+            ?uri vivo:dateTimeInterval ?dti .
+	    ?dti vivo:start ?dtv .
+	    ?dtv vivo:dateTime ?dateTime .
+	    BIND(substr(str(?dateTime), 1, 4) AS ?year)
+        }
+    """ .
+
+:documentModifier_facet_granted-year
+    a   <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.SelectQueryDocumentModifier> ,
+            <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.DocumentModifier> ;
+    rdfs:label "Granted year document modifier" ;
+    :hasTargetField "facet_granted-year_ss" ;
+    :hasSelectQuery """
+	PREFIX vivo: <http://vivoweb.org/ontology/core#>
+        SELECT DISTINCT ?year
+        WHERE {
+            ?uri vivo:dateIssued ?dti .
+	    ?dti vivo:start ?dtv .
+	    ?dtv vivo:dateTime ?dateTime .
+	    BIND(substr(str(?dateTime), 1, 4) AS ?year)
+        }
+    """ .
+
 :documentModifier_facet_organization
     a   <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.SelectQueryDocumentModifier> ,
             <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.DocumentModifier> ;
@@ -65,6 +97,14 @@
 	  } UNION {
             ?uri a vivo:Grant .
 	    ?uri vivo:relates ?role .
+	    ?role a obo:BFO_0000023 .
+	    ?role nora:relatedToOrganization ?org .
+	    ?org a foaf:Organization .
+	    FILTER NOT EXISTS { ?org a vivo:University }
+	    FILTER NOT EXISTS { ?org a vivo:Hospital }
+	  } UNION {
+            ?uri a obo:ERO_0000016 . # ClinicalTrial
+	    ?uri obo:BFO_0000055 ?role .
 	    ?role a obo:BFO_0000023 .
 	    ?role nora:relatedToOrganization ?org .
 	    ?org a foaf:Organization .
@@ -101,6 +141,12 @@
 	    ?role a obo:BFO_0000023 .
 	    ?role nora:relatedToOrganization ?org .
 	    ?org a vivo:University .
+	  } UNION {
+            ?uri a obo:ERO_0000016 . # ClinicalTrial
+	    ?uri obo:BFO_0000055 ?role .
+	    ?role a obo:BFO_0000023 .
+	    ?role nora:relatedToOrganization ?org .
+	    ?org a vivo:University .
 	  }
         }
     """ .
@@ -129,8 +175,13 @@
 	    ?role a obo:BFO_0000023 .
 	    ?role nora:relatedToOrganization ?org .
 	    ?org a vivo:Hospital .
+	  } UNION {
+            ?uri a obo:ERO_0000016 . # ClinicalTrial
+	    ?uri obo:BFO_0000055 ?role .
+	    ?role a obo:BFO_0000023 .
+	    ?role nora:relatedToOrganization ?org .
+	    ?org a vivo:Hospital .
 	  }
-
         }
     """ .
 

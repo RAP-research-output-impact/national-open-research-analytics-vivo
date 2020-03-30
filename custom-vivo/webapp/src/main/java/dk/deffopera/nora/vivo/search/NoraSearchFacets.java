@@ -13,25 +13,28 @@ public class NoraSearchFacets {
     private static Map<String, SearchFacet> facetsByFieldName = new HashMap<String, SearchFacet>();
     
     static {
-        searchFacets.add(new SearchFacet("facet_document-type_ss", "Document types"));
-        searchFacets.add(new SearchFacet("facet_publication-year_ss", "Publication years"));
+        searchFacets.add(new SearchFacet("facet_document-type_ss", "Document Types"));
+        searchFacets.add(new SearchFacet("facet_publication-year_ss", "Publication Years"));
+        searchFacets.add(new SearchFacet("facet_start-year_ss", "Start Year"));
+        searchFacets.add(new SearchFacet("facet_granted-year_ss", "Granted Years"));
         searchFacets.add(new SearchFacet("facet_university_ss", "Universities"));
         searchFacets.add(new SearchFacet("facet_hospital_ss", "Hospitals"));
-        searchFacets.add(new SearchFacet("facet_organization_ss", "Organizations"));
+        searchFacets.add(new SearchFacet("facet_organization_ss", "Other Organizations"));
         searchFacets.add(new SearchFacet("facet_journal_ss", "Journals"));
-        searchFacets.add(new SearchFacet("facet_publisher_ss", "Publisher"));
+        searchFacets.add(new SearchFacet("facet_publisher_ss", "Publishers"));
         searchFacets.add(new SearchFacet("facet_open-access_ss", "Open Access"));
         searchFacets.add(new SearchFacet("facet_repository_ss", "Repository"));
-        searchFacets.add(new SearchFacet("facet_funder_ss", "Funder"));
-        searchFacets.add(new SearchFacet("facet_retrieval_ss", "Retrieval"));
-        searchFacets.add(new SearchFacet("facet_research-category_ss", "Research Category"));
-        searchFacets.add(new SearchFacet("facet_grant-status_ss", "Status"));
+        searchFacets.add(new SearchFacet("facet_grant-status_ss", "Grant Status"));
         searchFacets.add(new SearchFacet("facet_original-assignee_ss", "Original Assignee"));
+        searchFacets.add(new SearchFacet("facet_funder_ss", "Funder"));
         searchFacets.add(new SearchFacet("facet_jurisdiction_ss", "Jurisdiction"));        
         searchFacets.add(new SearchFacet("facet_filing-status_ss", "Filing Status"));
         searchFacets.add(new SearchFacet("facet_legal-status_ss", "Legal Status"));
-        searchFacets.add(new SearchFacet("facet_phase_ss", "Phase"));
         searchFacets.add(new SearchFacet("facet_sponsor-collaborator_ss", "Sponsor/collaborator"));
+        searchFacets.add(new SearchFacet("facet_phase_ss", "Phase"));
+        searchFacets.add(new SearchFacet("facet_research-category_ss", "Research Categories"));        
+        searchFacets.add(new SearchFacet("facet_retrieval_ss", "Retrieval"));
+
         for(SearchFacet facet : searchFacets) {
             facetsByFieldName.put(facet.getFieldName(), facet);
             String textFieldName = facet.getFieldName().replaceAll(

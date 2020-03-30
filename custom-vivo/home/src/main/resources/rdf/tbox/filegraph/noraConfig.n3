@@ -1,5 +1,6 @@
 @prefix : <http://vitro.mannlib.cornell.edu/ns/vitro/ApplicationSetup#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix vivo: <http://vivoweb.org/ontology/core#> .
 @prefix bibo: <http://purl.org/ontology/bibo/> .
@@ -7,6 +8,10 @@
 @prefix nora: <http://vivo.deffopera.dk/ontology/osrap/> .
 @prefix obo: <http://purl.obolibrary.org/obo/> .
 @prefix vitro: <http://vitro.mannlib.cornell.edu/ns/vitro/0.7#> .
+
+<http://nora.deffopera.dk/ontology/display/HideFromSearch> a owl:Class ;
+      rdfs:label "Hide from Search" .
+
 
 bibo:Document
       vitro:customDisplayViewAnnot

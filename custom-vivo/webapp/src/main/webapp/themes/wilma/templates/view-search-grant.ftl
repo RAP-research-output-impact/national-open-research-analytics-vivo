@@ -21,8 +21,8 @@
     </#if>
     <#if grant.funder??>
         <#list grantDetails as grantDetail>
-          ${grantDetail.funder},
-	<#>
+          <#if grantDetail.funder?has_content>${grantDetail.funder},</#if>
+	</#list>
     </#if>
     ${grant.typeLabel!}
     </p>

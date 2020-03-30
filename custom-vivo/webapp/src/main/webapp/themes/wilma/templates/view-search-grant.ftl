@@ -6,7 +6,7 @@
     <a href="${individual.profileUrl}"">
     </#if>
     <#if grant.title??>
-      ${publication.title!}
+      ${grant.title!}
     </#if>
     <#if grant.p??>
       </a>&nbsp;

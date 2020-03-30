@@ -125,8 +125,8 @@ table.searchTOC td {
     border-bottom: none
 }
 .searchTOC ul a {
-    display: block;
-    float:left;
+    /* display: block; */
+    /* float: left; */
     width: 310px;
 }
 .searchTOC ul span {

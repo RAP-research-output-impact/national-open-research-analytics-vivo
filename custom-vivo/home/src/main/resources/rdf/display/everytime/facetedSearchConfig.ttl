@@ -39,6 +39,7 @@
             ?uri vivo:dateTimeValue ?dtv .
 	    ?dtv vivo:dateTime ?dateTime .
 	    BIND(substr(str(?dateTime), 1, 4) AS ?year)
+	    FILTER NOT EXISTS { ?uri a <http://purl.org/ontology/bibo/Patent> }
         }
     """ .
 
@@ -67,8 +68,7 @@
 	PREFIX vivo: <http://vivoweb.org/ontology/core#>
         SELECT DISTINCT ?year
         WHERE {
-            ?uri vivo:dateIssued ?dti .
-	    ?dti vivo:start ?dtv .
+            ?uri vivo:dateIssued ?dtv .
 	    ?dtv vivo:dateTime ?dateTime .
 	    BIND(substr(str(?dateTime), 1, 4) AS ?year)
         }
@@ -110,6 +110,11 @@
 	    ?org a foaf:Organization .
 	    FILTER NOT EXISTS { ?org a vivo:University }
 	    FILTER NOT EXISTS { ?org a vivo:Hospital }
+	  } UNION {
+            ?uri nora:assigneeOriginal ?org .
+	    ?org a foaf:Organization .
+	    FILTER NOT EXISTS { ?org a vivo:University }
+	    FILTER NOT EXISTS { ?org a vivo:Hospital }
 	  }
         }
     """ .
@@ -147,6 +152,9 @@
 	    ?role a obo:BFO_0000023 .
 	    ?role nora:relatedToOrganization ?org .
 	    ?org a vivo:University .
+	  } UNION {
+            ?uri nora:assigneeOriginal ?org .
+	    ?org a vivo:University .
 	  }
         }
     """ .
@@ -180,6 +188,9 @@
 	    ?uri obo:BFO_0000055 ?role .
 	    ?role a obo:BFO_0000023 .
 	    ?role nora:relatedToOrganization ?org .
+	    ?org a vivo:Hospital .
+	  } UNION {
+            ?uri nora:assigneeOriginal ?org .
 	    ?org a vivo:Hospital .
 	  }
         }

@@ -20,10 +20,10 @@
        ${grant.endYear},
     </#if>
     <#if grant.funder??>
-        <#assign funder = "">
+        <#assign funderOrg = "">
         <#list grantDetails as grantDetail>
-          <#if grantDetail.funder?has_content && grantDetail.funder != funder>${grantDetail.funder},
-	    <#assign funder = grantDetail.funder>
+          <#if grantDetail.funder?has_content && grantDetail.funderOrg != funderOrg>${grantDetail.funder},
+	    <#assign funderOrg = grantDetail.funderOrg>
 	  </#if>
 	</#list>
     </#if>

@@ -106,7 +106,7 @@ PREFIX bibo:     <http://purl.org/ontology/bibo/>
 PREFIX foaf:     <http://xmlns.com/foaf/0.1/>
 PREFIX vitro: <http://vitro.mannlib.cornell.edu/ns/vitro/0.7#> 
 
-SELECT ?p ?title ?typeLabel ?startYear ?endYear ?funder WHERE {
+SELECT ?p ?title ?typeLabel ?startYear ?endYear ?funderOrg ?funder WHERE {
     ?individualUri rdfs:label ?title 
     BIND(?individualUri as ?p)
     OPTIONAL { ?individualUri vitro:mostSpecificType bibo:AcademicArticle .
@@ -138,7 +138,7 @@ SELECT ?p ?title ?typeLabel ?startYear ?endYear ?funder WHERE {
       ?funderOrg a foaf:Organization .
       ?funderOrg rdfs:label ?funder .
     }
-}
+} ORDER BY ?funderOrg
 
 """ .
 

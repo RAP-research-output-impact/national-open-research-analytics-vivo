@@ -91,9 +91,9 @@ vivo:Grant display:hasCustomView :grantSearchView .
     a display:customViewForIndividual ;
     display:appliesToContext "SEARCH" ;
     display:hasTemplate      "view-search-grant.ftl" ;
-    display:hasDataGetter    :publicationSearchDG .
+    display:hasDataGetter    :grantSearchDG .
 
-:publicationSearchDG a datagetter:SparqlQueryDataGetter ;
+:grantSearchDG a datagetter:SparqlQueryDataGetter ;
     display:saveToVar   "grantDetails" ;
     display:query       """
 PREFIX rdf:      <http://www.w3.org/1999/02/22-rdf-syntax-ns#>

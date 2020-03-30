@@ -125,7 +125,8 @@ table.searchTOC td {
     border-bottom: none
 }
 .searchTOC ul a {
-    display: inline;
+    display: block;
+    width: 310px;
 }
 .searchTOC ul span {
 	float:right;

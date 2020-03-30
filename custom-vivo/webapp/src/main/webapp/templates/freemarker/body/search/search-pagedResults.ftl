@@ -27,7 +27,7 @@
             </tr>
             <#if facets?has_content>
                 <#list facets as facet>
-		  <#if facet.categories?has_content && facet.categories?size > 1>
+		  <#if facet.categories?has_content && (facet.categories?size > 1)>
                     <tr class="search-facets-head">
                         <td style="align: left">
                             <h4 class="search-facets-title"><div class="search-facets-toggle">+</div>${facet.publicName}</h4>

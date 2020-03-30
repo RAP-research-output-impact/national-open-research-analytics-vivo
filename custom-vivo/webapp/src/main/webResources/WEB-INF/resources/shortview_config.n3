@@ -123,13 +123,13 @@ SELECT ?p ?title ?typeLabel ?startYear ?endYear ?funder WHERE {
     }
     OPTIONAL {
       ?individualUri vivo:dateTimeInterval ?dti .
-      ?dti vivo:start ?startDtv
+      ?dti vivo:start ?startDtv .
       ?startDtv vivo:dateTime ?startDateTime .
       BIND(STRBEFORE(STR(?startDateTime), "-") AS ?startYear)
     }
     OPTIONAL {
       ?individualUri vivo:dateTimeInterval ?dti .
-      ?dti vivo:end ?endDtv
+      ?dti vivo:end ?endDtv .
       ?endDtv vivo:dateTime ?endDateTime .
       BIND(STRBEFORE(STR(?endDateTime), "-") AS ?endYear)
     }

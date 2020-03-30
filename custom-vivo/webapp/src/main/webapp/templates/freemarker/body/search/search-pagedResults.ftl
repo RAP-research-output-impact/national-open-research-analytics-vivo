@@ -52,6 +52,7 @@
     <div id="search-form">
         <form action="" method="GET">
             <input type="text" name="querytext" value="${querytext}" />
+	  <#--
             <strong>AND</strong>
             <select name="facetAsText">
                 <#if facetAsText?has_content>
@@ -69,6 +70,7 @@
             <#else>
                 <input type="text" name="facetTextValue"/>
             </#if>
+	 -->
             <#if classGroupURI?has_content>
                 <input type="hidden" name="classgroup" value="${classGroupURI}" />
             </#if>

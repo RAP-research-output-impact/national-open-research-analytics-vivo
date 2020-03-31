@@ -53,7 +53,7 @@
             </#if>
         </table>
     </div>
-    <div id="search-form">
+    <div id="nora-search-form">
         <form action="" method="GET">
 	    <select name="searchMode">
               <option value="all" <#if searchMode?? && searchMode = "all">selected</#if>>all data</option>
@@ -84,9 +84,9 @@
             </#if>
 	 -->
             <#if classGroupURI?has_content>
-                <input type="hidden" name="classgroup" value="${classGroupURI}" />
+                <input id="nora-search-text" type="hidden" name="classgroup" value="${classGroupURI}" />
             </#if>
-            <input type="submit" value="Go"/>
+            <input id="nora-search-submit" type="submit" value="Search"/>
         </form>
         <!--
         <span id="searchHelp" style="text-align: right;"><a href="${urls.base}/searchHelp" title="${i18n().search_help}">${i18n().not_expected_results}</a></span>

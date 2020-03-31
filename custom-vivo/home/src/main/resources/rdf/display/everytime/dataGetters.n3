@@ -48,30 +48,39 @@ PREFIX foaf:     <http://xmlns.com/foaf/0.1/>
 PREFIX vitro:    <http://vitro.mannlib.cornell.edu/ns/vitro/0.7#>
 PREFIX vivo:     <http://vivoweb.org/ontology/core#>
 
-SELECT ?typeLabel ?startYear ?endYear ?fundingAmount ?grantNumber
+SELECT ?publisher ?publisherName ?issn ?year ?timesCited ?fieldCitationRatio ?relativeCitationRatio
+       ?typeLabel ?openAccess
 WHERE {
-  ?individualURI a vivo:Grant .
+  ?individualURI a bibo:Document .
   OPTIONAL {
-    ?individualURI vivo:totalAwardAmount ?fundingAmount 
-  }  
-  OPTIONAL {
-    ?individualURI vivo:sponsorAwardId ?grantNumber 
+    ?individualURI vivo:publisher ?publisher .
+    ?publisher rdfs:label ?publisherName .
   }
   OPTIONAL {
-    ?individualURI vivo:dateTimeInterval ?dti .
-    ?dti vivo:start ?startDtv .
-    ?startDtv vivo:dateTime ?startDateTime .
-    BIND(STRBEFORE(STR(?startDateTime), "-") AS ?startYear)
-  } 
+    ?individualURI vivo:hasPublicationVenue ?journal .
+    ?journal bibo:issn ?issn .
+  }
   OPTIONAL {
-    ?individualURI vivo:dateTimeInterval ?dti .
-    ?dti vivo:end ?endDtv .
-    ?endDtv vivo:dateTime ?endDateTime .
-    BIND(STRBEFORE(STR(?endDateTime), "-") AS ?endYear)
+    ?individualURI vivo:dateTimeValue ?dtv .
+    ?dtv vivo:dateTime ?dateTime .
+    BIND(STRBEFORE(STR(?dateTime), "-") AS ?year)
+  }
+  OPTIONAL {
+    ?individualURI <http://vivo.deffopera.dk/ontology/osrap/timesCited> ?timesCited
+  }
+  OPTIONAL {
+    ?individualURI <http://vivo.deffopera.dk/ontology/osrap/fieldCitationRatio> ?fieldCitationRatio
+  }
+  OPTIONAL {
+    ?individualURI <http://vivo.deffopera.dk/ontology/osrap/relativeCitationRatio> ?relativeCitationRatio
   }
   OPTIONAL { 
-    ?individualURI vitro:mostSpecificType ?mst .
-    ?mst rdfs:label ?typeLabel 
+    ?individualURI vitro:mostSpecificType bibo:AcademicArticle .
+    BIND("Article" AS ?typeLabel)
+  }
+  OPTIONAL {
+    ?individualURI <http://vivo.deffopera.dk/ontology/osrap/openAccessCategory> ?openAccess .
+    FILTER(?openAccess != <http://vivo.deffopera.dk/individual/open-access-category-closed>)
   }
 }
     """ ;                
@@ -131,39 +140,30 @@ PREFIX foaf:     <http://xmlns.com/foaf/0.1/>
 PREFIX vitro:    <http://vitro.mannlib.cornell.edu/ns/vitro/0.7#>
 PREFIX vivo:     <http://vivoweb.org/ontology/core#>
 
-SELECT ?publisher ?publisherName ?issn ?year ?timesCited ?fieldCitationRatio ?relativeCitationRatio
-       ?typeLabel ?openAccess
+SELECT ?typeLabel ?startYear ?endYear ?fundingAmount ?grantNumber
 WHERE {
-  ?individualURI a bibo:Document .
+  ?individualURI a vivo:Grant .
   OPTIONAL {
-    ?individualURI vivo:publisher ?publisher .
-    ?publisher rdfs:label ?publisherName .
+    ?individualURI vivo:totalAwardAmount ?fundingAmount 
+  }  
+  OPTIONAL {
+    ?individualURI vivo:sponsorAwardId ?grantNumber 
   }
   OPTIONAL {
-    ?individualURI vivo:hasPublicationVenue ?journal .
-    ?journal bibo:issn ?issn .
-  }
+    ?individualURI vivo:dateTimeInterval ?dti .
+    ?dti vivo:start ?startDtv .
+    ?startDtv vivo:dateTime ?startDateTime .
+    BIND(STRBEFORE(STR(?startDateTime), "-") AS ?startYear)
+  } 
   OPTIONAL {
-    ?individualURI vivo:dateTimeValue ?dtv .
-    ?dtv vivo:dateTime ?dateTime .
-    BIND(STRBEFORE(STR(?dateTime), "-") AS ?year)
-  }
-  OPTIONAL {
-    ?individualURI <http://vivo.deffopera.dk/ontology/osrap/timesCited> ?timesCited
-  }
-  OPTIONAL {
-    ?individualURI <http://vivo.deffopera.dk/ontology/osrap/fieldCitationRatio> ?fieldCitationRatio
-  }
-  OPTIONAL {
-    ?individualURI <http://vivo.deffopera.dk/ontology/osrap/relativeCitationRatio> ?relativeCitationRatio
+    ?individualURI vivo:dateTimeInterval ?dti .
+    ?dti vivo:end ?endDtv .
+    ?endDtv vivo:dateTime ?endDateTime .
+    BIND(STRBEFORE(STR(?endDateTime), "-") AS ?endYear)
   }
   OPTIONAL { 
-    ?individualURI vitro:mostSpecificType bibo:AcademicArticle .
-    BIND("Article" AS ?typeLabel)
-  }
-  OPTIONAL {
-    ?individualURI <http://vivo.deffopera.dk/ontology/osrap/openAccessCategory> ?openAccess .
-    FILTER(?openAccess != <http://vivo.deffopera.dk/individual/open-access-category-closed>)
+    ?individualURI vitro:mostSpecificType ?mst .
+    ?mst rdfs:label ?typeLabel 
   }
 }
     """ ;                

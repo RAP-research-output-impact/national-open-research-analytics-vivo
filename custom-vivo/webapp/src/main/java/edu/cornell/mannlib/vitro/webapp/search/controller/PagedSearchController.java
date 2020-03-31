@@ -25,6 +25,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.hp.hpl.jena.vocabulary.OWL;
+
 import dk.deffopera.nora.vivo.search.NoraSearchFacets;
 import dk.deffopera.nora.vivo.search.SearchFacet;
 import dk.deffopera.nora.vivo.search.SearchFacetCategory;
@@ -615,7 +617,15 @@ public class PagedSearchController extends FreemarkerHttpServlet {
             // rdf:type filtering
             log.debug("Firing type query ");
             log.debug("request.getParameter(type) is "+ typeParam);
-            query.addFilterQuery(VitroSearchTermNames.RDFTYPE + ":\"" + typeParam + "\"");
+            // NORA special treatment of owl:Thing: OR together only the types
+            // of interest in the interface (bibo:Document, vivo:Grant and ClinicalTrial)
+            if(OWL.Thing.getURI().equals(typeParam)) {
+                query.addFilterQuery(VitroSearchTermNames.RDFTYPE + ":\"http://purl.obolibrary.org/obo/ERO_0000016\" OR" 
+                        + VitroSearchTermNames.RDFTYPE + ":\"http://vivoweb.org/ontology/core#Grant\" OR"
+                        + VitroSearchTermNames.RDFTYPE + ":\"http://purl.org/ontology/bibo/Document\"");
+            } else {
+                query.addFilterQuery(VitroSearchTermNames.RDFTYPE + ":\"" + typeParam + "\"");
+            }
             //with type filtering we don't have facets.
         } else if ( ! StringUtils.isBlank(classgroupParam) ) {
             // ClassGroup filtering
@@ -652,7 +662,9 @@ public class PagedSearchController extends FreemarkerHttpServlet {
     protected static String getParamType(VitroRequest vreq) {
          String typeParam = null;
          String searchMode = vreq.getParameter(PARAM_SEARCHMODE);
-         if("datasets".equals(searchMode)) {
+         if("all".equals(searchMode)) {
+             typeParam = OWL.Thing.getURI();
+         } else if("datasets".equals(searchMode)) {
              typeParam = "http://vivoweb.org/ontology/core#Dataset";
          } else if ("grants".equals(searchMode)) {
              typeParam = "http://vivoweb.org/ontology/core#Grant";
@@ -681,7 +693,8 @@ public class PagedSearchController extends FreemarkerHttpServlet {
             return "patents";
         } else if("http://purl.obolibrary.org/obo/ERO_0000016".equals(getParamType(vreq))) {
             return "clinical_trials";
-        } else if(getParamClassgroup(vreq) == null && getParamType(vreq) == null){
+        } else if(OWL.Thing.getURI().equals(getParamType(vreq))) {
+            //(getParamClassgroup(vreq) == null && getParamType(vreq) == null){
             return "all";
         } else {
             return null;

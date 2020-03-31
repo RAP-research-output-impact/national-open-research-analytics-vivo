@@ -71,11 +71,9 @@
         </#if>
 
         <p>
-	${pubMeta[0].typeLabel!}
-        <#if pubMeta[0].openAccess??>
-          <img src="${urls.theme}/images/open-access.svg" width="20" alt="open access publication"/>
-	</#if>
+	${grantMeta[0].typeLabel!}
 	</p>
+
         <header>
             <#if relatedSubject??>
                 <h2>${relatedSubject.relatingPredicateDomainPublic} for ${relatedSubject.name}</h2>
@@ -106,50 +104,8 @@
 <#assign cites=gdp(citep)!>
 
 <p>
-<!-- journal -->
-<#assign publishedIn = pg.getProperty(vivo + "hasPublicationVenue")!>
-<#if publishedIn?? && publishedIn.statements?? && publishedIn.statements[0]??>
-  <span class="pub_meta"><a href="${profileUrl(publishedIn.statements[0].object)}">${publishedIn.statements[0].label}</a>, </span>
-</#if>
-<#if pubMeta[0].publisher??>
-  <span class="pub_meta"><a href="${profileUrl(pubMeta[0].publisher)}">${pubMeta[0].publisherName}</a>, </span>
-</#if>
-<#if pubMeta[0].issn??>
-  <span class="pub_meta">ISSN ${pubMeta[0].issn}</span>
-</#if>
-</p>
-
-<p>
-<#if volume?has_content>
-    <span class="pub_meta-value">Volume ${volume}, </span>
-</#if>
-<#if issue?has_content>
-    <span class="pub_meta-value">${issue}, </span>
-</#if>
-<#if pageStart?has_content && pageEnd?has_content>
-  <#if pageStart == pageEnd>
-    <span class="pub_meta-value">Page ${pageStart}, </span>
-  <#else>
-    <span class="pub_meta-value">Pages ${pageStart}-${pageEnd}, </span>
-  </#if>
-</#if> 
-<#if pubMeta[0].year??>
-    <span class="pub_meta-value"><a href="${urls.base}/search?facet_publication-year_ss=${pubMeta[0].year}">${pubMeta[0].year}</a></span>
-</#if>
-</p>
-
-<p>
-  <#if doi??>
-    <span class="pub_meta-value">DOI:<a href="http://doi.org/${doi}" title="Full Text via DOI" target="external">${doi}</a>, </span>
-  </#if>
   <#if dimensionsid??>
-    <span class="pub_meta-value">Dimensions: <a href="https://app.dimensions.ai/details/publication/${dimensionsid}" title="Publication details from Dimensions" target="external">${dimensionsid}</a>, </span>
-  </#if>
-  <#if pmcid?has_content>
-    <span class="pub_meta-value">PMC: ${pmcid}, </span>
-  </#if>
-  <#if pmid?has_content>
-    <span class="pub_meta-value">PMID: ${pmid}, </span>
+    <span class="pub_meta-value">Dimensions: <a href="https://app.dimensions.ai/details/grant/${dimensionsid}" title="Publication details from Dimensions" target="external">${dimensionsid}</a>, </span>
   </#if>
 </p>
 
@@ -178,7 +134,6 @@
   <p>${abstract}</p>
 </div>
 
-<#if supportingGrants?? && supportingGrants[0]??>
 <!-- Other details -->
 <div class="pub_other-details">
   <h3>Funders and Grants</h3>
@@ -225,18 +180,21 @@
   
 <div class="pub-v-sidebar">
 
-<h2>Metrics & Indicators</h2>
     <div class="pv-metrics">
-      <p class='pv-metrics-src'><img src="https://38h6q83kpel22aipe0iux4i1-wpengine.netdna-ssl.com/wp-content/themes/dimensions-2019/dist/images/dimensions-logo-400x80.png" alt="Dimensions" width="150"/></p>
-      <h3>Publication Metrics</h3>
-      <#if pubMeta[0].timesCited??>
-        <p>Times Cited: <span>${pubMeta[0].timesCited}</span></p>
+      <h3>Funding information</h3>
+      <#if grantMeta[0].startYear??>
+        <p>Funding period: 	
+        <span class="pub_meta-value"><a href="${urls.base}/search?facet_start-year_ss=${grantMeta[0].startYear}">
+	    ${grantMeta[0].startYear}</a><#if grantMeta[0].endYear??>-<a 
+	    href="${urls.base}/search?facet-start-year_ss=${grantMeta[0].endYear}</a></#if>
+	</span>
+	</p>
       </#if>
-      <#if pubMeta[0].relativeCitationRatio??>
-        <p>Relative Citation ratio (RCR): <span>${pubMeta[0].relativeCitationRatio}</span></p>
+      <#if grantMeta[0].fundingAmount??>
+        <p>Funding amount: <span>${grantMeta[0].fundingAmount}</span></p>
       </#if>
-      <#if pubMeta[0].fieldCitationRatio??>
-        <p>Field Citation Ratio (FCR): <span>${pubMeta[0].fieldCitationRatio}</span></p>
+      <#if grantMeta[0].grantNumber??>
+        <p>Field Citation Ratio (FCR): <span>${grantMeta[0].grantNumber}</span></p>
       </#if>
     </div>
     <!-- end pv-metrics -->

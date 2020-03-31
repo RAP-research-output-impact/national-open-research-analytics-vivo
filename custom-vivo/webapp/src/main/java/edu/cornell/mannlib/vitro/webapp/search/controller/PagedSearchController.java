@@ -619,8 +619,8 @@ public class PagedSearchController extends FreemarkerHttpServlet {
             // NORA special treatment of owl:Thing: OR together only the types
             // of interest in the interface (bibo:Document, vivo:Grant and ClinicalTrial)
             if(OWL.Thing.getURI().equals(typeParam)) {
-                query.addFilterQuery(VitroSearchTermNames.RDFTYPE + ":\"http://purl.obolibrary.org/obo/ERO_0000016\" OR" 
-                        + VitroSearchTermNames.RDFTYPE + ":\"http://vivoweb.org/ontology/core#Grant\" OR"
+                query.addFilterQuery(VitroSearchTermNames.RDFTYPE + ":\"http://purl.obolibrary.org/obo/ERO_0000016\" OR " 
+                        + VitroSearchTermNames.RDFTYPE + ":\"http://vivoweb.org/ontology/core#Grant\" OR "
                         + VitroSearchTermNames.RDFTYPE + ":\"http://purl.org/ontology/bibo/Document\"");
             } else {
                 query.addFilterQuery(VitroSearchTermNames.RDFTYPE + ":\"" + typeParam + "\"");

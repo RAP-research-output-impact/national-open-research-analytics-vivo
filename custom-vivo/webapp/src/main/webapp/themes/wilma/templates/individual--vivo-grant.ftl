@@ -187,7 +187,7 @@
         <p>Funding period: 	
         <span class="pub_meta-value"><a href="${urls.base}/search?facet_start-year_ss=${grantMeta[0].startYear}">
 	    ${grantMeta[0].startYear}</a><#if grantMeta[0].endYear??>-<a 
-	    href="${urls.base}/search?facet-start-year_ss=${grantMeta[0].endYear}</a></#if>
+	    href="${urls.base}/search?facet-start-year_ss=${grantMeta[0].endYear}">${grantMeta[0].endYear}</a></#if>
 	</span>
 	</p>
       </#if>

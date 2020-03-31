@@ -4,15 +4,19 @@
 
 <script src="${urls.theme}/js/jquery.corner.js"></script>
 
-<a href="${urls.base}/search?classgroup=http%3A%2F%2Fvivoweb.org%2Fontology%23vitroClassGrouppublications">Publications</a>
+<div class="searchResultTypes">
 
-<a href="${urls.base}/search?type=http%3A%2F%2Fvivoweb.org%2Fontology%2Fcore%23Dataset&facet_document-type_ss=http%3A%2F%2Fvivoweb.org%2Fontology%2Fcore%23Dataset">Datasets</a>
+  <a href="${urls.base}/search?classgroup=http%3A%2F%2Fvivoweb.org%2Fontology%23vitroClassGrouppublications">Publications</a>
 
-<a href="${urls.base}/search?type=http%3A%2F%2Fvivoweb.org%2Fontology%2Fcore%23Grant">Grants</a>
+  <a href="${urls.base}/search?type=http%3A%2F%2Fvivoweb.org%2Fontology%2Fcore%23Dataset&facet_document-type_ss=http%3A%2F%2Fvivoweb.org%2Fontology%2Fcore%23Dataset">Datasets</a>
 
-<a href="${urls.base}/search?type=http%3A%2F%2Fpurl.org%2Fontology%2Fbibo%2FPatent">Patents</a>
+  <a href="${urls.base}/search?type=http%3A%2F%2Fvivoweb.org%2Fontology%2Fcore%23Grant">Grants</a>
 
-<a href="${urls.base}/search?type=http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FERO_0000016">Clinical Trials</a>
+  <a href="${urls.base}/search?type=http%3A%2F%2Fpurl.org%2Fontology%2Fbibo%2FPatent">Patents</a>
+
+  <a href="${urls.base}/search?type=http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FERO_0000016">Clinical Trials</a>
+
+</div> <!-- searchResultTypes -->
 
 <div class="contentsBrowseGroup">
     <#-- Refinement links -->

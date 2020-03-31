@@ -34,6 +34,13 @@ ul#main-nav {
 footer {
   width: 1064px;
 }
+#search-form {
+  width: 52%;
+  float:right;
+}
+#searchResultTypes a {
+  margin-right: 1em;
+}
 
 /* general */
 /* 

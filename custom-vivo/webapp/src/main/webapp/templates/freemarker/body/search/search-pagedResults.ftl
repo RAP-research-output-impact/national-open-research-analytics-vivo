@@ -63,7 +63,7 @@
               <option value="patents" <#if searchMode?? && searchMode = "patents">selected</#if>>patents</option>
               <option value="clinical_trials" <#if searchMode?? && searchMode = "clincal_trials">selected</#if>>clinical trials</option>
 	    </select>
-            <input type="text" name="querytext" value="${querytext}" />
+            <input type="text" id="nora-search-text" name="querytext" value="${querytext}" />
 	  <#--
             <strong>AND</strong>
             <select name="facetAsText">
@@ -84,7 +84,7 @@
             </#if>
 	 -->
             <#if classGroupURI?has_content>
-                <input id="nora-search-text" type="hidden" name="classgroup" value="${classGroupURI}" />
+                <input type="hidden" name="classgroup" value="${classGroupURI}" />
             </#if>
             <input id="nora-search-submit" type="submit" value="Search"/>
         </form>
@@ -92,7 +92,7 @@
         <span id="searchHelp" style="text-align: right;"><a href="${urls.base}/searchHelp" title="${i18n().search_help}">${i18n().not_expected_results}</a></span>
         -->
     </div>
-    <div style="width: 55%; float: right;">
+    <div style="width: 60%; float: right;">
         <#list noraQueryReduce as link>
             <div class="qr-box">
                 <span class="qr-text">${link.text}</span>
@@ -124,7 +124,7 @@
         });
     </script>
     <#-- Search results -->
-    <div style="float: right; text-align: left; width: 55%;">
+    <div style="float: right; text-align: left; width: 60%;">
         <ul class="searchhits">
             <#list individuals as individual>
                 <li>                        

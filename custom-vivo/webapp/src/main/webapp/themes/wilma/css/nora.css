@@ -38,7 +38,7 @@ footer {
   display:none /* hide normal search box */
 }
 #nora-search-form {
-  width: 52%;
+  width: 57%;
   float:right;
 }
 #nora-search-submit {
@@ -46,7 +46,7 @@ footer {
   margin-left: 0.4em;
 }
 #nora-search-text {
-  width: 15em;
+  width: 20em;
 }
 .searchResultTypes a {
   margin-right: 1em;

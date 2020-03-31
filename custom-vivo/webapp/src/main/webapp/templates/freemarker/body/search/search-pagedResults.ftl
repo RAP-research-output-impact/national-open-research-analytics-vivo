@@ -51,6 +51,14 @@
     </div>
     <div id="search-form">
         <form action="" method="GET">
+	    <select name="searchMode">
+              <option value="all" <#if searchMode?? && searchMode = "all">selected</#if>>all data</option>
+              <option value="publications" <#if searchMode?? && searchMode = "publications">selected</#if>>publications</option>
+              <option value="datasets" <#if searchMode?? && searchMode = "datasets">selected</#if>>datasets</option>
+              <option value="grants" <#if searchMode?? && searchMode = "grants">selected</#if>>grants</option>
+              <option value="patents" <#if searchMode?? && searchMode = "patents">selected</#if>>patents</option>
+              <option value="clinical_trials" <#if searchMode?? && searchMode = "clincal_trials">selected</#if>>clinicclinical trials</option>
+	    </select>
             <input type="text" name="querytext" value="${querytext}" />
 	  <#--
             <strong>AND</strong>

@@ -77,6 +77,7 @@ public class PagedSearchController extends FreemarkerHttpServlet {
     private static final String PARAM_HITS_PER_PAGE = "hitsPerPage";
     private static final String PARAM_CLASSGROUP = "classgroup";
     private static final String PARAM_RDFTYPE = "type";
+    private static final String PARAM_SEARCHMODE = "searchMode";
     // Nora make this field public
     public static final String PARAM_QUERY_TEXT = "querytext";
     public static final String FACET_FIELD_PREFIX = "facet_";
@@ -202,6 +203,7 @@ public class PagedSearchController extends FreemarkerHttpServlet {
             Map<String, Object> body = new HashMap<String, Object>();
             
             // Nora
+            body.put(PARAM_SEARCHMODE, vreq.getParameter(PARAM_SEARCHMODE));
             body.put("facets", getFacetLinks(vreq, response, queryText));
             body.put("facetsAsText", NoraSearchFacets.getSearchFacetsAsText());
             body.put(PARAM_FACET_AS_TEXT, vreq.getParameter(PARAM_FACET_AS_TEXT));
@@ -278,7 +280,7 @@ public class PagedSearchController extends FreemarkerHttpServlet {
                 }
             }
 
-            String typeParam = vreq.getParameter(PARAM_RDFTYPE);
+            String typeParam = getParamType(vreq);
             boolean typeFilterRequested = false;
             if (!StringUtils.isEmpty(typeParam)) {
                 VClass type = vclassDao.getVClassByURI(typeParam);
@@ -332,7 +334,7 @@ public class PagedSearchController extends FreemarkerHttpServlet {
 		        OpenSocialManager openSocialManager = new OpenSocialManager(vreq, "search");
 		        // put list of people found onto pubsub channel
 	            // only turn this on for a people only search
-	            if ("http://vivoweb.org/ontology#vitroClassGrouppeople".equals(vreq.getParameter(PARAM_CLASSGROUP))) {
+	            if ("http://vivoweb.org/ontology#vitroClassGrouppeople".equals(getParamClassgroup(vreq))) {
 			        List<String> ids = OpenSocialManager.getOpenSocialId(individuals);
 			        openSocialManager.setPubsubData(OpenSocialManager.JSON_PERSONID_CHANNEL,
 			        		OpenSocialManager.buildJSONPersonIds(ids, "" + ids.size() + " people found"));
@@ -607,7 +609,7 @@ public class PagedSearchController extends FreemarkerHttpServlet {
                 + ":\"http://nora.deffopera.dk/ontology/display/HideFromSearch\"");
         
         // rdf:type filtering param
-        String typeParam = vreq.getParameter(PARAM_RDFTYPE);
+        String typeParam = getParamType(vreq);
 
         if (  ! StringUtils.isBlank(typeParam) ) {
             // rdf:type filtering
@@ -637,11 +639,31 @@ public class PagedSearchController extends FreemarkerHttpServlet {
     }
     
     protected static String getParamClassgroup(VitroRequest vreq) {
-        String classgroupParam = vreq.getParameter(PARAM_CLASSGROUP);
-        if(classgroupParam == null || classgroupParam.trim().isEmpty()) {
+        String classgroupParam = null;
+        String searchMode = vreq.getParameter(PARAM_SEARCHMODE);
+        if("publications".equals(searchMode)) {
             classgroupParam = "http://vivoweb.org/ontology#vitroClassGrouppublications";
+        } else {
+            classgroupParam = vreq.getParameter(PARAM_CLASSGROUP);
         }
         return classgroupParam;
+    }
+    
+    protected static String getParamType(VitroRequest vreq) {
+         String typeParam = null;
+         String searchMode = vreq.getParameter(PARAM_SEARCHMODE);
+         if("datasets".equals(searchMode)) {
+             typeParam = "http://vivoweb.org/ontology/core#Dataset";
+         } else if ("grants".equals(searchMode)) {
+             typeParam = "http://vivoweb.org/ontology/core#Grant";
+         } else if ("patents".equals(searchMode)) {
+             typeParam = "http://purl.org/ontology/bibo/Patent";
+         } else if ("clinical_trials".equals(searchMode)) {
+             typeParam = "http://purl.obolibrary.org/obo/ERO_0000016";
+         } else {
+             typeParam = getParamType(vreq);
+         } 
+         return typeParam;
     }
 
     protected static void addNoraFacetFields(SearchQuery query, VitroRequest vreq) {       
@@ -725,7 +747,7 @@ public class PagedSearchController extends FreemarkerHttpServlet {
         if(!StringUtils.isEmpty(s)) {
             map.put(PARAM_QUERY_TEXT, s);
         }
-        s = vreq.getParameter(PARAM_RDFTYPE);
+        s = getParamType(vreq);
         if(!StringUtils.isEmpty(s)) {
             map.put(PARAM_RDFTYPE, s);
         } else {

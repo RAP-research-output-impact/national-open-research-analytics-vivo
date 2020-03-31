@@ -204,6 +204,7 @@ public class PagedSearchController extends FreemarkerHttpServlet {
             Map<String, Object> body = new HashMap<String, Object>();
             
             // Nora
+            body.put("typeCounts", getTypeCounts(vreq));
             body.put(PARAM_SEARCHMODE, getParamSearchMode(vreq));
             body.put("facets", getFacetLinks(vreq, response, queryText));
             body.put("facetsAsText", NoraSearchFacets.getSearchFacetsAsText());
@@ -358,6 +359,31 @@ public class PagedSearchController extends FreemarkerHttpServlet {
         } catch (Throwable e) {
             return doSearchError(e,format);
         }
+    }
+    
+    private Map<String, Integer> getTypeCounts(VitroRequest vreq) {
+        VClassGroupsForRequest cache = VClassGroupCache.getVClassGroups(vreq);
+        Map<String, List<String>> mode2types = new HashMap<String, List<String>>();
+        mode2types.put("publications", Arrays.asList(
+                "http://purl.org/ontology/bibo/AcademicArticle", 
+                "http://purl.org/ontology/bibo/Chapter", 
+                "http://vivoweb.org/ontology/core#ConferencePaper"));
+        mode2types.put("datasets", Arrays.asList("http://vivoweb.org/ontology/core#Dataset"));
+        mode2types.put("grants", Arrays.asList("http://vivoweb.org/ontology/core#Grant"));
+        mode2types.put("patents", Arrays.asList("http://purl.org/ontology/bibo/Patent"));
+        mode2types.put("clinical_trials", Arrays.asList("http://purl.obolibrary.org/obo/ERO_0000016"));
+        Map<String, Integer> countsForTemplate = new HashMap<String, Integer>();
+        for(String key : mode2types.keySet()) {
+            int total = 0;
+            for(String typeURI : mode2types.get(key)) {
+                VClass vclass = cache.getCachedVClass(typeURI);
+                if(vclass != null && vclass.getEntityCount() > 0) {
+                   total += vclass.getEntityCount();   
+                }
+            }
+            countsForTemplate.put(key, total);
+        }
+        return countsForTemplate;
     }
 
 

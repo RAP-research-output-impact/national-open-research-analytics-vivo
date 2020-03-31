@@ -35,7 +35,7 @@
   <h1 class="n_hero-heading">NORA &mdash; National Open Research Analytics is a platform developed as part of the Open Research Analytics (OPERA) project, funded by the Danish Agency of Higher Education & Science. NORA is built with Dimensions data related to Danish Universities and University Hospitals from 2014-2017 and enhanced with data from Danish Research Indicators.</h1>
   <div class="n_cards">
     <article class="n_card">
-      <a href="${urls.base}/search" class="n_c-link-img">
+      <a href="${urls.base}/search?searchMode=all" class="n_c-link-img">
         <img class="n_c-img" height="250" width="600" src="https://www.biosustain.dtu.dk/-/media/Andre_Universitetsenheder/Bibliotek/foto/Boeger2.ashx?mw=700&hash=1F7FE26E4903121CD49458449F8AD2BD686444F2" alt="search">
       </a>
       <div class="n_c-content">

@@ -661,7 +661,7 @@ public class PagedSearchController extends FreemarkerHttpServlet {
          } else if ("clinical_trials".equals(searchMode)) {
              typeParam = "http://purl.obolibrary.org/obo/ERO_0000016";
          } else {
-             typeParam = getParamType(vreq);
+             typeParam = vreq.getParameter(PARAM_RDFTYPE);
          } 
          return typeParam;
     }

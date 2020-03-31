@@ -84,8 +84,10 @@ SELECT ?p ?title ?typeLabel ?journal ?authorList ?year ?openAccess WHERE {
 
 """ .
 
+# Grant and Clinical Trial search short view
 
 vivo:Grant display:hasCustomView :grantSearchView .
+obo:ERO_0000016 display:hasCustomView :grantSearchView .
 
 :grantSearchView
     a display:customViewForIndividual ;

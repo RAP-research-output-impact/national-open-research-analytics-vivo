@@ -192,10 +192,10 @@
 	</p>
       </#if>
       <#if grantMeta[0].fundingAmount??>
-        <p>Funding amount: <span>${grantMeta[0].fundingAmount}</span></p>
+        <p>Funding amount: <span>EUR ${grantMeta[0].fundingAmount}</span></p>
       </#if>
       <#if grantMeta[0].grantNumber??>
-        <p>Field Citation Ratio (FCR): <span>${grantMeta[0].grantNumber}</span></p>
+        <p>Grant number: <span>${grantMeta[0].grantNumber}</span></p>
       </#if>
     </div>
     <!-- end pv-metrics -->

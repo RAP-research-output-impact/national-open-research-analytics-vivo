@@ -1,0 +1,22 @@
+<http://vivo.deffopera.dk/ontology/osrap/inforce> <http://www.w3.org/2000/01/rdf-schema#label> "In Force" .
+<http://vivo.deffopera.dk/ontology/osrap/inforce> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/ontology/bibo/Status> .
+<http://vivo.deffopera.dk/ontology/osrap/grant> <http://www.w3.org/2000/01/rdf-schema#label> "Granted" .
+<http://vivo.deffopera.dk/ontology/osrap/grant> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/ontology/bibo/Status> .
+<http://vivo.deffopera.dk/ontology/osrap/abandoned> <http://www.w3.org/2000/01/rdf-schema#label> "Abandoned" .
+<http://vivo.deffopera.dk/ontology/osrap/abandoned> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/ontology/bibo/Status> .
+<http://vivo.deffopera.dk/ontology/osrap/application> <http://www.w3.org/2000/01/rdf-schema#label> "Application" .
+<http://vivo.deffopera.dk/ontology/osrap/application> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/ontology/bibo/Status> .
+<http://vivo.deffopera.dk/ontology/osrap/granted> <http://www.w3.org/2000/01/rdf-schema#label> "Granted" .
+<http://vivo.deffopera.dk/ontology/osrap/granted> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/ontology/bibo/Status> .
+<http://vivo.deffopera.dk/ontology/osrap/pending> <http://www.w3.org/2000/01/rdf-schema#label> "Pending" .
+<http://vivo.deffopera.dk/ontology/osrap/pending> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/ontology/bibo/Status> .
+<http://vivo.deffopera.dk/ontology/osrap/withdrawn> <http://www.w3.org/2000/01/rdf-schema#label> "Withdrawn" .
+<http://vivo.deffopera.dk/ontology/osrap/withdrawn> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/ontology/bibo/Status> .
+<http://vivo.deffopera.dk/ontology/osrap/expiredfeerelated> <http://www.w3.org/2000/01/rdf-schema#label> "Expired (Fee-Related)" .
+<http://vivo.deffopera.dk/ontology/osrap/expiredfeerelated> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/ontology/bibo/Status> .
+<http://vivo.deffopera.dk/ontology/osrap/notinforce> <http://www.w3.org/2000/01/rdf-schema#label> "Not In Force" .
+<http://vivo.deffopera.dk/ontology/osrap/notinforce> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/ontology/bibo/Status> .
+<http://vivo.deffopera.dk/ontology/osrap/ceased> <http://www.w3.org/2000/01/rdf-schema#label> "Ceased" .
+<http://vivo.deffopera.dk/ontology/osrap/ceased> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/ontology/bibo/Status> .
+<http://vivo.deffopera.dk/ontology/osrap/active> <http://www.w3.org/2000/01/rdf-schema#label> "Active" .
+<http://vivo.deffopera.dk/ontology/osrap/active> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <http://purl.org/ontology/bibo/Status> .

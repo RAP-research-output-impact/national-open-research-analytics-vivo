@@ -68,12 +68,16 @@ CONSTRUCT {
     OPTIONAL {
         ?grant g:id ?id .
         ?grant g:start_year ?startYear .
-	?grant g:end_date ?endDate .
-	BIND(STRBEFORE(STR(?endDate), "-") AS ?endYear)
 	BIND(xsd:dateTime(CONCAT(STR(?startYear), "-01-01T00:00:00")) AS ?startDt)
-	BIND(xsd:dateTime(CONCAT(STR(?endYear), "-01-01T00:00:00")) AS ?endDt)
 	BIND(IRI(CONCAT(STR(?grant), "-dti")) AS ?dti)
 	BIND(IRI(CONCAT(STR(?grant), "-dti-start")) AS ?start)
+    }
+    OPTIONAL {
+        ?grant g:id ?id .
+	?grant g:end_date ?endDate .
+	BIND(STRBEFORE(STR(?endDate), "-") AS ?endYear)
+	BIND(xsd:dateTime(CONCAT(STR(?endYear), "-01-01T00:00:00")) AS ?endDt)
+	BIND(IRI(CONCAT(STR(?grant), "-dti")) AS ?dti)
 	BIND(IRI(CONCAT(STR(?grant), "-dti-end")) AS ?end)
     }
     OPTIONAL {

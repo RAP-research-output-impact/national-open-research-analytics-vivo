@@ -665,6 +665,28 @@ public class PagedSearchController extends FreemarkerHttpServlet {
          } 
          return typeParam;
     }
+    
+    protected static String getParamSearchMode(VitroRequest vreq) {
+        String searchModeParam = vreq.getParameter(PARAM_SEARCHMODE);
+        if(searchModeParam != null) {
+            return searchModeParam;
+        } else if("http://vivoweb.org/ontology#vitroClassGrouppublications".equals(
+                getParamClassgroup(vreq))) {
+            return "publications";
+        } else if("http://vivoweb.org/ontology/core#Dataset".equals(getParamType(vreq))) {
+            return "datasets";
+        } else if("http://vivoweb.org/ontology/core#Grant".equals(getParamType(vreq))) {
+            return "grants";
+        } else if("http://purl.org/ontology/bibo/Patent".equals(getParamType(vreq))) {
+            return "patents";
+        } else if("http://purl.obolibrary.org/obo/ERO_0000016".equals(getParamType(vreq))) {
+            return "clinical_trials";
+        } else if(getParamClassgroup(vreq) == null && getParamType(vreq) == null){
+            return "all";
+        } else {
+            return null;
+        }
+    }
 
     protected static void addNoraFacetFields(SearchQuery query, VitroRequest vreq) {       
         

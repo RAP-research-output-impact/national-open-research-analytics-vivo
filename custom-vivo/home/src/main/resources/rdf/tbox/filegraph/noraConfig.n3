@@ -12,7 +12,5 @@
 <http://nora.deffopera.dk/ontology/display/HideFromSearch> a owl:Class ;
       rdfs:label "Hide from Search" .
 
-
-bibo:Document
-      vitro:customDisplayViewAnnot
-                    "individual--bibo-document.ftl"^^xsd:string .
+bibo:Document vitro:customDisplayViewAnnot "individual--bibo-document.ftl"^^xsd:string .
+vivo:Grant vitro:customDisplayViewAnnot "individual--vivo-grant.ftl"^^xsd:string .

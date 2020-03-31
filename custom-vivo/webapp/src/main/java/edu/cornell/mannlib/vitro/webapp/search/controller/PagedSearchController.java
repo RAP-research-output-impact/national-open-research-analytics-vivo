@@ -203,7 +203,7 @@ public class PagedSearchController extends FreemarkerHttpServlet {
             Map<String, Object> body = new HashMap<String, Object>();
             
             // Nora
-            body.put(PARAM_SEARCHMODE, vreq.getParameter(PARAM_SEARCHMODE));
+            body.put(PARAM_SEARCHMODE, getParamSearchMode(vreq));
             body.put("facets", getFacetLinks(vreq, response, queryText));
             body.put("facetsAsText", NoraSearchFacets.getSearchFacetsAsText());
             body.put(PARAM_FACET_AS_TEXT, vreq.getParameter(PARAM_FACET_AS_TEXT));

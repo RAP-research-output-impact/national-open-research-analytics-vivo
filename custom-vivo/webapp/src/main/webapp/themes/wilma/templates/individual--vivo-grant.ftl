@@ -179,23 +179,6 @@
 </#if>
 
 
-<!-- categories/classification -->
-<div class="pub_categories">
-  <h3>Research Categories</h3>
-
-<#-- Research areas do not appear to be present in the RDF data 2019-05-13 -->
- <#if pg.getProperty(vivo + "hasSubjectArea")??>
-  <div class="pub_keywords-enumeration clearfix">
-    <h4>Research Areas:</h4>
-    <ul class="one-line-list">
-      <@p.objectProperty pg.getProperty(vivo + "hasSubjectArea") false />
-    </ul>
-  </div>
- </#if>
-
-</div>
-<!-- end .pub_categories -->
-
 </div>
 <!-- end .pub-v-main -->
   
@@ -219,6 +202,23 @@
       </#if>
     </div>
     <!-- end pv-metrics -->
+
+<!-- categories/classification -->
+<div class="pub_categories">
+  <h3>Research Categories</h3>
+
+<#-- Research areas do not appear to be present in the RDF data 2019-05-13 -->
+ <#if pg.getProperty(vivo + "hasSubjectArea")??>
+  <div class="pub_keywords-enumeration clearfix">
+    <h4>Research Areas:</h4>
+    <ul class="one-line-list">
+      <@p.objectProperty pg.getProperty(vivo + "hasSubjectArea") false />
+    </ul>
+  </div>
+ </#if>
+
+</div>
+<!-- end .pub_categories -->
 
 </div>
   <!-- end .pub-v-sidebar -->

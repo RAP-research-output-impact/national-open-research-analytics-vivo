@@ -142,7 +142,19 @@
 <ol style="margin-top:2ex;">
 <#list clinicalTrialAffiliations as clinicalTrialAffiliation>
   <#if clinicalTrialAffiliation.affiliation?has_content && clinicalTrialAffiliation.affiliationName?has_content>
-    <li>(${clinicalTrialAffiliation?index + 1}) <a href="${profileUrl(clinicalTrialAffiliation.affiliation)}">${clinicalTrialAffiliation.affiliationName}</a></li>
+    <#if clinicalTrialAffiliation.grid?has_content>
+      <#if !clinicalTrialAffiliation.type?has_content>
+        <li>(${clinicalTrialAffiliation?index + 1}) ${clinicalTrialAffiliation.affiliationName}, ${clinicalTrialAffiliation.grid}</li>
+      <#else>
+          <li>(${clinicalTrialAffiliation?index + 1}) <a href="${urls.base}/search?searchMode=clinical_trials&facet_${clinicalTrialAffiliation.type!organization}_ss=${clinicalTrialAffiliation.affiliation}">${clinicalTrialAffiliation.affiliationName}, ${clinicalTrialAffiliation.grid}</a></li>
+      </#if>
+    <#else>
+      <#if !clinicalTrialAffiliation.type?has_content>
+        <li>(${clinicalTrialAffiliation?index + 1}) ${clinicalTrialAffiliation.affiliationName}</li>
+      <#else>
+          <li>(${clinicalTrialAffiliation?index + 1}) <a href="${urls.base}/search?searchMode=clinical_trials&facet_${clinicalTrialAffiliation.type!organization}_ss=${clinicalTrialAffiliation.affiliation}">${clinicalTrialAffiliation.affiliationName}</a></li>
+      </#if>
+    </#if>
   </#if>
 </#list>
 </ol>

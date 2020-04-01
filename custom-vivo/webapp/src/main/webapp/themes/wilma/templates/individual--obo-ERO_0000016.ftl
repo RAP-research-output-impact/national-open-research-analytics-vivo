@@ -107,11 +107,11 @@
 
 <p>
   <#if dimensionsid??>
-    <span class="pub_meta-value">Dimensions: <a href="https://app.dimensions.ai/details/clinical_trial/${dimensionsid}" title="Publication details from Dimensions" target="external">${dimensionsid}</a>, </span>
+    <span class="pub_meta-value">Dimensions: <a href="https://app.dimensions.ai/details/clinical_trial/${dimensionsid}" title="Publication details from Dimensions" target="external">${dimensionsid}</a></span>
   </#if>
 </p>
 
-<#if clinicalTrialInvestigators??>
+<#if clinicalTrialInvestigators?has_content>
 <!-- investigators -->
 <div class="pub_authors-box">
   <h3>Investigators</h3>

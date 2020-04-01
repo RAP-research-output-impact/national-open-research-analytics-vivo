@@ -107,7 +107,7 @@
 
 <p>
   <#if dimensionsid??>
-    <span class="pub_meta-value">Dimensions: <a href="https://app.dimensions.ai/details/grant/${dimensionsid}" title="Publication details from Dimensions" target="external">${dimensionsid}</a>, </span>
+    <span class="pub_meta-value">Dimensions: <a href="https://app.dimensions.ai/details/grant/${dimensionsid}" title="Publication details from Dimensions" target="external">${dimensionsid}</a></span>
   </#if>
 </p>
 
@@ -138,7 +138,7 @@
 </#if>
 
 <!-- grant affiliations -->
-<#if grantAffiliations??>
+<#if grantAffiliations?has_content>
 <ol style="margin-top:2ex;">
 <#list grantAffiliations as grantAffiliation>
   <#if grantAffiliation.affiliation?has_content && grantAffiliation.affiliationName?has_content>

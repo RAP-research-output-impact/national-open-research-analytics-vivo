@@ -95,6 +95,7 @@ footer {
 
 .n_main a {
   display: inline-block;
+  text-decoration: none;
 }
 .n_main p {
 	line-height: 1.4;

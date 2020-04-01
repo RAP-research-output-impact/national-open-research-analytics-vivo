@@ -197,7 +197,7 @@ SELECT ?rank (COALESCE(MIN(?affiliation_), owl:Nothing) AS ?affiliation) WHERE {
   ?individualURI vivo:relates ?role .
   ?role a obo:BFO_0000023 . # Role
   FILTER(?role != obo:ERO_0000224) # FundingRole
-  ?role core:rank ?rank .
+  ?role vivo:rank ?rank .
   ?role <http://vivo.deffopera.dk/ontology/osrap/relatedToOrganization> ?affiliation_ .
 } GROUP BY ?rank ORDER BY ?rank
 }
@@ -226,7 +226,7 @@ WHERE {
     ?individualURI vivo:relates ?role . 
     ?role a obo:BFO_0000023 . # Role
     FILTER(?role != obo:ERO_0000224) # FundingRole
-    ?role core:rank ?rank .
+    ?role vivo:rank ?rank .
     ?role obo:RO_0000052 ?investigator . # inheresIn
     ?investigator a foaf:Agent .
     ?investigator rdfs:label ?investigatorName .

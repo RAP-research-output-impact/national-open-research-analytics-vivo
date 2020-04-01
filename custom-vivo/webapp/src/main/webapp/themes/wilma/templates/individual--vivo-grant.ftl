@@ -109,26 +109,42 @@
   </#if>
 </p>
 
-<!-- authors -->
+<#if grantInvestigators??>
+<!-- investigators -->
 <div class="pub_authors-box">
-  <h3>Authors</h3>
-  <#if pg.getProperty(vivo + "relatedBy", vivo + "Authorship")??>
-    <@p.objectProperty pg.getProperty(vivo + "relatedBy", vivo + "Authorship") false />
-  </#if>
+  <h3>Investigators</h3>
+  <#list grantInvestigators as grantInvestigator>
+    <#if grantInvestigator.investigator?? && grantInvestigator.investigatorName??>
+        <a href="${profileUrl(grantInvestigator.investigator)}">${grantInvestigator.investigatorName}</a>
+      <#if grantInvestigator.rank?? && grantAffiliations??>
+        <#list grantAffiliations as grantAffiliation>
+          <#if grantAffiliation.ranks?has_content>
+            <#list grantAffiliation.ranks?split(";") as rank>
+              <#if rank == grantInvestgator.rank>
+                (${grantAffiliation?index + 1})
+              </#if>
+            </#list>
+          </#if>
+        </#list>
+      </#if>
+    </#if>
+  </#list>
 </div>
 <!-- end .authors-box -->
+</#if>
 
-<!-- author affiliations -->
-<#if authorAffiliations??>
+<!-- grant affiliations -->
+<#if grantAffiliations??>
 <ol style="margin-top:2ex;">
-<#list authorAffiliations as authorAffiliation>
-  <#if authorAffiliation.affiliation?has_content && authorAffiliation.affiliationName?has_content>
-    <li>(${authorAffiliation?index + 1}) <a href="${profileUrl(authorAffiliation.affiliation)}">${authorAffiliation.affiliationName}</a></li>
+<#list grantAffiliations as grantAffiliation>
+  <#if grantAffiliation.affiliation?has_content && grantAffiliation.affiliationName?has_content>
+    <li>(${grantAffiliation?index + 1}) <a href="${profileUrl(grantAffiliation.affiliation)}">${grantAffiliation.affiliationName}</a></li>
   </#if>
 </#list>
 </ol>
 </#if>
 
+<h3>Abstract</3>
 <!-- abstract -->
 <div class="pub_abstract">
   <p>${abstract}</p>

@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.jena.rdf.model.Model;
@@ -55,14 +56,25 @@ public class DimensionsGrantsConnector extends DimensionsConnector {
                 batch--;
                 Document d = cursor.next();
                 String jsonStr = d.toJson();   
-                JSONObject jsonObj = new JSONObject(jsonStr);
-                log.info(jsonObj.toString(2));  
+                JSONObject fullJsonObj = new JSONObject(jsonStr);                  
                 // Use the whole JSON so we can access the 'who'
-                //jsonObj = jsonObj.getJSONObject("meta").getJSONObject("raw");
                 if(log.isDebugEnabled()) {
-                    log.debug(jsonObj.toString(2));
-                }                
-                results.add(toRdf(jsonObj.toString()));
+                    log.debug(fullJsonObj.toString(2));
+                }
+                JSONObject jsonObj = fullJsonObj.getJSONObject("meta").getJSONObject("raw");
+                if(!jsonObj.has("researcher_details")) {
+                    log.info("researchers not found");
+                } else {
+                    log.info("researchers found");
+                    JSONArray authors = jsonObj.getJSONArray("researcher_details");
+                    for(int authi = 0; authi < authors.length(); authi++) {
+                        JSONObject author = authors.getJSONObject(authi);
+                        author.put("authorRank", authi + 1);
+                    }    
+                }
+                log.info(fullJsonObj.toString(2));
+                results.add(toRdf(fullJsonObj.toString()));
+// too slow: not indexed in Mongo?
 //                JSONObject raw = jsonObj.getJSONObject("meta").getJSONObject("raw");
 //                if(raw.has("resulting_publication_ids")) {
 //                    JSONArray pubs = raw.getJSONArray("resulting_publication_ids");

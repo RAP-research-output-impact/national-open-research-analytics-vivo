@@ -122,7 +122,7 @@
         <#list grantAffiliations as grantAffiliation>
           <#if grantAffiliation.ranks?has_content>
             <#list grantAffiliation.ranks?split(";") as rank>
-              <#if rank == grantInvestgator.rank>
+              <#if rank == grantInvestigator.rank>
                 (${grantAffiliation?index + 1})
               </#if>
             </#list>

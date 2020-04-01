@@ -148,7 +148,7 @@
 </ol>
 </#if>
 
-<h3>Abstract</3>
+<h3>Abstract</h3>
 <!-- abstract -->
 <div class="pub_abstract">
   <p>${abstract}</p>

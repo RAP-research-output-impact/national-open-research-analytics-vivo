@@ -173,7 +173,7 @@
 </ol>
 </#if>
 
-<#if abstract?has_content?>
+<#if abstract?has_content>
 <!-- abstract -->
 <h3>Description</h3>
 <div class="pub_abstract">

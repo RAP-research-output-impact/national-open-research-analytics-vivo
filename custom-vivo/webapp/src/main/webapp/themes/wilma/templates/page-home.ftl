@@ -39,7 +39,7 @@
         <img class="n_c-img" height="250" width="600" src="https://www.biosustain.dtu.dk/-/media/Andre_Universitetsenheder/Bibliotek/foto/Boeger2.ashx?mw=700&hash=1F7FE26E4903121CD49458449F8AD2BD686444F2" alt="search">
       </a>
       <div class="n_c-content">
-        <a class="n_c-linkTitle" href="${urls.base}/search"><h3>Search</h3></a>
+        <a class="n_c-linkTitle" href="${urls.base}/search?searchMode=all"><h3>Search</h3></a>
         <p>Search for publications, datasets, grants, patents and clincal trials</p>
       </div>
     </article>

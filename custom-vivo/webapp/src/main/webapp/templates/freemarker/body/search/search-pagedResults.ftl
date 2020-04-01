@@ -61,7 +61,7 @@
               <option value="datasets" <#if searchMode?? && searchMode = "datasets">selected</#if>>datasets</option>
               <option value="grants" <#if searchMode?? && searchMode = "grants">selected</#if>>grants</option>
               <option value="patents" <#if searchMode?? && searchMode = "patents">selected</#if>>patents</option>
-              <option value="clinical_trials" <#if searchMode?? && searchMode = "clincal_trials">selected</#if>>clinical trials</option>
+              <option value="clinical_trials" <#if searchMode?? && searchMode = "clinical_trials">selected</#if>>clinical trials</option>
 	    </select>
             <input type="text" id="nora-search-text" name="querytext" value="${querytext}" />
 	  <#--

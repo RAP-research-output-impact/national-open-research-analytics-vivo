@@ -143,7 +143,13 @@
     <span class="pub_meta-value">DOI:<a href="http://doi.org/${doi}" title="Full Text via DOI" target="external">${doi}</a>, </span>
   </#if>
   <#if dimensionsid?has_content>
-    <span class="pub_meta-value">Dimensions: <a href="https://app.dimensions.ai/details/publication/${dimensionsid}" title="Publication details from Dimensions" target="external">${dimensionsid}</a>, </span>
+    <#if dimensionsid?contains("pub.")>
+      <span class="pub_meta-value">Dimensions: <a href="https://app.dimensions.ai/details/publication/${dimensionsid}" title="Publication details from Dimensions" target="external">${dimensionsid}</a>, </span>
+    <#elseif dimensionsid?contains("-")>
+      <span class="pub_meta-value">Dimensions: <a href="https://app.dimensions.ai/details/patent/${dimensionsid}" title="Patent details from Dimensions" target="external">${dimensionsid}</a>, </span>
+    <#else>
+      <span class="pub_meta-value">Dimensions: <a href="https://app.dimensions.ai/details/data_set/${dimensionsid}" title="Dataset details from Dimensions" target="external">${dimensionsid}</a>, </span>
+    </#if>
   </#if>
   <#if pmcid?has_content>
     <span class="pub_meta-value">PMC: ${pmcid}, </span>

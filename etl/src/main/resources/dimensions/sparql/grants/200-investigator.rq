@@ -37,6 +37,7 @@ CONSTRUCT {
     ?grant vivo:relates ?role .
     ?role a obo:BFO_0000023 .
     ?role a ?roleType .
+    ?role vivo:rank ?rank .
     ?role obo:RO_0000052 ?person .
     ?role obo:BFO_0000054 ?project .
     ?role osrap:relatedToOrganization ?affiliationOrg .
@@ -49,6 +50,8 @@ CONSTRUCT {
     ?details g:last_name ?lastName .
     ?details g:first_name ?firstName .
     ?details g:id ?personId .
+    ?details g:authorRank ?authorRank .
+    BIND(xsd:integer(?authorRank) AS ?rank)
     #OPTIONAL { ?details g:middle_name ?middleName }
     OPTIONAL {
       ?details g:role "PI" .

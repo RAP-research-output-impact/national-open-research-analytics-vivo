@@ -139,10 +139,10 @@
 </p>
 
 <p>
-  <#if doi??>
+  <#if doi?has_content>
     <span class="pub_meta-value">DOI:<a href="http://doi.org/${doi}" title="Full Text via DOI" target="external">${doi}</a>, </span>
   </#if>
-  <#if dimensionsid??>
+  <#if dimensionsid?has_content>
     <span class="pub_meta-value">Dimensions: <a href="https://app.dimensions.ai/details/publication/${dimensionsid}" title="Publication details from Dimensions" target="external">${dimensionsid}</a>, </span>
   </#if>
   <#if pmcid?has_content>
@@ -173,10 +173,13 @@
 </ol>
 </#if>
 
+<#if abstract?has_content?>
 <!-- abstract -->
+<h3>Description</h3>
 <div class="pub_abstract">
   <p>${abstract}</p>
 </div>
+</#if>
 
 <#if supportingGrants?? && supportingGrants[0]??>
 <!-- Other details -->

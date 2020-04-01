@@ -78,6 +78,11 @@ WHERE {
     ?individualURI vitro:mostSpecificType bibo:AcademicArticle .
     BIND("Article" AS ?typeLabel)
   }
+  OPTIONAL { 
+    ?individualURI vitro:mostSpecificType ?mst .
+    FILTER(?mst != bibo:AcademicArticle)
+    ?mst rdfs:label ?typeLabel .
+  }
   OPTIONAL {
     ?individualURI <http://vivo.deffopera.dk/ontology/osrap/openAccessCategory> ?openAccess .
     FILTER(?openAccess != <http://vivo.deffopera.dk/individual/open-access-category-closed>)

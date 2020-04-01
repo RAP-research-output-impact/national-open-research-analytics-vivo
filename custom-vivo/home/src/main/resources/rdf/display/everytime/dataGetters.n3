@@ -335,10 +335,20 @@ PREFIX bibo:     <http://purl.org/ontology/bibo/>
 PREFIX foaf:     <http://xmlns.com/foaf/0.1/>
 PREFIX vitro:    <http://vitro.mannlib.cornell.edu/ns/vitro/0.7#>
 PREFIX vivo:     <http://vivoweb.org/ontology/core#>
+PREFIX osrap:    <http://vivo.deffopera.dk/ontology/osrap/>
 
-SELECT ?typeLabel ?startYear ?endYear 
+SELECT ?typeLabel ?condition ?intervention ?gender ?startYear ?endYear 
 WHERE {
   ?individualURI a obo:ERO_0000016 . # ClinicalTrial
+  OPTIONAL {
+    ?individualURI osrap:condition ?condition 
+  }
+  OPTIONAL {
+    ?individualURI osrap:intervention ?intervention 
+  }
+  OPTIONAL {
+    ?individualURI osrap:gender ?gender 
+  }
   OPTIONAL {
     ?individualURI vivo:dateTimeInterval ?dti .
     ?dti vivo:start ?startDtv .

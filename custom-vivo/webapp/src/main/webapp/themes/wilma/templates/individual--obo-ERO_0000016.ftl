@@ -160,11 +160,28 @@
 </ol>
 </#if>
 
+<#if abstract?has_content>
 <h3>Abstract</h3>
 <!-- abstract -->
 <div class="pub_abstract">
   <p>${abstract}</p>
 </div>
+</#if>
+
+<#if clinicalTrialMeta[0].condition?has_content || clinicalTrialMeta[0].intervention?has_content>
+<h3>Methods</h3>
+  <#if clinicalTrialMeta[0].condition?has_content>
+    <p>Condition: ${clinicalTrialMeta[0].condition}</p>
+  </#if>
+  <#if clinicalTrialMeta[0].intervention?has_content>
+    <p>Intervention: ${clinicalTrialMeta[0].intervention}</p>
+  </#if>
+</#if>
+
+<#if clinicalTrialMeta[0].gender?has_content>
+<h3>Recruitment information</h3>
+  <p>Gender: ${clinicalTrialMeta[0].gender}</p>
+</#if>
 
 <#if supportingGrants?? && supportingGrants[0]??>
 <!-- Other details -->

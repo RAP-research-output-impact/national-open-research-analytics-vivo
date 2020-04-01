@@ -117,6 +117,7 @@
   <h3>Investigators</h3>
   <#list grantInvestigators as grantInvestigator>
     <#if grantInvestigator.investigator?? && grantInvestigator.investigatorName??>
+      <div class="pub_author-name">
         <a href="${profileUrl(grantInvestigator.investigator)}">${grantInvestigator.investigatorName}</a>
       <#if grantInvestigator.rank?? && grantAffiliations??>
         <#list grantAffiliations as grantAffiliation>
@@ -129,6 +130,7 @@
           </#if>
         </#list>
       </#if>
+      </div> <!-- pub_author-name -->
     </#if>
   </#list>
 </div>

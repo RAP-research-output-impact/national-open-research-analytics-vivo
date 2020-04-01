@@ -160,11 +160,13 @@
 </ol>
 </#if>
 
+<#if abstract?has_content>
 <h3>Abstract</h3>
 <!-- abstract -->
 <div class="pub_abstract">
   <p>${abstract}</p>
 </div>
+</#if>
 
 <#if supportingGrants?? && supportingGrants[0]??>
 <!-- Other details -->

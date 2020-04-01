@@ -239,7 +239,7 @@ WHERE {
 
 <freemarker:individual--obo-ERO_0000016.ftl> 
         <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#hasDataGetter> 
-                 <http://vitro.mannlib.cornell.edu/ns/default#clincalTrialMetaDataGetter> .
+                 <http://vitro.mannlib.cornell.edu/ns/default#clinicalTrialMetaDataGetter> .
 <freemarker:individual--obo-ERO_0000016.ftl> 
         <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#hasDataGetter> 
                  <http://vitro.mannlib.cornell.edu/ns/default#clinicalTrialAffiliationsDataGetter> .

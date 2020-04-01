@@ -256,7 +256,7 @@ SELECT ?rank (COALESCE(MIN(?affiliation_), owl:Nothing) AS ?affiliation)
 } GROUP BY ?rank ORDER BY ?rank
 }
   ?affiliation rdfs:label ?affiliationName_ 
-} GROUP BY ?affiliation ORDER BY ?minRank
+} GROUP BY ?affiliation ?type ?grid ORDER BY ?minRank
     """ ;                
 	<http://vitro.mannlib.cornell.edu/ontologies/display/1.1#saveToVar>
                 "grantAffiliations" .

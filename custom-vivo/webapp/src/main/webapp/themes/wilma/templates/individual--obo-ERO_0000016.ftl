@@ -217,9 +217,9 @@
       <#if clinicalTrialMeta[0].startYear??>
         <h3>Trial period</h3>
         <p> 	
-        <span class="pub_meta-value"><a href="${urls.base}/search?facet_start-year_ss=${clinicalTrialMeta[0].startYear}">
+        <span class="pub_meta-value"><a href="${urls.base}/search?searchMode=clinical_trials&facet_start-year_ss=${clinicalTrialMeta[0].startYear}">
 	    ${clinicalTrialMeta[0].startYear}</a><#if clinicalTrialMeta[0].endYear??>-<a 
-	    href="${urls.base}/search?facet-start-year_ss=${clinicalTrialMeta[0].endYear}">${clinicalTrialMeta[0].endYear}</a></#if>
+	    href="${urls.base}/search?searchMode=clinical_trials&facet_start-year_ss=${clinicalTrialMeta[0].endYear}">${clinicalTrialMeta[0].endYear}</a></#if>
 	    </span>
 	    </p>
       </#if>

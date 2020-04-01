@@ -112,7 +112,7 @@
   <span class="pub_meta"><a href="${profileUrl(publishedIn.statements[0].object)}">${publishedIn.statements[0].label}</a>, </span>
 </#if>
 <#if pubMeta[0].publisher??>
-  <span class="pub_meta"><a href="${profileUrl(pubMeta[0].publisher)}">${pubMeta[0].publisherName}</a>, </span>
+  <span class="pub_meta"><a href="${urls.base}search?searchMode=publications&facet_publisher_ss=${pubMeta[0].publisher}">${pubMeta[0].publisherName}</a>, </span>
 </#if>
 <#if pubMeta[0].issn??>
   <span class="pub_meta">ISSN ${pubMeta[0].issn}</span>
@@ -206,22 +206,25 @@
 </#if>
 
 
+<#if researchCategoriesFOR?has_content>
 <!-- categories/classification -->
 <div class="pub_categories">
   <h3>Research Categories</h3>
 
-<#-- Research areas do not appear to be present in the RDF data 2019-05-13 -->
- <#if pg.getProperty(vivo + "hasSubjectArea")??>
+ <#if researchCategoriesFOR?has_content>
   <div class="pub_keywords-enumeration clearfix">
-    <h4>Research Areas:</h4>
+    <p>Fields of Research</p>
     <ul class="one-line-list">
-      <@p.objectProperty pg.getProperty(vivo + "hasSubjectArea") false />
+      <#list researchCategoriesFOR as researchCategory>
+        <li role="list-item"><a href="${urls.base}/search?searchMode=clinical_trials&facet_research-category_ss=${researchCategory.researchCategory}">${researchCategory.researchCategoryName}</a></li>
+      </#list>
     </ul>
   </div>
  </#if>
 
 </div>
 <!-- end .pub_categories -->
+</#if>
 
 </div>
 <!-- end .pub-v-main -->

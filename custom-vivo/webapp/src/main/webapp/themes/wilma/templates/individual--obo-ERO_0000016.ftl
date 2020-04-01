@@ -227,7 +227,7 @@
     </div>
     <!-- end pv-metrics -->
     
-    <#if researchCategoriesFOR?has_content>
+<#if researchCategoriesFOR?has_content>
 <!-- categories/classification -->
 <div class="pub_categories">
   <h3>Research Categories</h3>

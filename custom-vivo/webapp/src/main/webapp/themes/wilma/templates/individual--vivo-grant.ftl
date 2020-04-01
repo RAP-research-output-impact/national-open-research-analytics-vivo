@@ -222,7 +222,6 @@
 
  <#if researchCategoriesFOR?has_content>
   <div class="pub_keywords-enumeration clearfix">
-    <h3>Research Areas:</h3>
     <p>Fields of Research</p>
     <ul class="one-line-list">
       <#list researchCategoriesFOR as researchCategory>

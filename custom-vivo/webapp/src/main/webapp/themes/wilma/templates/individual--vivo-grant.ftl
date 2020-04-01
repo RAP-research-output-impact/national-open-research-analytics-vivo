@@ -188,7 +188,7 @@
       <h3>Funding information</h3>
       <#if grantMeta[0].startYear??>
         <p>Funding period: 	
-        <span class="pub_meta-value"><a href="${urls.base}/search?facet_start-year_ss=${grantMeta[0].startYear}">
+        <span class="pub_meta-value"><a href="${urls.base}/search?searchMode=grants&facet_start-year_ss=${grantMeta[0].startYear}">
 	    ${grantMeta[0].startYear}</a><#if grantMeta[0].endYear??>-<a 
 	    href="${urls.base}/search?facet-start-year_ss=${grantMeta[0].endYear}">${grantMeta[0].endYear}</a></#if>
 	</span>
@@ -207,12 +207,14 @@
 <div class="pub_categories">
   <h3>Research Categories</h3>
 
-<#-- Research areas do not appear to be present in the RDF data 2019-05-13 -->
- <#if pg.getProperty(vivo + "hasSubjectArea")??>
+ <#if researchCategoriesFOR?has_content>
   <div class="pub_keywords-enumeration clearfix">
-    <h4>Research Areas:</h4>
+    <h3>Research Areas:</h3>
+    <p>Fields of Research</p>
     <ul class="one-line-list">
-      <@p.objectProperty pg.getProperty(vivo + "hasSubjectArea") false />
+      <#list researchCategoriesFOR as researchCategory>
+        <li role="list-item"><a href="${urls.base}/search?searchMode=grants&facet_research-category_ss=${researchCategory.researchCategory}">${researchCategory.researchCategoryName}</a></li>
+      </#list>
     </ul>
   </div>
  </#if>

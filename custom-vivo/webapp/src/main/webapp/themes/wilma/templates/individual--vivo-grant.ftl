@@ -142,7 +142,19 @@
 <ol style="margin-top:2ex;">
 <#list grantAffiliations as grantAffiliation>
   <#if grantAffiliation.affiliation?has_content && grantAffiliation.affiliationName?has_content>
-    <li>(${grantAffiliation?index + 1}) <a href="${profileUrl(grantAffiliation.affiliation)}">${grantAffiliation.affiliationName}</a></li>
+    <#if grantAffiliation.grid?has_content>
+      <#if !grantAffiliation.type?has_content>
+        <li>(${grantAffiliation?index + 1}) ${grantAffiliation.affiliationName}, ${grantAffiliation.grid}</li>
+      <#else>
+          <li>(${grantAffiliation?index + 1}) <a href="${urls.base}/search?searchMode=grants&facet_${grantAffiliation.type!organization}_ss=${grantAffiliation}">"${grantAffiliation.affiliationName}, ${grantAffiliation.grid}</a></li>
+      </#if>
+    <#else>
+      <#if !grantAffiliation.type?has_content>
+        <li>(${grantAffiliation?index + 1}) ${grantAffiliation.affiliationName}</li>
+      <#else>
+          <li>(${grantAffiliation?index + 1}) <a href="${urls.base}/search?searchMode=grants&facet_${grantAffiliation.type!organization}_ss=${grantAffiliation}">"${grantAffiliation.affiliationName}</a></li>
+      </#if>
+    </#if>
   </#if>
 </#list>
 </ol>

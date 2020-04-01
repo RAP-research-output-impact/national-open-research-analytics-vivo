@@ -223,19 +223,39 @@ PREFIX vitro:    <http://vitro.mannlib.cornell.edu/ns/vitro/0.7#>
 PREFIX vivo:     <http://vivoweb.org/ontology/core#>
 
 SELECT ?affiliation (GROUP_CONCAT(?rank;separator=";") AS ?ranks) (MIN(?affiliationName_) AS ?affiliationName) 
-(MIN(?rank) AS ?minRank)
+(MIN(?rank) AS ?minRank) ?grid ?type
 WHERE {  
 {
-SELECT ?rank (COALESCE(MIN(?affiliation_), owl:Nothing) AS ?affiliation) WHERE {
+SELECT ?rank (COALESCE(MIN(?affiliation_), owl:Nothing) AS ?affiliation) 
+    (MIN(?grid_) AS ?grid) (MIN(?type_) AS ?type) WHERE {
   ?individualURI a vivo:Grant .
   ?individualURI vivo:relates ?role .
   ?role a obo:BFO_0000023 . # Role
   FILTER(?role != obo:ERO_0000224) # FundingRole
   ?role vivo:rank ?rank .
   ?role <http://vivo.deffopera.dk/ontology/osrap/relatedToOrganization> ?affiliation_ .
+  OPTIONAL {
+      ?affiliation_ a vivo:University .
+      BIND("university" AS ?type_)
+  }
+  OPTIONAL {
+      ?affiliation_ a vivo:Hospital .
+      BIND("hospital" AS ?type_)
+  }
+  OPTIONAL {
+      ?affiliation_ rdfs:label ?something .
+      FILTER NOT EXISTS { ?affiliation_ a vivo:University }
+      FILTER NOT EXISTS { ?affiliation_ a vivo:Hospital }
+      BIND("organization" AS ?type_)
+  }
+  OPTIONAL {
+     ?role <http://vivo.deffopera.dk/ontology/osrap/relatedToOrganization> ?affiliation_ .
+     FILTER(REGEX(STR(?affiliation_), "grid"))
+     BIND(CONCAT("grid", STRAFTER(STR(?affiliation_), "grid")) AS ?grid_)
+  }
 } GROUP BY ?rank ORDER BY ?rank
 }
-  ?affiliation rdfs:label ?affiliationName_  
+  ?affiliation rdfs:label ?affiliationName_ 
 } GROUP BY ?affiliation ORDER BY ?minRank
     """ ;                
 	<http://vitro.mannlib.cornell.edu/ontologies/display/1.1#saveToVar>

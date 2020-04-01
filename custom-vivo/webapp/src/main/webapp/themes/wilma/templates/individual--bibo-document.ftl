@@ -109,7 +109,7 @@
 <!-- journal -->
 <#assign publishedIn = pg.getProperty(vivo + "hasPublicationVenue")!>
 <#if publishedIn?? && publishedIn.statements?? && publishedIn.statements[0]??>
-  <span class="pub_meta"><a href="${urls.base}/search?searchMode=publications&facet_publisher_ss=${publishedIn.statements[0].object}">${publishedIn.statements[0].label}</a>, </span>
+  <span class="pub_meta"><a href="${urls.base}/search?searchMode=publications&facet_journal_ss=${publishedIn.statements[0].object}">${publishedIn.statements[0].label}</a>, </span>
 </#if>
 <#if pubMeta[0].publisher??>
   <span class="pub_meta"><a href="${urls.base}/search?searchMode=publications&facet_publisher_ss=${pubMeta[0].publisher}">${pubMeta[0].publisherName}</a>, </span>

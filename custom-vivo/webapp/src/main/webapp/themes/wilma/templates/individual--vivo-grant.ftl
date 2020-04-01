@@ -71,7 +71,9 @@
         </#if>
 
         <p>
-	${grantMeta[0].typeLabel!}
+	<#if grantMeta[0].typeLabel??>
+	    ${grantMeta[0].typeLabel!}
+	</#if>
 	</p>
 
         <header>

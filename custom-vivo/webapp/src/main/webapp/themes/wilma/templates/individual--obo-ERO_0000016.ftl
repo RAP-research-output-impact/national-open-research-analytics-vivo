@@ -214,17 +214,39 @@
 <div class="pub-v-sidebar">
 
     <div class="pv-metrics">
-      <h3>Funding information</h3>
+      
       <#if clinicalTrialMeta[0].startYear??>
-        <p>Funding period: 	
+        <h3>Trial period</h3>
+        <p> 	
         <span class="pub_meta-value"><a href="${urls.base}/search?facet_start-year_ss=${clinicalTrialMeta[0].startYear}">
 	    ${clinicalTrialMeta[0].startYear}</a><#if clinicalTrialMeta[0].endYear??>-<a 
 	    href="${urls.base}/search?facet-start-year_ss=${clinicalTrialMeta[0].endYear}">${clinicalTrialMeta[0].endYear}</a></#if>
-	</span>
-	</p>
+	    </span>
+	    </p>
       </#if>
     </div>
     <!-- end pv-metrics -->
+    
+    <#if researchCategoriesFOR?has_content>
+<!-- categories/classification -->
+<div class="pub_categories">
+  <h3>Research Categories</h3>
+
+ <#if researchCategoriesFOR?has_content>
+  <div class="pub_keywords-enumeration clearfix">
+    <h3>Research Areas:</h3>
+    <p>Fields of Research</p>
+    <ul class="one-line-list">
+      <#list researchCategoriesFOR as researchCategory>
+        <li role="list-item"><a href="${urls.base}/search?searchMode=clinical_trials&facet_research-category_ss=${researchCategory.researchCategory}">${researchCategory.researchCategoryName}</a></li>
+      </#list>
+    </ul>
+  </div>
+ </#if>
+
+</div>
+<!-- end .pub_categories -->
+</#if>
 
 </div>
   <!-- end .pub-v-sidebar -->

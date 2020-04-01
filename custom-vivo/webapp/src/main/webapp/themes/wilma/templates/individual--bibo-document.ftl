@@ -163,11 +163,23 @@
 <!-- end .authors-box -->
 
 <!-- author affiliations -->
-<#if authorAffiliations??>
+<#if grantAffiliations?has_content>
 <ol style="margin-top:2ex;">
 <#list authorAffiliations as authorAffiliation>
   <#if authorAffiliation.affiliation?has_content && authorAffiliation.affiliationName?has_content>
-    <li>(${authorAffiliation?index + 1}) <a href="${profileUrl(authorAffiliation.affiliation)}">${authorAffiliation.affiliationName}</a></li>
+    <#if authorAffiliation.grid?has_content>
+      <#if !authorAffiliation.type?has_content>
+        <li>(${authorAffiliation?index + 1}) ${authorAffiliation.affiliationName}, ${authorAffiliation.grid}</li>
+      <#else>
+          <li>(${authorAffiliation?index + 1}) <a href="${urls.base}/search?searchMode=grants&facet_${authorAffiliation.type!organization}_ss=${authorAffiliation.affiliation}">${authorAffiliation.affiliationName}, ${authorAffiliation.grid}</a></li>
+      </#if>
+    <#else>
+      <#if !authorAffiliation.type?has_content>
+        <li>(${authorAffiliation?index + 1}) ${authorAffiliation.affiliationName}</li>
+      <#else>
+          <li>(${authorAffiliation?index + 1}) <a href="${urls.base}/search?searchMode=grants&facet_${authorAffiliation.type!organization}_ss=${authorAffiliation.affiliation}">${authorAffiliation.affiliationName}</a></li>
+      </#if>
+    </#if>
   </#if>
 </#list>
 </ol>

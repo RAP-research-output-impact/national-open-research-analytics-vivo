@@ -196,6 +196,38 @@
         }
     """ .
 
+
+:documentModifier_facet_contributor
+    a   <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.SelectQueryDocumentModifier> ,
+            <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.DocumentModifier> ;
+    rdfs:label "Contributor document modifier" ;
+    :hasTargetField "facet_contributor_ss" ;
+    :hasSelectQuery """
+        PREFIX obo:  <http://purl.obolibrary.org/obo/>
+	PREFIX vivo: <http://vivoweb.org/ontology/core#>
+	PREFIX bibo: <http://purl.org/ontology/bibo/> 
+	PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+        SELECT DISTINCT ?agent
+        WHERE {
+	  {
+            ?uri vivo:relatedBy ?authorship .
+	    ?authorship a vivo:Authorship .
+	    ?authorship vivo:relates ?agent .
+	    ?agent a foaf:Agent .
+	  } UNION {
+            ?uri vivo:relates ?role .
+	    ?role a obo:BFO_0000023 . # Role
+	    ?role obo:RO_0000052 ?agent . # inheresIn
+	    ?agent a foaf:Agent .
+	  } UNION {
+            ?uri obo:BFO_0000055 ?role .
+	    ?role a obo:BFO_0000023 . # Role
+	    ?role obo:RO_0000052 ?agent . # inheresIn
+	    ?agent a foaf:Agent .
+	  }
+        }
+    """ .
+
 :documentModifier_facet_journal
     a   <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.SelectQueryDocumentModifier> ,
             <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.DocumentModifier> ;

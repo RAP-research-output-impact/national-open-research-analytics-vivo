@@ -14,7 +14,7 @@ PREFIX foaf:     <http://xmlns.com/foaf/0.1/>
 PREFIX vitro:    <http://vitro.mannlib.cornell.edu/ns/vitro/0.7#>
 PREFIX vivo:     <http://vivoweb.org/ontology/core#>
 
-SELECT ?affiliation (GROUP_CONCAT(?rank;separator=";") AS ?ranks) (MIN(?affiliationName_) AS ?affiliationName) 
+SELECT ?affiliation (GROUP_CONCAT(DISTINCT ?rank;separator=";") AS ?ranks) (MIN(?affiliationName_) AS ?affiliationName) 
 (MIN(?rank) AS ?minRank) ?grid ?type
 WHERE {  
 {
@@ -242,7 +242,7 @@ PREFIX foaf:     <http://xmlns.com/foaf/0.1/>
 PREFIX vitro:    <http://vitro.mannlib.cornell.edu/ns/vitro/0.7#>
 PREFIX vivo:     <http://vivoweb.org/ontology/core#>
 
-SELECT ?affiliation (GROUP_CONCAT(?rank;separator=";") AS ?ranks) (MIN(?affiliationName_) AS ?affiliationName) 
+SELECT ?affiliation (GROUP_CONCAT(DISTINCT ?rank;separator=";") AS ?ranks) (MIN(?affiliationName_) AS ?affiliationName) 
 (MIN(?rank) AS ?minRank) ?grid ?type
 WHERE {  
 {
@@ -382,7 +382,7 @@ PREFIX foaf:     <http://xmlns.com/foaf/0.1/>
 PREFIX vitro:    <http://vitro.mannlib.cornell.edu/ns/vitro/0.7#>
 PREFIX vivo:     <http://vivoweb.org/ontology/core#>
 
-SELECT ?affiliation (GROUP_CONCAT(?rank;separator=";") AS ?ranks) (MIN(?affiliationName_) AS ?affiliationName) 
+SELECT ?affiliation (GROUP_CONCAT(DISTINCT ?rank;separator=";") AS ?ranks) (MIN(?affiliationName_) AS ?affiliationName) 
 (MIN(?rank) AS ?minRank) ?grid ?type
 WHERE {  
 {

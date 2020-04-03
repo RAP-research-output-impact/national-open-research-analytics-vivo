@@ -48,6 +48,9 @@
             <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.DocumentModifier> ;
     rdfs:label "Start year document modifier" ;
     :hasTargetField "facet_start-year_ss" ;
+    :hasTypeRestriction "http://purl.obolibrary.org/obo/IAO_0000030";
+    :hasTypeRestriction "http://vivoweb.org/ontology/core#Grant" ;
+    :hasTypeRestriction "http://purl.obolibrary.org/obo/ERO_0000016" ; # ClinicalTrial
     :hasSelectQuery """
 	PREFIX vivo: <http://vivoweb.org/ontology/core#>
         SELECT DISTINCT ?year
@@ -64,6 +67,9 @@
             <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.DocumentModifier> ;
     rdfs:label "Granted year document modifier" ;
     :hasTargetField "facet_granted-year_ss" ;
+    :hasTypeRestriction "http://purl.obolibrary.org/obo/IAO_0000030";
+    :hasTypeRestriction "http://vivoweb.org/ontology/core#Grant" ;
+    :hasTypeRestriction "http://purl.obolibrary.org/obo/ERO_0000016" ; # ClinicalTrial
     :hasSelectQuery """
 	PREFIX vivo: <http://vivoweb.org/ontology/core#>
         SELECT DISTINCT ?year
@@ -79,6 +85,9 @@
             <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.DocumentModifier> ;
     rdfs:label "Organization document modifier" ;
     :hasTargetField "facet_organization_ss" ;
+    :hasTypeRestriction "http://purl.obolibrary.org/obo/IAO_0000030";
+    :hasTypeRestriction "http://vivoweb.org/ontology/core#Grant" ;
+    :hasTypeRestriction "http://purl.obolibrary.org/obo/ERO_0000016" ; # ClinicalTrial
     :hasSelectQuery """
 	PREFIX vivo: <http://vivoweb.org/ontology/core#>
 	PREFIX wos: <http://webofscience.com/ontology/wos#> 
@@ -124,6 +133,9 @@
             <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.DocumentModifier> ;
     rdfs:label "University document modifier" ;
     :hasTargetField "facet_university_ss" ;
+    :hasTypeRestriction "http://purl.obolibrary.org/obo/IAO_0000030";
+    :hasTypeRestriction "http://vivoweb.org/ontology/core#Grant" ;
+    :hasTypeRestriction "http://purl.obolibrary.org/obo/ERO_0000016" ; # ClinicalTrial
     :hasSelectQuery """
 	PREFIX vivo: <http://vivoweb.org/ontology/core#>
 	PREFIX wos: <http://webofscience.com/ontology/wos#> 
@@ -164,6 +176,9 @@
             <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.DocumentModifier> ;
     rdfs:label "Hospital document modifier" ;
     :hasTargetField "facet_hospital_ss" ;
+    :hasTypeRestriction "http://purl.obolibrary.org/obo/IAO_0000030";
+    :hasTypeRestriction "http://vivoweb.org/ontology/core#Grant" ;
+    :hasTypeRestriction "http://purl.obolibrary.org/obo/ERO_0000016" ; # ClinicalTrial
     :hasSelectQuery """
 	PREFIX vivo: <http://vivoweb.org/ontology/core#>
 	PREFIX wos: <http://webofscience.com/ontology/wos#> 
@@ -202,6 +217,9 @@
             <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.DocumentModifier> ;
     rdfs:label "Contributor document modifier" ;
     :hasTargetField "facet_contributor_ss" ;
+    :hasTypeRestriction "http://purl.obolibrary.org/obo/IAO_0000030";
+    :hasTypeRestriction "http://vivoweb.org/ontology/core#Grant" ;
+    :hasTypeRestriction "http://purl.obolibrary.org/obo/ERO_0000016" ; # ClinicalTrial
     :hasSelectQuery """
         PREFIX obo:  <http://purl.obolibrary.org/obo/>
 	PREFIX vivo: <http://vivoweb.org/ontology/core#>
@@ -234,6 +252,9 @@
     rdfs:label "Journal document modifier" ;
     :hasTargetField "facet_journal_ss" ;
     :hasTypeRestriction "http://purl.obolibrary.org/obo/IAO_0000030";
+    :hasTypeRestriction "http://purl.obolibrary.org/obo/IAO_0000030";
+    :hasTypeRestriction "http://vivoweb.org/ontology/core#Grant" ;
+    :hasTypeRestriction "http://purl.obolibrary.org/obo/ERO_0000016" ; # ClinicalTrial
     :hasSelectQuery """
 	PREFIX vivo: <http://vivoweb.org/ontology/core#>
 	PREFIX bibo: <http://purl.org/ontology/bibo/> 
@@ -249,6 +270,9 @@
             <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.DocumentModifier> ;
     rdfs:label "Publisher document modifier" ;
     :hasTargetField "facet_publisher_ss" ;
+    :hasTypeRestriction "http://purl.obolibrary.org/obo/IAO_0000030";
+    :hasTypeRestriction "http://vivoweb.org/ontology/core#Grant" ;
+    :hasTypeRestriction "http://purl.obolibrary.org/obo/ERO_0000016" ; # ClinicalTrial
     :hasSelectQuery """
 	PREFIX vivo: <http://vivoweb.org/ontology/core#>
 	PREFIX bibo: <http://purl.org/ontology/bibo/> 
@@ -263,6 +287,9 @@
             <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.DocumentModifier> ;
     rdfs:label "Open access document modifier" ;
     :hasTargetField "facet_open-access_ss" ;
+    :hasTypeRestriction "http://purl.obolibrary.org/obo/IAO_0000030";
+    :hasTypeRestriction "http://vivoweb.org/ontology/core#Grant" ;
+    :hasTypeRestriction "http://purl.obolibrary.org/obo/ERO_0000016" ; # ClinicalTrial
     :hasSelectQuery """
 	PREFIX vivo: <http://vivoweb.org/ontology/core#>
 	PREFIX bibo: <http://purl.org/ontology/bibo/> 
@@ -416,6 +443,9 @@
             <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.DocumentModifier> ;
     rdfs:label "Research category document modifier" ;
     :hasTargetField "facet_research-category_ss" ;
+    :hasTypeRestriction "http://purl.obolibrary.org/obo/IAO_0000030";
+    :hasTypeRestriction "http://vivoweb.org/ontology/core#Grant" ;
+    :hasTypeRestriction "http://purl.obolibrary.org/obo/ERO_0000016" ; # ClinicalTrial
     :hasSelectQuery """
 	PREFIX vivo: <http://vivoweb.org/ontology/core#>
 	PREFIX bibo: <http://purl.org/ontology/bibo/> 
@@ -429,8 +459,11 @@
 :uriFinder_facet_publication-year
     a   <java:edu.cornell.mannlib.vitro.webapp.searchindex.indexing.IndexingUriFinder> ,
             <java:edu.cornell.mannlib.vitro.webapp.searchindex.indexing.SelectQueryUriFinder> ;
-    rdfs:label "Organization-enhanced uri finder" ;
+    rdfs:label "Publication year uri finder" ;
     :hasPredicateRestriction "http://vivoweb.org/ontology/core#dateTime" ;
+    :hasTypeRestriction "http://purl.obolibrary.org/obo/IAO_0000030";
+    :hasTypeRestriction "http://vivoweb.org/ontology/core#Grant" ;
+    :hasTypeRestriction "http://purl.obolibrary.org/obo/ERO_0000016" ; # ClinicalTrial
     :hasSelectQuery """
 	PREFIX vivo: <http://vivoweb.org/ontology/core#>
         SELECT DISTINCT ?uri
@@ -444,6 +477,9 @@
             <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.DocumentModifier> ;
     rdfs:label "Funder document modifier" ;
     :hasTargetField "facet_funder_ss" ;
+    :hasTypeRestriction "http://purl.obolibrary.org/obo/IAO_0000030";
+    :hasTypeRestriction "http://vivoweb.org/ontology/core#Grant" ;
+    :hasTypeRestriction "http://purl.obolibrary.org/obo/ERO_0000016" ; # ClinicalTrial
     :hasSelectQuery """
 	PREFIX vitro: <http://vitro.mannlib.cornell.edu/ns/vitro/0.7#>
 	PREFIX vivo: <http://vivoweb.org/ontology/core#>

@@ -27,6 +27,7 @@ PREFIX abox:     <http://vivo.deffopera.dk/individual/>
 CONSTRUCT {
     ?dataset cito:isCitedAsDataSourceBy ?pub .
     ?dataset a vivo:Dataset .
+    ?dataset vivo:identifier ?id .
     ?dataset rdfs:label ?title .
     ?dataset bibo:abstract ?abstract .
     ?dataset bibo:doi ?doi .

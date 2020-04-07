@@ -28,6 +28,7 @@ CONSTRUCT {
     ?pub vivo:informationResourceSupportedBy ?grant .
     ?grant a vivo:Grant .
     ?grant rdfs:label ?title .
+    ?grant vivo:identifier ?id .
     ?grant vivo:sponsorAwardId ?grantNumber .
     ?grant vivo:totalAwardAmount ?fundingEur .
     ?grant bibo:abstract ?abstract .

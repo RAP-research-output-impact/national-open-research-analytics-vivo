@@ -118,7 +118,7 @@
   <#list grantInvestigators as grantInvestigator>
     <#if grantInvestigator.investigator?? && grantInvestigator.investigatorName??>
       <div class="pub_author-name">
-        <a href="${profileUrl(grantInvestigator.investigator)}">${grantInvestigator.investigatorName}</a>
+        <a href="${urls.base}/search?searchMode=all&facet_contributor_ss=${grantInvestigator.investigator}">${grantInvestigator.investigatorName}</a>
       <#if grantInvestigator.rank?? && grantAffiliations??>
         <#list grantAffiliations as grantAffiliation>
           <#if grantAffiliation.ranks?has_content>
@@ -176,7 +176,7 @@
   <#list supportingGrants as supportingGrant>
     <li>
       <#if supportingGrant.funder??>
-        <p style="margin-bottom:0.1em;"><a href="${profileUrl(supportingGrant.funder)}">${supportingGrant.funderLabel}</a></p>
+        <p style="margin-bottom:0.1em;"><a href="${urls.base}/search?searchMode=all&facet_funder_ss=${supportingGrant.funder}">${supportingGrant.funderLabel}</a></p>
       </#if>
         <p style="margin-bottom:0.1em;"><a href="${profileUrl(supportingGrant.grant)}">${supportingGrant.grantLabel}</a></p>
       <#if supportingGrant.grantNumber??>

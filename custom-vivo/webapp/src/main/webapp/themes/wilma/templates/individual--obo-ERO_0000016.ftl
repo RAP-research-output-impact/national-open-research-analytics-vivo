@@ -118,7 +118,7 @@
   <#list clinicalTrialInvestigators as clinicalTrialInvestigator>
     <#if clinicalTrialInvestigator.investigator?? && clinicalTrialInvestigator.investigatorName??>
       <div class="pub_author-name">
-        <a href="${profileUrl(clinicalTrialInvestigator.investigator)}">${clinicalTrialInvestigator.investigatorName}</a>
+        <a href="${urls.base}/search?searchMode=all&facet_contributor_ss=${clinicalTrialInvestigator.investigator}">${clinicalTrialInvestigator.investigatorName}</a>
       <#if clinicalTrialInvestigator.rank?? && clinicalTrialAffiliations??>
         <#list clinicalTrialAffiliations as clinicalTrialAffiliation>
           <#if clinicalTrialAffiliation.ranks?has_content>
@@ -191,7 +191,7 @@
   <#list supportingGrants as supportingGrant>
     <li>
       <#if supportingGrant.funder??>
-        <p style="margin-bottom:0.1em;"><a href="${profileUrl(supportingGrant.funder)}">${supportingGrant.funderLabel}</a></p>
+        <p style="margin-bottom:0.1em;"><a href="${urls.base}/search?searchMode=all&facet_funder_ss=${supportingGrant.funder}">${supportingGrant.funderLabel}</a></p>
       </#if>
         <p style="margin-bottom:0.1em;"><a href="${profileUrl(supportingGrant.grant)}">${supportingGrant.grantLabel}</a></p>
       <#if supportingGrant.grantNumber??>

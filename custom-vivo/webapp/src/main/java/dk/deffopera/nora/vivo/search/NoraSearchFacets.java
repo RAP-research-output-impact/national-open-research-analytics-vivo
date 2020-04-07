@@ -34,7 +34,13 @@ public class NoraSearchFacets {
         searchFacets.add(new SearchFacet("facet_phase_ss", "Phase"));
         searchFacets.add(new SearchFacet("facet_research-category_ss", "Research Categories"));        
         searchFacets.add(new SearchFacet("facet_retrieval_ss", "Retrieval"));
-
+        
+        // Allow faceting by contributor by an appropriate request, but do 
+        // not display the facet in the sidebar
+        SearchFacet contributor = new SearchFacet("facet_contributor_ss", "Contributor");
+        contributor.setDisplayInSidebar(false);
+        searchFacets.add(contributor);
+        
         for(SearchFacet facet : searchFacets) {
             facetsByFieldName.put(facet.getFieldName(), facet);
             String textFieldName = facet.getFieldName().replaceAll(

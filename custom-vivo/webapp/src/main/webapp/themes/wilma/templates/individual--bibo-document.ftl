@@ -207,7 +207,7 @@
   <#list supportingGrants as supportingGrant>
     <li>
       <#if supportingGrant.funder??>
-        <p style="margin-bottom:0.1em;"><a href="${urls.base}/search?searchMode=publications&facet_funder_ss=${supportingGrant.funder}">${supportingGrant.funderLabel}</a></p>
+        <p style="margin-bottom:0.1em;"><a href="${urls.base}/search?searchMode=&facet_funder_ss=${supportingGrant.funder}">${supportingGrant.funderLabel}</a></p>
       </#if>
         <p style="margin-bottom:0.1em;"><a href="${profileUrl(supportingGrant.grant)}">${supportingGrant.grantLabel}</a></p>
       <#if supportingGrant.grantNumber??>

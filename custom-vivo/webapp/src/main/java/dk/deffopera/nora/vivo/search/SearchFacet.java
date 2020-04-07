@@ -13,6 +13,8 @@ public class SearchFacet {
 
     private String publicName;
     private String fieldName;
+    private boolean displayInSidebar = true;
+
     private List<SearchFacetCategory> categories = new ArrayList<SearchFacetCategory>();
     
     public SearchFacet(String fieldName, String publicName) {
@@ -54,6 +56,14 @@ public class SearchFacet {
     
     public boolean isFacetAsText() {
         return false;
+    }
+    
+    public boolean isDisplayInSidebar() {
+        return displayInSidebar;
+    }
+
+    public void setDisplayInSidebar(boolean displayInSidebar) {
+        this.displayInSidebar = displayInSidebar;
     }
     
 }

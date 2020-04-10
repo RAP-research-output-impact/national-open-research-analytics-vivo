@@ -13,7 +13,9 @@ public class NoraSearchFacets {
     private static Map<String, SearchFacet> facetsByFieldName = new HashMap<String, SearchFacet>();
     
     static {
+        searchFacets.add(new SearchFacet("facet_content-type_ss", "Content Type"));
         searchFacets.add(new SearchFacet("facet_document-type_ss", "Document Types"));
+        searchFacets.add(new SearchFacet("facet_year_ss", "Publication Years"));
         searchFacets.add(new SearchFacet("facet_publication-year_ss", "Publication Years"));
         searchFacets.add(new SearchFacet("facet_start-year_ss", "Start Year"));
         searchFacets.add(new SearchFacet("facet_granted-year_ss", "Granted Years"));

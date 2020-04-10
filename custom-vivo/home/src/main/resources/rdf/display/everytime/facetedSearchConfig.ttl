@@ -7,6 +7,52 @@
 :extension_forContextNodes
     :hasTypeRestriction "http://vivoweb.org/ontology/core#Relationship" .
 
+:documentModifier_facet_content-type
+    a   <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.SelectQueryDocumentModifier> ,
+            <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.DocumentModifier> ;
+    rdfs:label "Content type document modifier" ;
+    :hasTargetField "facet_content-type_ss" ;
+    :hasTypeRestriction "http://purl.obolibrary.org/obo/IAO_0000030";
+    :hasTypeRestriction "http://vivoweb.org/ontology/core#Grant" ;
+    :hasTypeRestriction "http://purl.obolibrary.org/obo/ERO_0000016" ; # ClinicalTrial
+    :hasSelectQuery """
+	PREFIX vitro: <http://vitro.mannlib.cornell.edu/ns/vitro/0.7#>
+	PREFIX bibo:   <http://purl.org/ontology/bibo/>
+	PREFIX wos: <http://webofscience.com/ontology/wos#> 
+	PREFIX obo: <http://purl.obolibrary.org/obo/> 
+	PREFIX vivo: <http://vivoweb.org/ontology/core#>
+        SELECT DISTINCT ?contentType
+        WHERE {
+            { 
+	        ?uri a obo:IAO_0000030 .
+	        FILTER NOT EXISTS { ?uri a bibo:Patent }
+	        FILTER NOT EXISTS { ?uri a vivo:Dataset }
+	        BIND("publications" AS ?contentType)
+	    }
+	    UNION 
+	    {
+	        ?uri a vivo:Grant .
+		BIND("grants" AS ?contentType)
+
+	    }
+	    UNION
+	    {
+                ?uri a vivo:Dataset .
+		BIND("datasets" AS ?contentType)
+	    }
+	    UNION 
+	    {
+                ?uri a bibo:Patent .
+		BIND("patents" AS ?contentType)
+	    }
+	    UNION
+	    {
+                ?uri a obo:ERO_0000016
+		BIND("clinical_trials" AS ?contentType)
+	    }
+        }
+    """ .
+
 :documentModifier_facet_document-type
     a   <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.SelectQueryDocumentModifier> ,
             <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.DocumentModifier> ;
@@ -25,6 +71,38 @@
 	    FILTER (?type != wos:Conference)
         }
     """ .
+
+:documentModifier_facet_year
+    a   <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.SelectQueryDocumentModifier> ,
+            <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.DocumentModifier> ;
+    rdfs:label "Year document modifier" ;
+    :hasTargetField "facet_year_ss" ;
+    :hasTypeRestriction "http://purl.obolibrary.org/obo/IAO_0000030";
+    :hasTypeRestriction "http://vivoweb.org/ontology/core#Grant" ;
+    :hasTypeRestriction "http://purl.obolibrary.org/obo/ERO_0000016" ; # ClinicalTrial
+    :hasSelectQuery """
+	PREFIX vivo: <http://vivoweb.org/ontology/core#>
+        SELECT DISTINCT ?year
+        WHERE {
+	  {
+            ?uri vivo:dateTimeValue ?dtv .
+	    ?dtv vivo:dateTime ?dateTime .
+	    BIND(substr(str(?dateTime), 1, 4) AS ?year)
+	    FILTER NOT EXISTS { ?uri a <http://purl.org/ontology/bibo/Patent> }
+	  }
+	  UNION
+	  {
+            ?uri <http://vivo.deffopera.dk/ontology/osrap/activeYear> ?year
+	  } 
+	  UNION
+	  {
+            ?uri vivo:dateIssued ?dtv .
+	    ?dtv vivo:dateTime ?dateTime .
+	    BIND(substr(str(?dateTime), 1, 4) AS ?year)
+	  }
+        }
+    """ .
+
 
 :documentModifier_facet_publication-year
     a   <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.SelectQueryDocumentModifier> ,
@@ -433,8 +511,7 @@
 	PREFIX bibo: <http://purl.org/ontology/bibo/> 
         SELECT DISTINCT ?retrieval
         WHERE {
-            ?uri <http://vivo.deffopera.dk/ontology/osrap/retrievedFromDimensionsByDdfDoi> ?something .
-	    BIND("by DDF DOI" AS ?retrieval)
+            ?uri <http://vivo.deffopera.dk/ontology/osrap/matchingstatus> ?retrieval .
         }
     """ .
 

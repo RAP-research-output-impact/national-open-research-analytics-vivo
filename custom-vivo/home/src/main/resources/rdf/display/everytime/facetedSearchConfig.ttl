@@ -82,6 +82,7 @@
     :hasTypeRestriction "http://purl.obolibrary.org/obo/ERO_0000016" ; # ClinicalTrial
     :hasSelectQuery """
 	PREFIX vivo: <http://vivoweb.org/ontology/core#>
+        PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> 
         SELECT DISTINCT ?year
         WHERE {
 	  {
@@ -100,6 +101,7 @@
 	    ?dtv vivo:dateTime ?dateTime .
 	    BIND(substr(str(?dateTime), 1, 4) AS ?year)
 	  }
+	  FILTER( (xsd:integer(?year) >= 2014) || (xsd:integer(?year) <= 2017) )
         }
     """ .
 

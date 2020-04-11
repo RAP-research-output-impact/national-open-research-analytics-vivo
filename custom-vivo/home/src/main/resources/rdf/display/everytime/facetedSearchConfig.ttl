@@ -101,7 +101,7 @@
 	    ?dtv vivo:dateTime ?dateTime .
 	    BIND(substr(str(?dateTime), 1, 4) AS ?year)
 	  }
-	  FILTER( (xsd:integer(?year) >= 2014) || (xsd:integer(?year) <= 2017) )
+	  FILTER( (xsd:integer(?year) >= 2014) && (xsd:integer(?year) <= 2017) )
         }
     """ .
 

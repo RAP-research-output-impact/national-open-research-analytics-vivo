@@ -205,8 +205,14 @@ public class PagedSearchController extends FreemarkerHttpServlet {
             
             // Nora
             body.put("typeCounts", getTypeCounts(vreq));
-            body.put(PARAM_SEARCHMODE, getParamSearchMode(vreq));
-            body.put("facets", getFacetLinks(vreq, response, queryText));
+            String searchMode = getParamSearchMode(vreq);
+            body.put(PARAM_SEARCHMODE, searchMode);
+            body.put("commonFacets", getFacetLinks(
+                    NoraSearchFacets.getCommonSearchFacets(), vreq, response, queryText));
+            if(!"all".equals(searchMode)) {
+                body.put("additionalFacets", getFacetLinks(
+                        NoraSearchFacets.getAdditionalSearchFacets(), vreq, response, queryText));
+            }
             body.put("facetsAsText", NoraSearchFacets.getSearchFacetsAsText());
             body.put(PARAM_FACET_AS_TEXT, vreq.getParameter(PARAM_FACET_AS_TEXT));
             body.put(PARAM_FACET_TEXT_VALUE, vreq.getParameter(PARAM_FACET_TEXT_VALUE));
@@ -422,10 +428,10 @@ public class PagedSearchController extends FreemarkerHttpServlet {
     /**
      * Get the links to the facet categories for the individuals in the documents
      */
-    private static List<SearchFacet> getFacetLinks(VitroRequest request,
-            SearchResponse response, String querytext) {
+    private static List<SearchFacet> getFacetLinks(List<SearchFacet> facetList, 
+            VitroRequest request, SearchResponse response, String querytext) {
         List<SearchFacet> searchFacets = new ArrayList<SearchFacet>();
-        for(SearchFacet sf : NoraSearchFacets.getSearchFacets()) {
+        for(SearchFacet sf : facetList) {
             SearchFacetField ff = null;
             for (SearchFacetField sff : response.getFacetFields()) {
                 if(!sff.getValues().isEmpty()
@@ -663,8 +669,13 @@ public class PagedSearchController extends FreemarkerHttpServlet {
             //When no filtering is set, we want ClassGroup facets
             query.addFacetFields(VitroSearchTermNames.CLASSGROUP_URI).setFacetLimit(-1);
         }
-        for(SearchFacet facet : NoraSearchFacets.getSearchFacets()) {
+        for(SearchFacet facet : NoraSearchFacets.getCommonSearchFacets()) {
             query.addFacetFields(facet.getFieldName()).setFacetLimit(-1);
+        }
+        if(!"all".equals(getParamSearchMode(vreq))) {
+            for(SearchFacet facet : NoraSearchFacets.getAdditionalSearchFacets()) {
+                query.addFacetFields(facet.getFieldName()).setFacetLimit(-1);
+            }
         }
         if(includeFacetFields) {
             addNoraFacetFields(query, vreq);

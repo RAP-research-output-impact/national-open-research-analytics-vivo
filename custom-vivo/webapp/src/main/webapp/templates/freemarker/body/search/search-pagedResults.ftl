@@ -29,8 +29,49 @@
                     <div class="searchTOC-header">Use Facets to Refine Results</div>
                 </td>
             </tr>
-            <#if facets?has_content>
-                <#list facets as facet>
+            <#if commonFacets?has_content>
+	        <tr class="search-facets-head">
+                  <td style="align:left">GENERAL FACETS:</td>
+		</tr>
+                <#list commonFacets as facet>
+		  <#if facet.displayInSidebar && facet.categories?has_content && (facet.categories?size > 1)>
+                    <tr class="search-facets-head">
+                        <td style="align: left">
+                            <h4 class="search-facets-title"><div class="search-facets-toggle">+</div>${facet.publicName}</h4>
+                        </td>
+                    </tr>
+                    <tr class="search-facets" style="display: none;">
+                        <td>
+                            <ul>
+                                <#list facet.categories as category>
+                                    <#if category.text?has_content && category.text != 'Journal' && category.text != 'Book' && category.text != 'Conference'>
+                                        <li><a href="${category.url}" title="${category.text}">${category.text}</a><span>(${category.count})</span></li>
+                                    </#if>
+                                </#list>
+                            </ul>
+                        </td>
+                    </tr>
+		  </#if>
+                </#list>
+            </#if>
+	    <#-- TODO: set up as Macro -->
+            <#if additionalFacets?has_content>
+	        <#assign recordTypeLabel = "ADDITIONAL"> <#-- should not actually be used -->
+		<#if searchMode?? && searchMode=="publications">
+		  <#assign recordTypeLabel = "PUBLICATIONS"> 
+                <#else if searchMode?? && searchMode="datasets">
+                  <#assign recordTypeLabel = "ĐATASETS">
+                <#else if searchMode?? && searchMode="grants">
+                  <#assign recordTypeLabel = "GRANTS">
+                <#else if searchMode?? && searchMode="patents">
+                  <#assign recordTypeLabel = "PATENTS">
+                <#else if searchMode?? && searchMode="clinical_trials">
+                  <#assign recordTypeLabel = "CLINCAL TRIALS">
+	        <#/if>	
+	        <tr class="search-facets-head">
+                  <td style="align:left">${recordTypeLabel} FACETS:</td>
+		</tr>
+                <#list additionalFacets as facet>
 		  <#if facet.displayInSidebar && facet.categories?has_content && (facet.categories?size > 1)>
                     <tr class="search-facets-head">
                         <td style="align: left">

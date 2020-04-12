@@ -27,6 +27,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.jena.vocabulary.OWL;
 
 import dk.deffopera.nora.vivo.search.NoraSearchFacets;
+import dk.deffopera.nora.vivo.search.Param;
 import dk.deffopera.nora.vivo.search.SearchFacet;
 import dk.deffopera.nora.vivo.search.SearchFacetCategory;
 import edu.cornell.mannlib.vitro.webapp.application.ApplicationUtils;
@@ -378,30 +379,6 @@ public class PagedSearchController extends FreemarkerHttpServlet {
             paramList.add(new Param(key, parameterMap.get(key)));
         }
         return paramList;
-    }
-    
-    /**
-     * A name-value pair for use in building hidden input fields in forms 
-     * in templates, etc.
-     */
-    private class Param {
-        
-        private String name;
-        private String value;
-        
-        public Param(String name, String value) {
-            this.name = name;
-            this.value = value;
-        }
-        
-        public String getName() {
-            return this.name;
-        }
-        
-        public String getValue() {
-            return this.value;
-        }
-        
     }
     
     private Map<String, Integer> getTypeCounts(VitroRequest vreq) {

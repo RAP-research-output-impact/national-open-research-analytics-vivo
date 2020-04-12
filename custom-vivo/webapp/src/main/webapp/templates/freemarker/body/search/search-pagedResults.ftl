@@ -141,9 +141,9 @@
             </div>
         </#list>
     </div>
-    <#if sortFormActionStr?? && commonFacets?has_content>
+    <#if sortFormHiddenFields?? && commonFacets?has_content>
         <div style="width: 57.5%; float: right; text-align: right;">
-          Sort by <form style="display: inline;" action="${urls.base}/search${sortFormActionStr}" method="GET">
+          Sort by <form style="display: inline;" action="${urls.base}"  method="GET">
             <select name="sortField" onchange="this.form.submit()">
               <#list commonFacets as facet>
                 <option value="${facet.fieldName}">${facet.publicName}</option>
@@ -154,6 +154,9 @@
 	        </#list>
 	      </#if>
 	    </select>
+	    <#list sortFormHiddenFields as field>
+                <input type="hidden" name="${field.name}" value="${field.value}"/>
+	    </#list>
 	  </form>
         </div>
     </#if>

@@ -59,13 +59,13 @@
 	        <#assign recordTypeLabel = "ADDITIONAL"> <#-- should not actually be used -->
 		<#if searchMode?? && searchMode=="publications">
 		  <#assign recordTypeLabel = "PUBLICATIONS"> 
-                <#else if searchMode?? && searchMode="datasets">
+                <#elseif searchMode?? && searchMode="datasets">
                   <#assign recordTypeLabel = "ĐATASETS">
-                <#else if searchMode?? && searchMode="grants">
+                <#elseif searchMode?? && searchMode="grants">
                   <#assign recordTypeLabel = "GRANTS">
-                <#else if searchMode?? && searchMode="patents">
+                <#elseif searchMode?? && searchMode="patents">
                   <#assign recordTypeLabel = "PATENTS">
-                <#else if searchMode?? && searchMode="clinical_trials">
+                <#elseif searchMode?? && searchMode="clinical_trials">
                   <#assign recordTypeLabel = "CLINCAL TRIALS">
 	        <#/if>	
 	        <tr class="search-facets-head">

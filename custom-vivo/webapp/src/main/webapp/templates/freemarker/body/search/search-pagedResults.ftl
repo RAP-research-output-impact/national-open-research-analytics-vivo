@@ -67,7 +67,7 @@
                   <#assign recordTypeLabel = "PATENTS">
                 <#elseif searchMode?? && searchMode="clinical_trials">
                   <#assign recordTypeLabel = "CLINCAL TRIALS">
-	        <#/if>	
+	        </#if>	
 	        <tr class="search-facets-head">
                   <td style="align:left">${recordTypeLabel} FACETS:</td>
 		</tr>

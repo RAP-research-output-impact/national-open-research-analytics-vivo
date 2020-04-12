@@ -141,16 +141,18 @@
             </div>
         </#list>
     </div>
-    <#if sortFormActionStr??>
+    <#if sortFormActionStr?? && commonFacets?has_content>
         <div style="width: 57.5%; float: right; text-align: right;">
           Sort by <form action="${urls.base}/search${sortFormActionStr}" method="GET">
             <select name="sortField" onchange="this.form.submit()">
               <#list commonFacets as facet>
                 <option value="${facet.fieldName}>${facet.publicName}</option>
 	      </#list>
-              <#list additionalFacets as facet>
-                <option value="${facet.fieldName}>${facet.publicName}</option>
-	      </#list>
+	      <#if additionalFacets?has_content>
+                <#list additionalFacets as facet>
+                  <option value="${facet.fieldName}>${facet.publicName}</option>
+	        </#list>
+	      </#if>
 	    </select>
 	  </form>
         </div>

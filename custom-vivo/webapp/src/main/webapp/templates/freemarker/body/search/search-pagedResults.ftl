@@ -146,11 +146,11 @@
           Sort by <form action="${urls.base}/search${sortFormActionStr}" method="GET">
             <select name="sortField" onchange="this.form.submit()">
               <#list commonFacets as facet>
-                <option value="${facet.fieldName}>${facet.publicName}</option>
+                <option value="${facet.fieldName}">${facet.publicName}</option>
 	      </#list>
 	      <#if additionalFacets?has_content>
                 <#list additionalFacets as facet>
-                  <option value="${facet.fieldName}>${facet.publicName}</option>
+                  <option value="${facet.fieldName}">${facet.publicName}</option>
 	        </#list>
 	      </#if>
 	    </select>

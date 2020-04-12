@@ -642,6 +642,8 @@ public class PagedSearchController extends FreemarkerHttpServlet {
         
         String sortField = getParamSortField(vreq);
         if(sortField != null) {
+            // TODO retrieve the text-based version of the facet automatically
+            sortField = sortField.replace("facet_", "facetext_").replace("_ss", "_en");
             query.addSortField(sortField, Order.ASC);
         }
 

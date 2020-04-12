@@ -22,6 +22,16 @@ public class SearchFacet {
         this.publicName = publicName;
     }
     
+    public SearchFacet(String fieldName, String publicName, boolean displayInSidebar) {
+        this.fieldName = fieldName;
+        this.publicName = publicName;
+        this.displayInSidebar = displayInSidebar;
+    }
+    
+    public SearchFacet clone() {
+        return new SearchFacet(this.fieldName, this.publicName, this.displayInSidebar);        
+    }
+    
     /**
      * @return the name of the field used to store the facet in the search index
      */

@@ -65,7 +65,7 @@ public class NoraSearchFacets {
     public static List<SearchFacet> getCommonSearchFacets() {
         ArrayList<SearchFacet> facets = new ArrayList<SearchFacet>();
         for(SearchFacet sf : commonSearchFacets) {
-            facets.add(new SearchFacet(sf.getFieldName(), sf.getPublicName()));
+            facets.add(sf.clone());
         }
         return facets;
     }
@@ -73,7 +73,7 @@ public class NoraSearchFacets {
     public static List<SearchFacet> getAdditionalSearchFacets() {
         ArrayList<SearchFacet> facets = new ArrayList<SearchFacet>();
         for(SearchFacet sf : additionalSearchFacets) {
-            facets.add(new SearchFacet(sf.getFieldName(), sf.getPublicName()));
+            facets.add(sf.clone());
         }
         return facets;
     }

@@ -52,6 +52,7 @@ import edu.cornell.mannlib.vitro.webapp.modules.searchEngine.SearchEngine;
 import edu.cornell.mannlib.vitro.webapp.modules.searchEngine.SearchFacetField;
 import edu.cornell.mannlib.vitro.webapp.modules.searchEngine.SearchFacetField.Count;
 import edu.cornell.mannlib.vitro.webapp.modules.searchEngine.SearchQuery;
+import edu.cornell.mannlib.vitro.webapp.modules.searchEngine.SearchQuery.Order;
 import edu.cornell.mannlib.vitro.webapp.modules.searchEngine.SearchResponse;
 import edu.cornell.mannlib.vitro.webapp.modules.searchEngine.SearchResultDocument;
 import edu.cornell.mannlib.vitro.webapp.modules.searchEngine.SearchResultDocumentList;
@@ -79,6 +80,7 @@ public class PagedSearchController extends FreemarkerHttpServlet {
     private static final String PARAM_CLASSGROUP = "classgroup";
     private static final String PARAM_RDFTYPE = "type";
     private static final String PARAM_SEARCHMODE = "searchMode";
+    private static final String PARAM_SORTFIELD = "sortField";
     // Nora make this field public
     public static final String PARAM_QUERY_TEXT = "querytext";
     public static final String FACET_FIELD_PREFIX = "facet_";
@@ -336,6 +338,9 @@ public class PagedSearchController extends FreemarkerHttpServlet {
                 body.put("nextPage", getNextPageLink(startIndex, hitsPerPage,
                         vreq.getServletPath(), pagingLinkParams));
             }
+            
+            // make a link back to this same search
+            body.put("sortFormActionStr", UrlBuilder.getPath("", pagingLinkParams));
 
 	        // VIVO OpenSocial Extension by UCSF
 	        try {
@@ -634,6 +639,11 @@ public class PagedSearchController extends FreemarkerHttpServlet {
 
         query.setStart( startIndex )
              .setRows(hitsPerPage);
+        
+        String sortField = getParamSortField(vreq);
+        if(sortField != null) {
+            query.addSortField(sortField, Order.ASC);
+        }
 
         // ClassGroup filtering param
         String classgroupParam = getParamClassgroup(vreq);
@@ -682,6 +692,10 @@ public class PagedSearchController extends FreemarkerHttpServlet {
         }
         log.debug("Query = " + query.toString());
         return query;
+    }
+    
+    protected static String getParamSortField(VitroRequest vreq) {
+        return vreq.getParameter(PARAM_SORTFIELD);
     }
     
     protected static String getParamClassgroup(VitroRequest vreq) {

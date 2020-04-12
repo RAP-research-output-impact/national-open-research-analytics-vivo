@@ -58,15 +58,15 @@
             <#if additionalFacets?has_content>
 	        <#assign recordTypeLabel = "ADDITIONAL"> <#-- should not actually be used -->
 		<#if searchMode?? && searchMode=="publications">
-		  <#assign recordTypeLabel = "PUBLICATIONS"> 
+		  <#assign recordTypeLabel = "PUBLICATION"> 
                 <#elseif searchMode?? && searchMode="datasets">
-                  <#assign recordTypeLabel = "ĐATASETS">
+                  <#assign recordTypeLabel = "ĐATASET">
                 <#elseif searchMode?? && searchMode="grants">
-                  <#assign recordTypeLabel = "GRANTS">
+                  <#assign recordTypeLabel = "GRANT">
                 <#elseif searchMode?? && searchMode="patents">
-                  <#assign recordTypeLabel = "PATENTS">
+                  <#assign recordTypeLabel = "PATENT">
                 <#elseif searchMode?? && searchMode="clinical_trials">
-                  <#assign recordTypeLabel = "CLINCAL TRIALS">
+                  <#assign recordTypeLabel = "CLINCAL TRIAL">
 	        </#if>	
 	        <tr class="search-facets-head">
                   <td style="align:left">${recordTypeLabel} FACETS:</td>
@@ -141,6 +141,20 @@
             </div>
         </#list>
     </div>
+    <#if sortFormActionStr??>
+        <div style="width: 57.5%; float: right; text-align: right;">
+          Sort by <form action="${urls.base}/search${sortFormActionStr}" method="GET">
+            <select name="sortField" onchange="this.form.submit()">
+              <#list commonFacets as facet>
+                <option value="${facet.fieldName}>${facet.publicName}</option>
+	      </#list>
+              <#list additionalFacets as facet>
+                <option value="${facet.fieldName}>${facet.publicName}</option>
+	      </#list>
+	    </select>
+	  </form>
+        </div>
+    </#if>
     <script>
         var facetsOpen = 0;
         $("div.searchTOC-box").corner();

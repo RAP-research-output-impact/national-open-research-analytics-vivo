@@ -179,7 +179,7 @@
   <h3>Resulting publications</h3>
   <ul class="pub_meta-list">
   <#list supportedPublications as supportedPublication>
-    <li>
+    <li style="margin-bottom: 2ex;">
         <p style="margin-bottom:0.1em;"><a href="${profileUrl(supportedPublication.publication)}">${supportedPublication.label}</a></p>
 	<#if supportedPublication.year?? || supportedPublication.journal?? || supportedPublication.type??>
 	  <p style="margin-bottom:0.1em;">

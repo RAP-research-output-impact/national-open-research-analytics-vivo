@@ -180,7 +180,7 @@
   <ul class="pub_meta-list">
   <#list supportedPublications as supportedPublication>
     <li>
-        <p style="margin-bottom:0.1em;"><a href="${profileUrl(supportedPublication.publication)}">${supportedPublication.title}</a></p>
+        <p style="margin-bottom:0.1em;"><a href="${profileUrl(supportedPublication.publication)}">${supportedPublication.label}</a></p>
 	<#if supportedPublication.year?? || supportedPublication.journal?? || supportedPublication.type??>
 	  <p style="margin-bottom:0.1em;">
              <#if supportedPublication.year??><a href="${urls.base}/search?searchModel=all&facet_year_ss=${supportedPublication.year}">${supportedPublication.year}<a>, </#if>

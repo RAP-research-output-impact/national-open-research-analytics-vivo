@@ -159,10 +159,10 @@ PREFIX foaf:     <http://xmlns.com/foaf/0.1/>
 PREFIX vitro:    <http://vitro.mannlib.cornell.edu/ns/vitro/0.7#>
 PREFIX vivo:     <http://vivoweb.org/ontology/core#>
 
-SELECT ?publication ?title ?year ?journal ?type
+SELECT ?publication ?label ?year ?journal ?type
 WHERE {
   ?publication vivo:informationResourceSupportedBy ?individualURI .
-  ?publication rdfs:label ?title .
+  ?publication rdfs:label ?label .
   OPTIONAL {
     ?publication vivo:dateTimeValue ?dtv .
     ?dtv vivo:dateTime ?dateTime .

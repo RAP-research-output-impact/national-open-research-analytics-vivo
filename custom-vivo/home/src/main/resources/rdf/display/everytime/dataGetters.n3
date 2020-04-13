@@ -545,7 +545,7 @@ SELECT DISTINCT
     ?url 
 WHERE {
     ?individualURI obo:ARG_2000028 ?vcard .
-    vcard:hasURL ?vcardUrl .
+    ?vcard vcard:hasURL ?vcardUrl .
     ?vcardUrl vcard:url ?url .
 }       
     """ ;                

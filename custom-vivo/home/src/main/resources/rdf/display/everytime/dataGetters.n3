@@ -178,7 +178,7 @@ WHERE {
     ?publication vivo:informationResourceSupportedBy ?individualURI .
     ?publication rdfs:label ?label .
   } UNION {
-    ?publication cito:isCitedAsDataSourceBy ?individualURI .
+    ?individualURI cito:isCitedAsDataSourceBy ?publication .
     ?publication rdfs:label ?label .
   }
   OPTIONAL {

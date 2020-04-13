@@ -146,6 +146,45 @@ WHERE {
     """ ;                
     <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#saveToVar>
                 "supportingGrants" .
+ 
+<http://vitro.mannlib.cornell.edu/ns/default#supportedPublicationsDataGetter>
+        a       <java:edu.cornell.mannlib.vitro.webapp.utils.dataGetter.SparqlQueryDataGetter> ;
+        <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#query> """
+PREFIX rdfs:     <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd:      <http://www.w3.org/2001/XMLSchema#>
+PREFIX owl:      <http://www.w3.org/2002/07/owl#>
+PREFIX obo:      <http://purl.obolibrary.org/obo/>
+PREFIX bibo:     <http://purl.org/ontology/bibo/>
+PREFIX foaf:     <http://xmlns.com/foaf/0.1/>
+PREFIX vitro:    <http://vitro.mannlib.cornell.edu/ns/vitro/0.7#>
+PREFIX vivo:     <http://vivoweb.org/ontology/core#>
+
+SELECT ?publication ?title ?year ?journal ?type
+WHERE {
+  ?publication vivo:informationResourceSupportedBy ?individualURI .
+  ?publication rdfs:label ?title .
+  OPTIONAL {
+    ?publication vivo:dateTimeValue ?dtv .
+    ?dtv vivo:dateTime ?dateTime .
+    BIND(STRBEFORE(STR(?dateTime), "-") AS ?year)
+  }
+  OPTIONAL {
+    ?publication vivo:hasPublicationVenue ?journalObj .
+    ?journalObj rdfs:label ?journal .
+  }
+  OPTIONAL { 
+    ?publication vitro:mostSpecificType bibo:AcademicArticle .
+    BIND("Article" AS ?typeLabel)
+  }
+  OPTIONAL { 
+    ?publication vitro:mostSpecificType ?mst .
+    FILTER(?mst != bibo:AcademicArticle)
+    ?mst rdfs:label ?typeLabel .
+  }
+} ORDER BY DESC(?year) ?title 
+    """ ;                
+    <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#saveToVar>
+                "supportedPublications" .
                 
 <freemarker:individual--bibo-document.ftl> 
         <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#hasDataGetter> 
@@ -187,6 +226,9 @@ WHERE {
 <freemarker:individual--vivo-grant.ftl>
         <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#hasDataGetter> 
                  <http://vitro.mannlib.cornell.edu/ns/default#researchCategoryFORDataGetter> .
+<freemarker:individual--vivo-grant.ftl>
+        <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#hasDataGetter> 
+                 <http://vitro.mannlib.cornell.edu/ns/default#supportedPublicationsDataGetter> .
 
 <http://vitro.mannlib.cornell.edu/ns/default#grantMetaDataGetter>
         a       <java:edu.cornell.mannlib.vitro.webapp.utils.dataGetter.SparqlQueryDataGetter> ;
@@ -200,9 +242,13 @@ PREFIX foaf:     <http://xmlns.com/foaf/0.1/>
 PREFIX vitro:    <http://vitro.mannlib.cornell.edu/ns/vitro/0.7#>
 PREFIX vivo:     <http://vivoweb.org/ontology/core#>
 
-SELECT ?typeLabel ?startYear ?endYear ?fundingAmount ?grantNumber
+SELECT ?typeLabel ?startYear ?endYear ?fundingAmount ?grantNumber ?funderOrg ?funder
 WHERE {
   ?individualURI a vivo:Grant .
+  OPTIONAL {
+    ?individualURI vivo:assignedBy ?funderOrg .
+    ?funderOrg rdfs:label ?funder .
+  }
   OPTIONAL {
     ?individualURI vivo:totalAwardAmount ?fundingAmount 
   }  

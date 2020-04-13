@@ -105,6 +105,11 @@
 <#assign refs=gdp(refp)!>
 <#assign cites=gdp(citep)!>
 
+<#if grantMeta[0].funder??>
+<p>
+  <span class="pub_meta-value">Funder: <a href="${urls.base}/search?searchMode=all&facet_funder_ss=${grantMeta[0].funderOrg}">${grantMeta[0].funder}</a></span>
+</p>
+</#if>
 <p>
   <#if dimensionsid??>
     <span class="pub_meta-value">Dimensions: <a href="https://app.dimensions.ai/details/grant/${dimensionsid}" title="Publication details from Dimensions" target="external">${dimensionsid}</a></span>
@@ -168,30 +173,27 @@
 </div>
 </#if>
 
-<#if supportingGrants?? && supportingGrants[0]??>
-<!-- Other details -->
+<#if supportedPublications?? && supportedPublications[0]??>
+<!-- Resulting publications -->
 <div class="pub_other-details">
-  <h3>Funders and Grants</h3>
+  <h3>Resulting publications</h3>
   <ul class="pub_meta-list">
-  <#list supportingGrants as supportingGrant>
+  <#list supportedPublications as supportedPublication>
     <li>
-      <#if supportingGrant.funder??>
-        <p style="margin-bottom:0.1em;"><a href="${urls.base}/search?searchMode=all&facet_funder_ss=${supportingGrant.funder}">${supportingGrant.funderLabel}</a></p>
-      </#if>
-        <p style="margin-bottom:0.1em;"><a href="${profileUrl(supportingGrant.grant)}">${supportingGrant.grantLabel}</a></p>
-      <#if supportingGrant.grantNumber??>
-        <p style="margin-bottom:0.1em;">Grant number ${supportingGrant.grantNumber}</p>
-      </#if>
-      <#if supportingGrant.awardAmountEur??>
-        <p style="margin-bottom:0.1em;">&euro;${supportingGrant.awardAmountEur}</p>
-      </#if>
+        <p style="margin-bottom:0.1em;"><a href="${profileUrl(supportedPublication.publication)}">${supportedPublication.title}</a></p>
+	<#if supportedPublication.year?? || supportedPublication.journal?? || supportedPublication.type??>
+	  <p style="margin-bottom:0.1em;">
+             <#if supportedPublication.year??><a href="${urls.base}/search?searchModel=all&facet_year_ss=${supportedPublication.year}">${supportedPublication.year}<a>, </#if>
+             <#if supportedPublication.journal??><a href="${urls.base}/search?searchModel=all&facet_journal_ss=${supportedPublication.journalObj}">${supportedPublication.journal}<a>, </#if>
+             <#if supportedPublication.type??><a href="${urls.base}/search?searchModel=all&facet_document-type_ss=${supportedPublication.type}">${supportedPublication.type}<a></#if>
+	  </p>
+	</#if>
     </li>
   </#list>
   </ul>
 </div>
 <!-- end other-details -->
 </#if>
-
 
 </div>
 <!-- end .pub-v-main -->

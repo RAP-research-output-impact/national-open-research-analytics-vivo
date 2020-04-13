@@ -80,7 +80,7 @@ PREFIX foaf:     <http://xmlns.com/foaf/0.1/>
 PREFIX vitro:    <http://vitro.mannlib.cornell.edu/ns/vitro/0.7#>
 PREFIX vivo:     <http://vivoweb.org/ontology/core#>
 
-SELECT ?publisher ?publisherName ?issn ?year ?timesCited ?fieldCitationRatio ?relativeCitationRatio
+SELECT ?publisher ?publisherName ?issn ?year ?timesCited ?fieldCitationRatio ?relativeCitationRatio ?license
        ?typeLabel ?openAccess
 WHERE {
   ?individualURI a bibo:Document .
@@ -105,6 +105,9 @@ WHERE {
   }
   OPTIONAL {
     ?individualURI <http://vivo.deffopera.dk/ontology/osrap/relativeCitationRatio> ?relativeCitationRatio
+  }
+  OPTIONAL {
+    ?individualURI <http://vivo.deffopera.dk/ontology/osrap/license> ?license
   }
   OPTIONAL { 
     ?individualURI vitro:mostSpecificType bibo:AcademicArticle .

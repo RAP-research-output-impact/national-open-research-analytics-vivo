@@ -277,6 +277,11 @@
 <!-- end .pub_categories -->
 </#if>
 
+<#if pubMeta?has_content && pubMeta[0]?has_content && pubMeta[0].license?has_content>
+  <h3>Licence</h3>
+  <p>${pubMeta[0].license}</p>
+</#if>
+
 <#if vcardUrl?has_content>
   <h3>External sources</h3>
   <p>Access at <a href="${vcardUrl[0].url}">Figshare</a></p>

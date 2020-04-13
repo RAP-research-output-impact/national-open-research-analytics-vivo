@@ -116,7 +116,7 @@
   </#if>
 </p>
 
-<#if grantInvestigators??>
+<#if grantInvestigators?has_content>
 <!-- investigators -->
 <div class="pub_authors-box">
   <h3>Investigators</h3>
@@ -183,8 +183,8 @@
         <p style="margin-bottom:0.1em;"><a href="${profileUrl(supportedPublication.publication)}">${supportedPublication.label}</a></p>
 	<#if supportedPublication.year?? || supportedPublication.journal?? || supportedPublication.type??>
 	  <p style="margin-bottom:0.1em;">
-             <#if supportedPublication.year??><a href="${urls.base}/search?searchModel=all&facet_year_ss=${supportedPublication.year}">${supportedPublication.year}<a>, </#if>
-             <#if supportedPublication.journal??><a href="${urls.base}/search?searchModel=all&facet_journal_ss=${supportedPublication.journalObj}">${supportedPublication.journal}<a>, </#if>
+             <#if supportedPublication.year??><a href="${urls.base}/search?searchModel=all&facet_year_ss=${supportedPublication.year}">${supportedPublication.year}<a>, </#if> 
+             <#if supportedPublication.journal??><a href="${urls.base}/search?searchModel=all&facet_journal_ss=${supportedPublication.journalObj}">${supportedPublication.journal}<a>, </#if> 
              <#if supportedPublication.type??><a href="${urls.base}/search?searchModel=all&facet_document-type_ss=${supportedPublication.type}">${supportedPublication.type}<a></#if>
 	  </p>
 	</#if>

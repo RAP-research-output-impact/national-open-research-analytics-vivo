@@ -223,6 +223,18 @@
 <!-- end other-details -->
 </#if>
 
+<#if pubMeta?has_content && pubMeta[0].openAccess?has_content>
+<div class="pub_categories"
+  <h3>Open access</h3>
+  <ul>
+    <#list pubMeta as openAccess>
+      <#if openAccess.openAccess??>
+        <li>${openAccess.openAccess}</li>
+      </#if>
+    </#list>
+  </ul>
+</div>
+</#if>
 
 <#if researchCategoriesFOR?has_content>
 <!-- categories/classification -->

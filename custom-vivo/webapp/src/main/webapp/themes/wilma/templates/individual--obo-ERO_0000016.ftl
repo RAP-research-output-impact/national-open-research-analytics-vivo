@@ -164,7 +164,7 @@
   <h3>Sponsors/collaborators</h3>
   <ul>
     <#list sponsorsCollaborators as sponsorCollaborator>
-      <li><a href="${urls.base}/search?searchModel=all&querytext=${sponsorCollaborator.orgName?url}">${sponsorCollaborator.orgName}</a></li>
+      <li><a href="${urls.base}/search?searchModel=clinical_trials&facet_sponsor-collaborator_ss=${sponsorCollaborator.org?url}">${sponsorCollaborator.orgName}</a></li>
     </#list>
   </ul>
 </#if>
@@ -255,7 +255,7 @@
     <!-- end .pub_categories -->
     </#if>
 
-    <#if vcardUrl?has_content>a
+    <#if vcardUrl?has_content>
       <h3>External sources</h3>
       <p>Access at <a href="${vcardUrl[0].url}">Registry</a></p>
     </#if>

@@ -181,7 +181,7 @@ WHERE {
     FILTER(?mst != bibo:AcademicArticle)
     ?mst rdfs:label ?typeLabel .
   }
-} ORDER BY DESC(?year) ?title 
+} ORDER BY DESC(?year) ?label
     """ ;                
     <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#saveToVar>
                 "supportedPublications" .

@@ -81,7 +81,7 @@ PREFIX vitro:    <http://vitro.mannlib.cornell.edu/ns/vitro/0.7#>
 PREFIX vivo:     <http://vivoweb.org/ontology/core#>
 
 SELECT ?publisher ?publisherName ?issn ?year ?timesCited ?fieldCitationRatio ?relativeCitationRatio ?license
-       ?typeLabel ?openAccess
+       ?typeLabel ?openAccess ?openAccessLabel
 WHERE {
   ?individualURI a bibo:Document .
   OPTIONAL {
@@ -120,6 +120,11 @@ WHERE {
   }
   OPTIONAL {
     ?individualURI <http://vivo.deffopera.dk/ontology/osrap/openAccessCategory> ?openAccess .
+    FILTER(?openAccess != <http://vivo.deffopera.dk/individual/open-access-category-closed>)
+  }
+  OPTIONAL {
+    ?individualURI <http://vivo.deffopera.dk/ontology/osrap/openAccessCategory> ?openAccess .
+    ?openAccess rdfs:label ?openAccessLabel .
     FILTER(?openAccess != <http://vivo.deffopera.dk/individual/open-access-category-closed>)
   }
 }

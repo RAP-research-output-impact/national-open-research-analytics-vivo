@@ -223,13 +223,13 @@
 <!-- end other-details -->
 </#if>
 
-<#if pubMeta?has_content && pubMeta[0].openAccess?has_content>
-<div class="pub_categories"
+<#if pubMeta?has_content && pubMeta[0].openAccessLabel?has_content>
+<div class="pub_categories">
   <h3>Open access</h3>
   <ul>
     <#list pubMeta as openAccess>
-      <#if openAccess.openAccess??>
-        <li>${openAccess.openAccess}</li>
+      <#if openAccess.openAccessLabel??>
+        <li>${openAccess.openAccessLabel}</li>
       </#if>
     </#list>
   </ul>

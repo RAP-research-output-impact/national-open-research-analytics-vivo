@@ -270,7 +270,7 @@
 
 <#if vcardUrl?has_content>
   <h3>External sources</h3>
-  <p>Access at <a href="${vcardUrl[0].url}">Registry</a></p>
+  <p>Access at <a href="${vcardUrl[0].url}">Figshare</a></p>
 </#if>
 
 </div>

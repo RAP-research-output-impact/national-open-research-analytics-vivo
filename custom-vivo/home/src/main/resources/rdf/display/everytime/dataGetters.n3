@@ -7,6 +7,9 @@
 <freemarker:individual--vivo-dataset.ftl> 
         <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#hasDataGetter> 
                  <http://vitro.mannlib.cornell.edu/ns/default#vcardUrlDataGetter> .
+<freemarker:individual--vivo-dataset.ftl> 
+        <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#hasDataGetter> 
+                 <http://vitro.mannlib.cornell.edu/ns/default#supportedPublicationsDataGetter> .
 
 <http://vitro.mannlib.cornell.edu/ns/default#authorAffiliationsDataGetter>
         a       <java:edu.cornell.mannlib.vitro.webapp.utils.dataGetter.SparqlQueryDataGetter> ;

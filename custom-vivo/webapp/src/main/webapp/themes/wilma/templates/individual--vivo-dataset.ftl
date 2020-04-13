@@ -238,7 +238,7 @@
 <#if supportingGrants?? && supportingGrants[0]??>
 <!-- Other details -->
 <div class="pub_other-details">
-  <h3>Funders and Grants</h3>
+  <h3>Supporting grants</h3>
   <ul class="pub_meta-list">
   <#list supportingGrants as supportingGrant>
     <li>

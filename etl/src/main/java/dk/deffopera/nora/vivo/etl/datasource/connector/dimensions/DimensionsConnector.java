@@ -12,6 +12,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.rdf.model.RDFNode;
 import org.bson.Document;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -193,12 +194,11 @@ public class DimensionsConnector extends ConnectorDataSource
             while(batch > 0 && cursor.hasNext()) {
                 batch--;
                 long start = System.currentTimeMillis();
-                log.info("Getting next document from cursor");
+                //log.info("Getting next document from cursor");
                 Document d = cursor.next();
                 log.info((System.currentTimeMillis() - start) + " ms to retrieve document");
                 String jsonStr = d.toJson();   
                 JSONObject jsonObj = new JSONObject(jsonStr);
-                log.info(jsonObj.toString(2));
                 JSONArray organisations = jsonObj.getJSONObject("who").getJSONArray("organisations");
                 List<String> whoGrids = new ArrayList<String>();
                 for(int orgi = 0; orgi < organisations.length(); orgi++) {
@@ -207,8 +207,13 @@ public class DimensionsConnector extends ConnectorDataSource
                         whoGrids.add(grid);
                     }
                 }
-                log.info(whoGrids.size() + " grids in who " + whoGrids);
-                jsonObj = jsonObj.getJSONObject("meta").getJSONObject("raw");
+                //log.info(whoGrids.size() + " grids in who " + whoGrids);
+                JSONObject meta = jsonObj.getJSONObject("meta");                
+                jsonObj = meta.getJSONObject("raw");
+                if(meta.has("matchingstatus")) {
+                    jsonObj.put("matchingstatus", meta.getString("matchingstatus"));    
+                }
+                //log.info(jsonObj.toString(2));
                 JSONArray authorAffiliations = jsonObj.getJSONArray("author_affiliations");
                 List<String> affiliationGrids = new ArrayList<String>(); 
                 for(int aai = 0; aai < authorAffiliations.length(); aai++) {
@@ -227,12 +232,12 @@ public class DimensionsConnector extends ConnectorDataSource
                         }
                     }
                 }
-                log.info(affiliationGrids.size() + " grids in affiliations " + affiliationGrids);
+                //log.info(affiliationGrids.size() + " grids in affiliations " + affiliationGrids);
                 for(String whoGrid : whoGrids) {
                     if(!affiliationGrids.contains(whoGrid) 
                             && (ugrids.values().contains(whoGrid) 
                                     || hgrids.values().contains(whoGrid))) {                        
-                        log.info("***** Grid only from who: " + whoGrid);
+                        //log.info("***** Grid only from who: " + whoGrid);
                     }
                 }
                 if(log.isDebugEnabled()) {
@@ -295,6 +300,12 @@ public class DimensionsConnector extends ConnectorDataSource
             // TODO remove
             //return generateOrgs();
             return filterGeneric(model);
+            //Model out = ModelFactory.createDefaultModel();
+            //out.add(model.listStatements(null, model.getProperty(
+            //        "http://vivo.deffopera.dk/ontology/osrap/matchingstatus"), (RDFNode) null));
+            //out.add(model.listStatements(null, model.getProperty(
+            //        "http://vivo.deffopera.dk/ontology/osrap/activeYear"), (RDFNode) null));
+            //return out;
         } else {
             return model;
         }
@@ -313,9 +324,9 @@ public class DimensionsConnector extends ConnectorDataSource
         model = renameByIdentifier(model, model.getProperty(
                 XmlToRdf.GENERIC_NS + "publication_id"), ABOX, "");
         queries = Arrays.asList(
-                "120-publicationDate.rq",
-                "130-publicationJournal.rq",
-                "140-publicationAuthorship.rq"
+                //"120-publicationDate.rq",
+                //"130-publicationJournal.rq",
+                //"140-publicationAuthorship.rq"
                 );
         for(String query : queries) {
             construct(SPARQL_RESOURCE_DIR + query, model, ABOX + getPrefixName() + "-");
@@ -325,15 +336,15 @@ public class DimensionsConnector extends ConnectorDataSource
         //model = renameByIdentifier(model, model.getProperty(
         //        XmlToRdf.GENERIC_NS + "person_orcidStr"), ABOX, "orcid-");
         queries = Arrays.asList(         
-                "150-publicationAuthor.rq",
-                "160-publicationAuthorPosition.rq",
-                "170-publisher.rq",
-                "180-mesh.rq",
-                "190-for.rq",
-                "200-rcdc.rq",
-                "210-hrcs.rq",
-                "220-openAccess.rq",
-                "230-funding.rq"
+                //"150-publicationAuthor.rq",
+                //"160-publicationAuthorPosition.rq",
+                //"170-publisher.rq",
+                //"180-mesh.rq",
+                //"190-for.rq",
+                //"200-rcdc.rq",
+                //"210-hrcs.rq",
+                //"220-openAccess.rq",
+                //"230-funding.rq"
                 );
         for(String query : queries) {
             construct(SPARQL_RESOURCE_DIR + query, model, ABOX + getPrefixName() + "-");            

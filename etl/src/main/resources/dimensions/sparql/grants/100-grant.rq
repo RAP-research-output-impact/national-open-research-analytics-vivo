@@ -43,6 +43,7 @@ CONSTRUCT {
     ?end a vivo:DateTimeValue .
     ?end vivo:dateTime ?endDt .
     ?end vivo:dateTimePrecision vivo:yearPrecision .
+    ?grant osrap:activeYear ?activeYear .
     ?fundingOrg a vivo:FundingOrganization .
     ?fundingOrg rdfs:label ?funderName .
     ?fundingOrg vivo:abbreviaton ?acronym .
@@ -87,6 +88,9 @@ CONSTRUCT {
 	BIND(IRI(CONCAT(STR(?grant), "-vcard")) AS ?vcard) 
 	BIND(IRI(CONCAT(STR(?grant), "-vcard-url")) AS ?url)
 	BIND(xsd:anyURI(?linkout) AS ?linkoutUrl)
+    }
+    OPTIONAL {
+        ?grant g:active_year ?activeYear 
     }
     OPTIONAL {
         ?grant g:resulting_publication_ids ?resultingPubId .

@@ -35,6 +35,7 @@ CONSTRUCT {
     ?x osrap:timesCited ?timesCited .
     ?x osrap:relativeCitationRatio ?relativeCitationRatio .
     ?x osrap:fieldCitationRatio ?fieldCitationRatio .
+    ?x osrap:matchingstatus ?matchingstatus .
 } WHERE {
     ?x g:title ?title .
     ?x g:id ?id 
@@ -61,5 +62,8 @@ CONSTRUCT {
     }
     OPTIONAL {
       ?x g:field_citation_ratio ?fieldCitationRatio
+    }
+    OPTIONAL {
+      ?x g:matchingstatus ?matchingstatus .
     }
 }

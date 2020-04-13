@@ -31,6 +31,11 @@ CONSTRUCT {
     ?dataset rdfs:label ?title .
     ?dataset bibo:abstract ?abstract .
     ?dataset bibo:doi ?doi .
+    ?dataset osrap:license ?licenseName .
+    ?dataset vivo:informationResourceSupportedBy ?grantInd .
+    ?dataset osrap:funder ?funder .
+    ?funder a vivo:FundingOrganization .
+    ?funder rdfs:label ?funderName .
     ?dataset vivo:dateTimeValue ?dtv .
     ?dtv a vivo:DateTimeValue .
     ?dtv vivo:dateTime ?dt .
@@ -49,6 +54,20 @@ CONSTRUCT {
     ?dataset g:title ?title .
     OPTIONAL {
         ?dataset g:doi ?doi
+    }
+    OPTIONAL {
+        ?dataset g:license ?license .
+	?license g:name ?licenseName .
+    }
+    OPTIONAL {
+        ?dataset g:associated_grant_ids ?grantId .
+	BIND(IRI(CONCAT(STR(abox:), STR(?grantId))) AS ?grantInd) 
+    }
+    OPTIONAL {
+        ?dataset g:funders ?funderNode .
+	?funderNode g:id ?funderId .
+	?funderNode g:name ?funderName 
+	BIND(IRI(CONCAT(STR(abox:), STR(?funderId))) AS ?funder)
     }
     OPTIONAL {
         ?dataset g:description ?abstract 

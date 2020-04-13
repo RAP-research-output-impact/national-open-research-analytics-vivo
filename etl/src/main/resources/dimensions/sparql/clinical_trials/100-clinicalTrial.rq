@@ -44,6 +44,7 @@ CONSTRUCT {
     ?endDtv a vivo:DateTimeValue .
     ?endDtv vivo:dateTime ?endDt .
     ?endDtv vivo:dateTimeValuePrecision vivo:yearPrecision .
+    ?clinicalTrial osrap:activeYear ?activeYear .
     ?clinicalTrial obo:ARG_2000028 ?vcard .
     ?vcard a vcard:Kind .
     ?vcard vcard:hasURL ?vcardUrl .
@@ -76,12 +77,19 @@ CONSTRUCT {
     OPTIONAL {
         ?clinicalTrial g:id ?id .
         ?clinicalTrial g:start_year ?startYear .
-	?clinicalTrial g:end_year ?endYear .
 	BIND(xsd:dateTime(CONCAT(STR(?startYear), "-01-01T00:00:00")) AS ?startDt)
-	BIND(xsd:dateTime(CONCAT(STR(?endYear), "-01-01T00:00:00")) AS ?endDt)
 	BIND(IRI(CONCAT(STR(?clinicalTrial), "-start-dtv")) AS ?startDtv)
+	BIND(IRI(CONCAT(STR(?clinicalTrial), "-dti")) AS ?dti)
+    }
+    OPTIONAL {
+        ?clinicalTrial g:id ?id .
+	?clinicalTrial g:end_year ?endYear .
+	BIND(xsd:dateTime(CONCAT(STR(?endYear), "-01-01T00:00:00")) AS ?endDt)
 	BIND(IRI(CONCAT(STR(?clinicalTrial), "-end-dtv")) AS ?endDtv)
 	BIND(IRI(CONCAT(STR(?clinicalTrial), "-dti")) AS ?dti)
+    }
+    OPTIONAL {
+        ?clinicalTrial g:active_years ?activeYear .
     }
     OPTIONAL {
         ?clinicalTrial g:linkout ?linkout .

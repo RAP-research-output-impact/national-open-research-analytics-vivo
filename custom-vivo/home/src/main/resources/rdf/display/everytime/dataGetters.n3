@@ -121,11 +121,13 @@ WHERE {
   OPTIONAL {
     ?individualURI <http://vivo.deffopera.dk/ontology/osrap/openAccessCategory> ?openAccess .
     FILTER(?openAccess != <http://vivo.deffopera.dk/individual/open-access-category-closed>)
+    FILTER(?openAccess != <http://vivo.deffopera.dk/individual/open-access-category-oa_all>)
   }
   OPTIONAL {
     ?individualURI <http://vivo.deffopera.dk/ontology/osrap/openAccessCategory> ?openAccess .
     ?openAccess rdfs:label ?openAccessLabel .
     FILTER(?openAccess != <http://vivo.deffopera.dk/individual/open-access-category-closed>)
+    FILTER(?openAccess != <http://vivo.deffopera.dk/individual/open-access-category-oa_all>)
   }
 }
     """ ;                

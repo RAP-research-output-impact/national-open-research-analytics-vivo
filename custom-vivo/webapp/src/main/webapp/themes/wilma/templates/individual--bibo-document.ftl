@@ -226,13 +226,7 @@
 <#if pubMeta?has_content && pubMeta[0].openAccessLabel?has_content>
 <div class="pub_categories">
   <h3>Open access</h3>
-  <ul>
-    <#list pubMeta as openAccess>
-      <#if openAccess.openAccessLabel??>
-        <li>${openAccess.openAccessLabel}</li>
-      </#if>
-    </#list>
-  </ul>
+  <p>${pubMeta[0].openAccessLabel}</p>
 </div>
 </#if>
 

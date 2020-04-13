@@ -159,7 +159,7 @@ PREFIX foaf:     <http://xmlns.com/foaf/0.1/>
 PREFIX vitro:    <http://vitro.mannlib.cornell.edu/ns/vitro/0.7#>
 PREFIX vivo:     <http://vivoweb.org/ontology/core#>
 
-SELECT ?publication ?label ?year ?journalObj ?journal ?type
+SELECT ?publication ?label ?year ?journalObj ?journal ?type ?typeLabel
 WHERE {
   ?publication vivo:informationResourceSupportedBy ?individualURI .
   ?publication rdfs:label ?label .
@@ -174,12 +174,13 @@ WHERE {
   }
   OPTIONAL { 
     ?publication vitro:mostSpecificType bibo:AcademicArticle .
-    BIND("Article" AS ?type)
+    BIND(bibo:AcademicArticle AS ?type)
+    BIND("Article" AS ?typeLabel)
   }
   OPTIONAL { 
-    ?publication vitro:mostSpecificType ?mst .
-    FILTER(?mst != bibo:AcademicArticle)
-    ?mst rdfs:label ?type .
+    ?publication vitro:mostSpecificType ?type .
+    FILTER(?type != bibo:AcademicArticle)
+    ?type rdfs:label ?typeLabel .
   }
 } ORDER BY DESC(?year) ?label
     """ ;                

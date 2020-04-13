@@ -268,7 +268,7 @@
     <p>Fields of Research</p>
     <ul class="one-line-list">
       <#list researchCategoriesFOR as researchCategory>
-        <li role="list-item"><a href="${urls.base}/search?searchMode=clinical_trials&facet_research-category_ss=${researchCategory.researchCategory}">${researchCategory.researchCategoryName}</a></li>
+        <li role="list-item"><a href="${urls.base}/search?searchMode=all&facet_research-category_ss=${researchCategory.researchCategory}">${researchCategory.researchCategoryName}</a></li>
       </#list>
     </ul>
   </div>

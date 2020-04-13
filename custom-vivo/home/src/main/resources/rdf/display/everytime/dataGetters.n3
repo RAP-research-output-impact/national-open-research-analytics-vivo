@@ -174,12 +174,12 @@ WHERE {
   }
   OPTIONAL { 
     ?publication vitro:mostSpecificType bibo:AcademicArticle .
-    BIND("Article" AS ?typeLabel)
+    BIND("Article" AS ?type)
   }
   OPTIONAL { 
     ?publication vitro:mostSpecificType ?mst .
     FILTER(?mst != bibo:AcademicArticle)
-    ?mst rdfs:label ?typeLabel .
+    ?mst rdfs:label ?type .
   }
 } ORDER BY DESC(?year) ?label
     """ ;                

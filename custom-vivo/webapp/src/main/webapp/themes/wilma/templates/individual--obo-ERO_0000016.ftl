@@ -160,6 +160,15 @@
 </ol>
 </#if>
 
+<#if sponsorsCollaborators?has_content>
+  <h3>Sponsors/collaborators</h3>
+  <ul>
+    <#list sponsorsCollaborators as sponsorCollaborator>
+      <li><a href="${urls.base}/search?searchModel=all&querytext=${sponsorCollaborator.orgName?url}">${sponsorCollaborator.orgName}</a></li>
+    </#list>
+  </ul>
+</#if>
+
 <#if abstract?has_content>
 <h3>Abstract</h3>
 <!-- abstract -->
@@ -244,6 +253,11 @@
     
     </div>
     <!-- end .pub_categories -->
+    </#if>
+
+    <#if vcardUrl?has_content>a
+      <h3>External sources</h3>
+      <p>Access at <a href="${vcardUrl[0].url}">Registry</a></p>
     </#if>
 
 </div>

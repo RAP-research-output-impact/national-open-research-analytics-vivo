@@ -370,6 +370,12 @@ WHERE {
 <freemarker:individual--obo-ERO_0000016.ftl>                 
          <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#hasDataGetter> 
                  <http://vitro.mannlib.cornell.edu/ns/default#researchCategoryFORDataGetter> .
+<freemarker:individual--obo-ERO_0000016.ftl>                 
+         <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#hasDataGetter> 
+                 <http://vitro.mannlib.cornell.edu/ns/default#sponsorsCollaboratorsDataGetter> .
+<freemarker:individual--obo-ERO_0000016.ftl>                 
+         <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#hasDataGetter> 
+                 <http://vitro.mannlib.cornell.edu/ns/default#vcardUrlDataGetter> .
 
 <http://vitro.mannlib.cornell.edu/ns/default#clinicalTrialMetaDataGetter>
         a       <java:edu.cornell.mannlib.vitro.webapp.utils.dataGetter.SparqlQueryDataGetter> ;
@@ -495,4 +501,54 @@ WHERE {
     """ ;                
     <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#saveToVar>
                 "clinicalTrialInvestigators" .
+
+<http://vitro.mannlib.cornell.edu/ns/default#sponsorsCollaboratorsDataGetter>
+        a       <java:edu.cornell.mannlib.vitro.webapp.utils.dataGetter.SparqlQueryDataGetter> ;
+        <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#query> """
+        PREFIX rdfs:     <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd:      <http://www.w3.org/2001/XMLSchema#>
+PREFIX owl:      <http://www.w3.org/2002/07/owl#>
+PREFIX obo:      <http://purl.obolibrary.org/obo/>
+PREFIX bibo:     <http://purl.org/ontology/bibo/>
+PREFIX foaf:     <http://xmlns.com/foaf/0.1/>
+PREFIX vitro:    <http://vitro.mannlib.cornell.edu/ns/vitro/0.7#>
+PREFIX vivo:     <http://vivoweb.org/ontology/core#>
+
+SELECT DISTINCT 
+    ?org ?orgName
+WHERE {
+    ?individualURI obo:BFO_0000055 ?role .
+    ?role a obo:ERO_0000224 . # FundingRole
+    ?role obo:RO_0000052 ?org .
+    ?role obo:BFO_0000054 ?clinicalTrial .
+    ?org a foaf:Organization .
+    ?org rdfs:label ?orgName .
+}       
+    """ ;                
+    <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#saveToVar>
+                "sponsorsCollaborators" .
+ 
+<http://vitro.mannlib.cornell.edu/ns/default#vcardUrlDataGetter>
+        a       <java:edu.cornell.mannlib.vitro.webapp.utils.dataGetter.SparqlQueryDataGetter> ;
+        <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#query> """
+        PREFIX rdfs:     <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd:      <http://www.w3.org/2001/XMLSchema#>
+PREFIX owl:      <http://www.w3.org/2002/07/owl#>
+PREFIX obo:      <http://purl.obolibrary.org/obo/>
+PREFIX bibo:     <http://purl.org/ontology/bibo/>
+PREFIX foaf:     <http://xmlns.com/foaf/0.1/>
+PREFIC vcard:    <http://www.w3.org/2006/vcard/ns#>
+PREFIX vitro:    <http://vitro.mannlib.cornell.edu/ns/vitro/0.7#>
+PREFIX vivo:     <http://vivoweb.org/ontology/core#>
+
+SELECT DISTINCT 
+    ?url 
+WHERE {
+    ?individualURI obo:ARG_2000028 ?vcard .
+    vcard:hasURL ?vcardUrl .
+    ?vcardUrl vcard:url ?url .
+}       
+    """ ;                
+    <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#saveToVar>
+                "vcardUrl" .
                 

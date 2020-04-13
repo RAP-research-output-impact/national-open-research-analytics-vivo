@@ -226,6 +226,15 @@
   
 <div class="pub-v-sidebar">
 
+<#if funders?has_content>
+  <h3>Funders</h3>
+  <ul class="pub_meta-list">
+    <#list funders as funder>
+      <li><a href="${urls.base}/search?searchMode=all&facet_funder_ss=${funder.funder}">${funder.funderLabel}</a></li>
+    </#list>
+  </ul>
+</#if>
+
 <#if supportingGrants?? && supportingGrants[0]??>
 <!-- Other details -->
 <div class="pub_other-details">

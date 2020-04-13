@@ -13,5 +13,6 @@
       rdfs:label "Hide from Search" .
 
 bibo:Document vitro:customDisplayViewAnnot "individual--bibo-document.ftl"^^xsd:string .
+vivo:Dataset vitro:customDisplayViewAnnot "individual--vivo-dataset.ftl"^^xsd:string .
 vivo:Grant vitro:customDisplayViewAnnot "individual--vivo-grant.ftl"^^xsd:string .
 obo:ERO_0000016 vitro:customDisplayViewAnnot "individual--obo-ERO_0000016.ftl"^^xsd:string .

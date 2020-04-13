@@ -1,6 +1,12 @@
 <freemarker:individual--bibo-document.ftl> 
         <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#hasDataGetter> 
                  <http://vitro.mannlib.cornell.edu/ns/default#authorAffiliationsDataGetter> .
+<freemarker:individual--vivo-dataset.ftl> 
+        <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#hasDataGetter> 
+                 <http://vitro.mannlib.cornell.edu/ns/default#authorAffiliationsDataGetter> .
+<freemarker:individual--vivo-dataset.ftl> 
+        <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#hasDataGetter> 
+                 <http://vitro.mannlib.cornell.edu/ns/default#vcardUrlDataGetter> .
 
 <http://vitro.mannlib.cornell.edu/ns/default#authorAffiliationsDataGetter>
         a       <java:edu.cornell.mannlib.vitro.webapp.utils.dataGetter.SparqlQueryDataGetter> ;
@@ -53,6 +59,9 @@ SELECT ?rank (COALESCE(MIN(?affiliation_), owl:Nothing) AS ?affiliation)
                 "authorAffiliations" .
 
 <freemarker:individual--bibo-document.ftl> 
+        <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#hasDataGetter> 
+                 <http://vitro.mannlib.cornell.edu/ns/default#pubMetaDataGetter> .
+<freemarker:individual--vivo-dataset.ftl> 
         <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#hasDataGetter> 
                  <http://vitro.mannlib.cornell.edu/ns/default#pubMetaDataGetter> .
 
@@ -115,6 +124,9 @@ WHERE {
 <freemarker:individual--bibo-document.ftl> 
         <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#hasDataGetter> 
                  <http://vitro.mannlib.cornell.edu/ns/default#supportingGrantDataGetter> .
+<freemarker:individual--vivo-dataset.ftl> 
+        <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#hasDataGetter> 
+                 <http://vitro.mannlib.cornell.edu/ns/default#supportingGrantDataGetter> .
 
 <http://vitro.mannlib.cornell.edu/ns/default#supportingGrantDataGetter>
         a       <java:edu.cornell.mannlib.vitro.webapp.utils.dataGetter.SparqlQueryDataGetter> ;
@@ -155,14 +167,20 @@ PREFIX xsd:      <http://www.w3.org/2001/XMLSchema#>
 PREFIX owl:      <http://www.w3.org/2002/07/owl#>
 PREFIX obo:      <http://purl.obolibrary.org/obo/>
 PREFIX bibo:     <http://purl.org/ontology/bibo/>
+PREFIX cito:     <http://purl.org/spar/cito/>
 PREFIX foaf:     <http://xmlns.com/foaf/0.1/>
 PREFIX vitro:    <http://vitro.mannlib.cornell.edu/ns/vitro/0.7#>
 PREFIX vivo:     <http://vivoweb.org/ontology/core#>
 
 SELECT ?publication ?label ?year ?journalObj ?journal ?type ?typeLabel
 WHERE {
-  ?publication vivo:informationResourceSupportedBy ?individualURI .
-  ?publication rdfs:label ?label .
+  {
+    ?publication vivo:informationResourceSupportedBy ?individualURI .
+    ?publication rdfs:label ?label .
+  } UNION {
+    ?publication cito:isCitedAsDataSourceBy ?individualURI .
+    ?publication rdfs:label ?label .
+  }
   OPTIONAL {
     ?publication vivo:dateTimeValue ?dtv .
     ?dtv vivo:dateTime ?dateTime .
@@ -188,6 +206,9 @@ WHERE {
                 "supportedPublications" .
                 
 <freemarker:individual--bibo-document.ftl> 
+        <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#hasDataGetter> 
+                 <http://vitro.mannlib.cornell.edu/ns/default#researchCategoryFORDataGetter> .
+<freemarker:individual--vivo-dataset.ftl> 
         <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#hasDataGetter> 
                  <http://vitro.mannlib.cornell.edu/ns/default#researchCategoryFORDataGetter> .
 

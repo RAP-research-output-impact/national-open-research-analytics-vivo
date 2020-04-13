@@ -192,7 +192,7 @@
   </#list>
   </ul>
 </div>
-<!-- end other-details -->
+<!-- end Resulting publications -->
 </#if>
 
 </div>

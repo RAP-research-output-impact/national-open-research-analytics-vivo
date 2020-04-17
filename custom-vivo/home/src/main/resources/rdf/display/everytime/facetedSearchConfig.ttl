@@ -76,7 +76,7 @@
     a   <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.SelectQueryDocumentModifier> ,
             <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.DocumentModifier> ;
     rdfs:label "Year document modifier" ;
-    :hasTargetField "facet_year_ss" ;
+    :hasTargetField "facet_year_ss", "sort_year_i" ;
     :hasTypeRestriction "http://purl.obolibrary.org/obo/IAO_0000030";
     :hasTypeRestriction "http://vivoweb.org/ontology/core#Grant" ;
     :hasTypeRestriction "http://purl.obolibrary.org/obo/ERO_0000016" ; # ClinicalTrial
@@ -110,7 +110,7 @@
     a   <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.SelectQueryDocumentModifier> ,
             <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.DocumentModifier> ;
     rdfs:label "Publication year document modifier" ;
-    :hasTargetField "facet_publication-year_ss" ;
+    :hasTargetField "facet_publication-year_ss", "sort_publication-year_i" ;
     :hasTypeRestriction "http://purl.obolibrary.org/obo/IAO_0000030";
     :hasSelectQuery """
 	PREFIX vivo: <http://vivoweb.org/ontology/core#>
@@ -127,7 +127,7 @@
     a   <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.SelectQueryDocumentModifier> ,
             <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.DocumentModifier> ;
     rdfs:label "Start year document modifier" ;
-    :hasTargetField "facet_start-year_ss" ;
+    :hasTargetField "facet_start-year_ss", "sort_start-year_i" ;
     :hasTypeRestriction "http://purl.obolibrary.org/obo/IAO_0000030";
     :hasTypeRestriction "http://vivoweb.org/ontology/core#Grant" ;
     :hasTypeRestriction "http://purl.obolibrary.org/obo/ERO_0000016" ; # ClinicalTrial
@@ -146,7 +146,7 @@
     a   <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.SelectQueryDocumentModifier> ,
             <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.DocumentModifier> ;
     rdfs:label "Granted year document modifier" ;
-    :hasTargetField "facet_granted-year_ss" ;
+    :hasTargetField "facet_granted-year_ss", "sort_granted-year_i" ;
     :hasTypeRestriction "http://purl.obolibrary.org/obo/IAO_0000030";
     :hasTypeRestriction "http://vivoweb.org/ontology/core#Grant" ;
     :hasTypeRestriction "http://purl.obolibrary.org/obo/ERO_0000016" ; # ClinicalTrial

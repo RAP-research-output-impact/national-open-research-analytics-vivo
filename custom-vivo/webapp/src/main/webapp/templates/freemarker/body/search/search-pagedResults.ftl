@@ -143,7 +143,7 @@
     </div>
     <#if sortFormHiddenFields?? && commonFacets?has_content>
         <div style="width: 57.5%; float: right; text-align: right;">
-          Sort by <form style="display: inline;" action="${urls.base}/search"  method="GET">
+          Sort by <form style="display: inline;" action="${urls.base}/search" method="GET">
             <select name="sortField" onchange="this.form.submit()">
               <option <#if sortField?? && sortField = "sort_year_s|ASC">selected="selected"</#if> value="sort_year_s|ASC">year (ascending)</option>
               <option <#if sortField?? && sortField = "sort_year_s|DESC">selected="selected"</#if> value="sort_year_s|DESC">year (descending)</option>
@@ -151,7 +151,7 @@
               <option <#if sortField?? && sortField = "nameLowercaseSingleValued|DESC">selected="selected"</#if> value="nameLowercaseSingleValued|DESC">title (descending)</option>
 	    </select>
 	    <#list sortFormHiddenFields as field>
-	      <#if field.name?? && field.value??>
+	      <#if field.name?? && (field.name != "sortField") && field.value??>
                 <input type="hidden" name="${field.name}" value="${field.value}"/>
               </#if>
 	    </#list>

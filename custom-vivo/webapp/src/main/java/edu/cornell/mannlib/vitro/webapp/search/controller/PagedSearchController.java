@@ -717,7 +717,12 @@ public class PagedSearchController extends FreemarkerHttpServlet {
     }
     
     protected static String getParamSortField(VitroRequest vreq) {
-        return vreq.getParameter(PARAM_SORTFIELD);
+        String value = vreq.getParameter(PARAM_SORTFIELD);
+        if(value != null) {
+            return value;
+        } else {
+            return "sort_year_s|DESC";
+        }
     }
     
     protected static String getParamClassgroup(VitroRequest vreq) {

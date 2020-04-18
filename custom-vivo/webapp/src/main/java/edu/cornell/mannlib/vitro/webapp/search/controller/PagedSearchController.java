@@ -655,7 +655,7 @@ public class PagedSearchController extends FreemarkerHttpServlet {
         
         String sortField = getParamSortField(vreq);
         if(sortField != null) {
-            String[] sortAndDirection = sortField.split("|");
+            String[] sortAndDirection = sortField.split("\\|");
             // this string replacement may no longer be necessary
             sortField = sortAndDirection[0].replace("facet_", "sort_").replace("_ss", "_s");
             log.info("adding sort field " + sortField);

@@ -315,6 +315,10 @@ public class PagedSearchController extends FreemarkerHttpServlet {
                     pagingLinkParams.put(PARAM_RDFTYPE, typeParam);
                 }
             }
+            
+            String sortField = getParamSortField(vreq);
+            body.put(PARAM_SORTFIELD, sortField);
+            pagingLinkParams.put(PARAM_SORTFIELD, sortField);
 
             body.put("individuals", IndividualSearchResult
                     .getIndividualTemplateModels(individuals, vreq));
@@ -651,9 +655,15 @@ public class PagedSearchController extends FreemarkerHttpServlet {
         
         String sortField = getParamSortField(vreq);
         if(sortField != null) {
-            // TODO retrieve the text-based version of the facet automatically
-            sortField = sortField.replace("facet_", "facetext_").replace("_ss", "_en");
-            query.addSortField(sortField, Order.ASC);
+            String[] sortAndDirection = sortField.split("|");
+            // this string replacement may no longer be necessary
+            sortField = sortAndDirection[0].replace("facet_", "sort_").replace("_ss", "_s");
+            if("DESC".equals(sortAndDirection[1])) {
+                query.addSortField(sortField, Order.DESC);    
+            } else {
+                // default to ascending
+                query.addSortField(sortField, Order.ASC);
+            }            
         }
 
         // ClassGroup filtering param

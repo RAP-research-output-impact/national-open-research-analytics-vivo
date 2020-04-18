@@ -145,14 +145,10 @@
         <div style="width: 57.5%; float: right; text-align: right;">
           Sort by <form style="display: inline;" action="${urls.base}/search"  method="GET">
             <select name="sortField" onchange="this.form.submit()">
-              <#list commonFacets as facet>
-                <option value="${facet.fieldName}">${facet.publicName}</option>
-	      </#list>
-	      <#if additionalFacets?has_content>
-                <#list additionalFacets as facet>
-                  <option value="${facet.fieldName}">${facet.publicName}</option>
-	        </#list>
-	      </#if>
+              <option <#if sortField?? && sortField = "year|ASC">selected="selected"</#if> value="year|ASC">year (descending)</option>
+              <option <#if sortField?? && sortField = "year|DESC">selected="selected"</#if> value="year|DESC">year (descending)</option>
+              <option <#if sortField?? && sortField = "nameLowercaseSingleValued|ASC">selected="selected"</#if> value="nameLowercaseSingleValued|ASC">year (descending)</option>
+              <option <#if sortField?? && sortField = "nameLowercaseSingleValued|DESC">selected="selected"</#if> value="nameLowercaseSingleValued|DESC">year (descending)</option>
 	    </select>
 	    <#list sortFormHiddenFields as field>
 	      <#if field.name?? && field.value??>

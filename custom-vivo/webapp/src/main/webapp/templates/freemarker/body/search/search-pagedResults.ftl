@@ -151,7 +151,7 @@
               <option <#if sortField?? && sortField = "nameLowercaseSingleValued|DESC">selected="selected"</#if> value="nameLowercaseSingleValued|DESC">title (descending)</option>
 	    </select>
 	    <#list sortFormHiddenFields as field>
-	      <#if field.name?? && (field.name != "sortField") && field.value??>
+	      <#if field.name?? && (field.name != "sortField") && (field.name != "startIndex") && field.value??>
                 <input type="hidden" name="${field.name}" value="${field.value}"/>
               </#if>
 	    </#list>

@@ -840,10 +840,15 @@ public class PagedSearchController extends FreemarkerHttpServlet {
             }
         }
         
+        // TODO refactor this and the above!
         // union facet behavior
         StringBuilder builder = new StringBuilder();
         for(String parameterName : facetParams.keySet()) {
             String parameterValue = facetParams.get(parameterName);
+            if(excludeFacets.contains(parameterName)) {
+                // skip the excluded facet
+                continue;
+            }
             if(!parameterValue.isEmpty() && unionFacets.contains(parameterName)) {    
                 for (String val : parameterValue.split(";;")) {
                     if(builder.length() > 0) {

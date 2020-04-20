@@ -1,0 +1,136 @@
+@prefix ocrer: <http://purl.org/net/OCRe/research.owl#> .
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix scires: <http://vivoweb.org/ontology/scientific-research#> .
+@prefix swrlb: <http://www.w3.org/2003/11/swrlb#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos:  <http://www.w3.org/2004/02/skos/core#> .
+@prefix swo:   <http://www.ebi.ac.uk/efo/swo/> .
+@prefix ocresd: <http://purl.org/net/OCRe/study_design.owl#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix cito:  <http://purl.org/spar/cito/> .
+@prefix geo:   <http://aims.fao.org/aos/geopolitical.owl#> .
+@prefix ocresst: <http://purl.org/net/OCRe/statistics.owl#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix vivo:  <http://vivoweb.org/ontology/core#> .
+@prefix vann:  <http://purl.org/vocab/vann/> .
+@prefix event: <http://purl.org/NET/c4dm/event.owl#> .
+@prefix foaf:  <http://xmlns.com/foaf/0.1/> .
+@prefix c4o:   <http://purl.org/spar/c4o/> .
+@prefix fabio: <http://purl.org/spar/fabio/> .
+@prefix swrl:  <http://www.w3.org/2003/11/swrl#> .
+@prefix vcard: <http://www.w3.org/2006/vcard/ns#> .
+@prefix vitro: <http://vitro.mannlib.cornell.edu/ns/vitro/0.7#> .
+@prefix vitro-public: <http://vitro.mannlib.cornell.edu/ns/vitro/public#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix ocresp: <http://purl.org/net/OCRe/study_protocol.owl#> .
+@prefix bibo:  <http://purl.org/ontology/bibo/> .
+@prefix ro:    <http://purl.obolibrary.org/obo/ro.owl#> .
+@prefix obo:   <http://purl.obolibrary.org/obo/> .
+
+<http://vivo.deffopera.dk/ontology/osrap/nora-subject-area-natural-sciences> 
+        a             <http://vivo.deffopera.dk/ontology/osrap/NORASubjectArea> ;
+	rdfs:label    "Natural Sciences" .
+
+<http://vivo.deffopera.dk/ontology/osrap/nora-subject-area-technical-sciences> 
+        a             <http://vivo.deffopera.dk/ontology/osrap/NORASubjectArea> ;
+	rdfs:label    "Technical Sciences" .
+
+<http://vivo.deffopera.dk/ontology/osrap/nora-subject-area-health-sciences> 
+        a             <http://vivo.deffopera.dk/ontology/osrap/NORASubjectArea> ;
+	rdfs:label    "Health Sciences" .
+
+<http://vivo.deffopera.dk/ontology/osrap/nora-subject-area-social-sciences> 
+        a             <http://vivo.deffopera.dk/ontology/osrap/NORASubjectArea> ;
+	rdfs:label    "Social Sciences" .
+
+<http://vivo.deffopera.dk/ontology/osrap/nora-subject-area-technical-sciences> 
+        a             <http://vivo.deffopera.dk/ontology/osrap/NORASubjectArea> ;
+	rdfs:label    "Humanities" .
+
+<http://vivo.deffopera.dk/individual/category-for-2205>
+        rdfs:label    "05 Environmental Sciences" ;
+        skos:broader  <http://vivo.deffopera.dk/ontology/osrap/nora-subject-area-natural-sciences> .
+
+<http://vivo.deffopera.dk/individual/category-for-2214>
+        rdfs:label    "14 Economics" ;
+        skos:broader  <http://vivo.deffopera.dk/ontology/osrap/nora-subject-area-social-sciences> .
+
+<http://vivo.deffopera.dk/individual/category-for-2204>
+        rdfs:label    "04 Earth Sciences" ;
+        skos:broader  <http://vivo.deffopera.dk/ontology/osrap/nora-subject-area-natural-sciences> .
+
+<http://vivo.deffopera.dk/individual/category-for-2213>
+        rdfs:label    "13 Education" ;
+        skos:broader  <http://vivo.deffopera.dk/ontology/osrap/nora-subject-area-social-sciences> .
+
+<http://vivo.deffopera.dk/individual/category-for-2219>
+        rdfs:label    "19 Studies in Creative Arts and Writing" ;
+        skos:broader  <http://vivo.deffopera.dk/ontology/osrap/nora-subject-area-humanities> .
+
+<http://vivo.deffopera.dk/individual/category-for-2222>
+        rdfs:label    "22 Philosophy and Religious Studies" ;
+        skos:broader  <http://vivo.deffopera.dk/ontology/osrap/nora-subject-area-humanities> .
+
+<http://vivo.deffopera.dk/individual/category-for-2203>
+        rdfs:label    "03 Chemical Sciences" ;
+        skos:broader  <http://vivo.deffopera.dk/ontology/osrap/nora-subject-area-natural-sciences> .
+
+<http://vivo.deffopera.dk/individual/category-for-2209>
+        rdfs:label    "09 Engineering" ;
+        skos:broader  <http://vivo.deffopera.dk/ontology/osrap/nora-subject-area-technical-sciences> .
+
+<http://vivo.deffopera.dk/individual/category-for-2212>
+        rdfs:label    "12 Built Environment and Design" ;
+        skos:broader  <http://vivo.deffopera.dk/ontology/osrap/nora-subject-area-technical-sciences> .
+
+<http://vivo.deffopera.dk/individual/category-for-2218>
+        rdfs:label    "18 Law and Legal Studies" ;
+        skos:broader  <http://vivo.deffopera.dk/ontology/osrap/nora-subject-area-social-sciences> .
+
+<http://vivo.deffopera.dk/individual/category-for-2221>
+        rdfs:label    "21 History and Archaeology" ;
+        skos:broader  <http://vivo.deffopera.dk/ontology/osrap/nora-subject-area-humanities> .
+
+<http://vivo.deffopera.dk/individual/category-for-2202>
+        rdfs:label    "02 Physical Sciences" ;
+        skos:broader  <http://vivo.deffopera.dk/ontology/osrap/nora-subject-area-natural-sciences> .
+
+<http://vivo.deffopera.dk/individual/category-for-2208>
+        rdfs:label    "08 Information and Computing Sciences" ;
+        skos:broader  <http://vivo.deffopera.dk/ontology/osrap/nora-subject-area-technical-sciences> .
+
+<http://vivo.deffopera.dk/individual/category-for-2211>
+        rdfs:label    "11 Medical and Health Sciences" ;
+        skos:broader  <http://vivo.deffopera.dk/ontology/osrap/nora-subject-area-health-sciences> .
+
+<http://vivo.deffopera.dk/individual/category-for-2217>
+        rdfs:label    "17 Psychology and Cognitive Sciences" ;
+        skos:broader  <http://vivo.deffopera.dk/ontology/osrap/nora-subject-area-social-sciences> .
+
+<http://vivo.deffopera.dk/individual/category-for-2220>
+        rdfs:label    "20 Language, Communication and Culture" ;
+        skos:broader  <http://vivo.deffopera.dk/ontology/osrap/nora-subject-area-humanities> .
+
+<http://vivo.deffopera.dk/individual/category-for-2201>
+        rdfs:label    "01 Mathematical Sciences" ;
+        skos:broader  <http://vivo.deffopera.dk/ontology/osrap/nora-subject-area-natural-sciences> .
+
+<http://vivo.deffopera.dk/individual/category-for-2207>
+        rdfs:label    "07 Agricultural and Veterinary Sciences" ;
+        skos:broader  <http://vivo.deffopera.dk/ontology/osrap/nora-subject-area-natural-sciences> .
+
+<http://vivo.deffopera.dk/individual/category-for-2210>
+        rdfs:label    "10 Technology" ;
+        skos:broader  <http://vivo.deffopera.dk/ontology/osrap/nora-subject-area-technical-sciences> .
+
+<http://vivo.deffopera.dk/individual/category-for-2216>
+        rdfs:label    "16 Studies in Human Society" ;
+        skos:broader  <http://vivo.deffopera.dk/ontology/osrap/nora-subject-area-social-sciences> .
+
+<http://vivo.deffopera.dk/individual/category-for-2206>
+        rdfs:label    "06 Biological Sciences" ;
+        skos:broader  <http://vivo.deffopera.dk/ontology/osrap/nora-subject-area-natural-sciences> .
+
+<http://vivo.deffopera.dk/individual/category-for-2215>
+        rdfs:label    "15 Commerce, Management, Tourism and Services" ;
+        skos:broader  <http://vivo.deffopera.dk/ontology/osrap/nora-subject-area-social-sciences> .

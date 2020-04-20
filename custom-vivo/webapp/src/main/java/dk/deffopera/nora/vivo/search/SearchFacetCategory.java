@@ -10,7 +10,6 @@ public class SearchFacetCategory extends LinkTemplateModel {
     
     public SearchFacetCategory(String label, ParamMap facetParams, long count) {
         this(label, facetParams, count, false);
-        new LinkTemplateModel()
     }
     
     public SearchFacetCategory(String label, ParamMap facetParams, long count, boolean selected) {

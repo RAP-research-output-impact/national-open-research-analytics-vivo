@@ -147,8 +147,6 @@
             <select name="sortField" onchange="this.form.submit()">
               <option <#if sortField?? && sortField = "sort_year_s|ASC">selected="selected"</#if> value="sort_year_s|ASC">year (ascending)</option>
               <option <#if sortField?? && sortField = "sort_year_s|DESC">selected="selected"</#if> value="sort_year_s|DESC">year (descending)</option>
-              <option <#if sortField?? && sortField = "nameLowercaseSingleValued|ASC">selected="selected"</#if> value="nameLowercaseSingleValued|ASC">title (ascending)</option>
-              <option <#if sortField?? && sortField = "nameLowercaseSingleValued|DESC">selected="selected"</#if> value="nameLowercaseSingleValued|DESC">title (descending)</option>
 	    </select>
 	    <#list sortFormHiddenFields as field>
 	      <#if field.name?? && (field.name != "sortField") && (field.name != "startIndex") && field.value??>

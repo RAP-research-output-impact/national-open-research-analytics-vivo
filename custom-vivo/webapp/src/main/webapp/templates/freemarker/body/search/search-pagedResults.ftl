@@ -4,18 +4,24 @@
 
 <script src="${urls.theme}/js/jquery.corner.js"></script>
 
+<#if typeCounts??>
+
 <div class="searchResultTypes">
 
   <#assign total = 0>
-  <#assign total = total + typeCounts.publications!0>
-  <#assign total = total + typeCounts.datasets!0>
-  <#assign total = total + typeCounts.grants!0>
-  <#assign total = total + typeCounts.patents!0>
-  <#assign total = total + typeCounts.clinical_trials!0>
+  <#list typeCounts as typeCount>
+    <#assign total = total + typeCount.count>
+  </#list>
 
   <a href="${urls.base}/search?searchMode=all">All (${total})</a>
-  
-  <a href="${urls.base}/search?classgroup=http%3A%2F%2Fvivoweb.org%2Fontology%23vitroClassGrouppublications">Publications (${typeCounts.publications!0})</a>
+ 
+  <#list typeCounts as typeCount>
+    <#if typeCount.count > 0>
+      <a href="${typeCount.url}"/search?>${typeCount.text} (${typeCount.count})</a>
+    <#else>
+      <span>${typeCount.text} (0)</span>
+    </#if>
+  </#list>
 
   <a href="${urls.base}/search?type=http%3A%2F%2Fvivoweb.org%2Fontology%2Fcore%23Dataset&facet_document-type_ss=http%3A%2F%2Fvivoweb.org%2Fontology%2Fcore%23Dataset">Datasets (${typeCounts.datasets!0})</a>
 
@@ -26,6 +32,8 @@
   <a href="${urls.base}/search?type=http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FERO_0000016">Clinical Trials (${typeCounts.clinical_trials!0})</a>
 
 </div> <!-- searchResultTypes -->
+
+</#if>
 
 <div class="contentsBrowseGroup">
     <#-- Refinement links -->

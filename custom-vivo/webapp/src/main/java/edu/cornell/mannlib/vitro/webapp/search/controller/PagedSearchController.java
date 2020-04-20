@@ -191,65 +191,68 @@ public class PagedSearchController extends FreemarkerHttpServlet {
 //                return doFailedSearch(badQueryMsg, queryText, format, vreq);
 //            }
 
+            
+            SearchEngine search = ApplicationUtils.instance().getSearchEngine();
+
+            // If we were talking directly to Solr, these first two queries
+            // could return only facets and not matching documents, but we 
+            // don't currently have that option through the VIVO search engine
+            // interface.
+            
             // Do a search query with the union facets also excluded from the
             // filtering so that we can get all possible results
-            SearchQuery query = getQuery(queryText, UNION_FACETS, UNION_FACETS, 
+            SearchQuery allRecordTypesQuery = getQuery(queryText, Arrays.asList(
+                    "facet_content-type_ss"), UNION_FACETS, 
                     hitsPerPage, startIndex, vreq);
-            SearchEngine search = ApplicationUtils.instance().getSearchEngine();
-            SearchResponse response = null;
+            SearchResponse allRecordTypesResponse = null;
+            
+            // Do a search query with the union facets also excluded from the
+            // filtering so that we can get all possible results
+            SearchQuery allOrgsQuery = getQuery(queryText, UNION_FACETS, UNION_FACETS, 
+                    hitsPerPage, startIndex, vreq);
+            SearchResponse allOrgsResponse = null;
+            
+            // Do the main query with the facet filters.
+            SearchQuery mainQuery = getQuery(queryText, Arrays.asList(""), UNION_FACETS, 
+                    hitsPerPage, startIndex, vreq);
+            search = ApplicationUtils.instance().getSearchEngine();
+            SearchResponse mainResponse = null;
 
             try {
-                response = search.query(query);
+                allRecordTypesResponse = search.query(allRecordTypesQuery);
+                allOrgsResponse = search.query(allOrgsQuery);
+                mainResponse = search.query(mainQuery);                
             } catch (Exception ex) {
                 String msg = makeBadSearchMessage(queryText, ex.getMessage(), vreq);
                 log.error("could not run search query",ex);
                 return doFailedSearch(msg, queryText, format, vreq);
             }
 
-            if (response == null) {
+            if (allRecordTypesResponse == null || allOrgsResponse == null 
+                    || mainResponse == null) {
                 log.error("Search response was null");
-                return doFailedSearch(I18n.text(vreq, "error_in_search_request"), queryText, format, vreq);
+                return doFailedSearch(I18n.text(
+                        vreq, "error_in_search_request"), queryText, format, vreq);
             }
             
             Map<String, Object> body = new HashMap<String, Object>();
             
             // Nora
-            body.put("typeCounts", getTypeCounts(vreq));
+            body.put("typeCounts", getTypeCounts(allRecordTypesResponse, vreq, queryText));
             String searchMode = getParamSearchMode(vreq);
             body.put(PARAM_SEARCHMODE, searchMode);
             List<SearchFacet> commonSearchFacets = getFacetLinks(
-                    NoraSearchFacets.getCommonSearchFacets(), vreq, response, queryText);
-            body.put("commonFacets", commonSearchFacets);                    
+                    NoraSearchFacets.getCommonSearchFacets(), vreq, allOrgsResponse, queryText); 
             if(!"all".equals(searchMode)) {
                 body.put("additionalFacets", getFacetLinks(
-                        NoraSearchFacets.getAdditionalSearchFacets(), vreq, response, queryText));
+                        NoraSearchFacets.getAdditionalSearchFacets(), vreq, mainResponse, queryText));
             }
             body.put("facetsAsText", NoraSearchFacets.getSearchFacetsAsText());
             body.put(PARAM_FACET_AS_TEXT, vreq.getParameter(PARAM_FACET_AS_TEXT));
             body.put(PARAM_FACET_TEXT_VALUE, vreq.getParameter(PARAM_FACET_TEXT_VALUE));
             body.put("noraQueryReduce", NoraQueryReduce(vreq, grpDao, vclassDao));
-
-            // Now do a query with the facet filters.
-            // TODO rework/refactor this 
-            query = getQuery(queryText, Arrays.asList(""), UNION_FACETS, 
-                    hitsPerPage, startIndex, vreq);
-            search = ApplicationUtils.instance().getSearchEngine();
-            response = null;
-
-            try {
-                response = search.query(query);
-            } catch (Exception ex) {
-                String msg = makeBadSearchMessage(queryText, ex.getMessage(), vreq);
-                log.error("could not run search query",ex);
-                return doFailedSearch(msg, queryText, format, vreq);
-            }
-
-            if (response == null) {
-                log.error("Search response was null");
-                return doFailedSearch(I18n.text(vreq, "error_in_search_request"), queryText, format, vreq);
-            }
             
-            SearchResultDocumentList docs = response.getResults();
+            SearchResultDocumentList docs = mainResponse.getResults();
             if (docs == null) {
                 log.error("Document list for a search was null");
                 return doFailedSearch(I18n.text(vreq, "error_in_search_request"), queryText,format, vreq);
@@ -262,7 +265,7 @@ public class PagedSearchController extends FreemarkerHttpServlet {
             }
             
             List<SearchFacet> filteredSearchFacets = getFacetLinks(
-                    NoraSearchFacets.getCommonSearchFacets(), vreq, response, queryText);
+                    NoraSearchFacets.getCommonSearchFacets(), vreq, mainResponse, queryText);
             // overlay the non-union facets with their new values
             List<SearchFacet> mergedFacets = new ArrayList<SearchFacet>(); 
             for(SearchFacet cf : commonSearchFacets) {
@@ -286,7 +289,7 @@ public class PagedSearchController extends FreemarkerHttpServlet {
                     String uri = doc.getStringValue(VitroSearchTermNames.URI);
                     Individual ind = iDao.getIndividualByURI(uri);
                     if(ind != null) {
-                      ind.setSearchSnippet( getSnippet(doc, response) );
+                      ind.setSearchSnippet( getSnippet(doc, mainResponse) );
                       individuals.add(ind);
                     }
                 } catch(Exception e) {
@@ -330,11 +333,11 @@ public class PagedSearchController extends FreemarkerHttpServlet {
             if( wasHtmlRequested ){
                 if ( !classGroupFilterRequested && !typeFilterRequested ) {
                     // Search request includes no ClassGroup and no type, so add ClassGroup search refinement links.
-                    body.put("classGroupLinks", getClassGroupsLinks(vreq, grpDao, docs, response, queryText));
+                    body.put("classGroupLinks", getClassGroupsLinks(vreq, grpDao, docs, mainResponse, queryText));
                 } else if ( classGroupFilterRequested && !typeFilterRequested ) {
                     // Search request is for a ClassGroup, so add rdf:type search refinement links
                     // but try to filter out classes that are subclasses
-                    body.put("classLinks", getVClassLinks(vreq, vclassDao, docs, response, queryText));
+                    body.put("classLinks", getVClassLinks(vreq, vclassDao, docs, mainResponse, queryText));
                     pagingLinkParams.put(PARAM_CLASSGROUP, classGroupParam);
                 } else {
                     //search request is for a class so there are no more refinements
@@ -411,29 +414,58 @@ public class PagedSearchController extends FreemarkerHttpServlet {
         return paramList;
     }
     
-    private Map<String, Integer> getTypeCounts(VitroRequest vreq) {
-        VClassGroupsForRequest cache = VClassGroupCache.getVClassGroups(vreq);
-        Map<String, List<String>> mode2types = new HashMap<String, List<String>>();
-        mode2types.put("publications", Arrays.asList(
-                "http://purl.org/ontology/bibo/AcademicArticle", 
-                "http://purl.org/ontology/bibo/Chapter", 
-                "http://vivoweb.org/ontology/core#ConferencePaper"));
-        mode2types.put("datasets", Arrays.asList("http://vivoweb.org/ontology/core#Dataset"));
-        mode2types.put("grants", Arrays.asList("http://vivoweb.org/ontology/core#Grant"));
-        mode2types.put("patents", Arrays.asList("http://purl.org/ontology/bibo/Patent"));
-        mode2types.put("clinical_trials", Arrays.asList("http://purl.obolibrary.org/obo/ERO_0000016"));
-        Map<String, Integer> countsForTemplate = new HashMap<String, Integer>();
-        for(String key : mode2types.keySet()) {
-            int total = 0;
-            for(String typeURI : mode2types.get(key)) {
-                VClass vclass = cache.getCachedVClass(typeURI);
-                if(vclass != null && vclass.getEntityCount() > 0) {
-                   total += vclass.getEntityCount();   
+    private List<SearchFacetCategory> getTypeCounts(
+            SearchResponse allRecordTypesResponse, VitroRequest vreq, 
+            String queryText) {
+        List<SearchFacetCategory> typeCounts = 
+                new ArrayList<SearchFacetCategory>();
+        List<SearchFacet> searchFacets = getFacetLinks(
+                NoraSearchFacets.getCommonSearchFacets(), vreq, 
+                allRecordTypesResponse, queryText);
+        for(SearchFacet f : searchFacets) {
+            if("facet_content-type_ss".equals(f.getFieldName())) {
+                for(String catName : Arrays.asList("publications", "datasets", 
+                        "grants", "patents", "clinical_trials")) {
+                    SearchFacetCategory cat = null;
+                    for(SearchFacetCategory catg : f.getCategories()) {
+                        if(catName.equals(catg.getText())) {
+                            cat = catg;
+                            break;
+                        }
+                    }                                      
+                    if(cat != null) {
+                        typeCounts.add(cat);
+                    } else {
+                        typeCounts.add(new SearchFacetCategory(
+                                catName, new ParamMap(), 0));
+                    }
                 }
+                break;
             }
-            countsForTemplate.put(key, total);
         }
-        return countsForTemplate;
+        return typeCounts;
+        
+//        VClassGroupsForRequest cache = VClassGroupCache.getVClassGroups(vreq);
+//        Map<String, List<String>> mode2types = new HashMap<String, List<String>>();
+//        mode2types.put("publications", Arrays.asList(
+//                "http://purl.org/ontology/bibo/AcademicArticle", 
+//                "http://purl.org/ontology/bibo/Chapter", 
+//                "http://vivoweb.org/ontology/core#ConferencePaper"));
+//        mode2types.put("datasets", Arrays.asList("http://vivoweb.org/ontology/core#Dataset"));
+//        mode2types.put("grants", Arrays.asList("http://vivoweb.org/ontology/core#Grant"));
+//        mode2types.put("patents", Arrays.asList("http://purl.org/ontology/bibo/Patent"));
+//        mode2types.put("clinical_trials", Arrays.asList("http://purl.obolibrary.org/obo/ERO_0000016"));
+//        Map<String, Integer> countsForTemplate = new HashMap<String, Integer>();
+//        for(String key : mode2types.keySet()) {
+//            int total = 0;
+//            for(String typeURI : mode2types.get(key)) {
+//                VClass vclass = cache.getCachedVClass(typeURI);
+//                if(vclass != null && vclass.getEntityCount() > 0) {
+//                   total += vclass.getEntityCount();   
+//                }
+//            }
+//            countsForTemplate.put(key, total);
+//        }
     }
 
 

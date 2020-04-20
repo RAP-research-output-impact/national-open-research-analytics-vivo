@@ -7,12 +7,11 @@
 <div class="searchResultTypes">
 
   <#assign total = 0>
-    <#assign total = total + typeCounts.publications!0>
-    <#assign total = total + typeCounts.datasets!0>
-    <#assign total = total + typeCounts.grants!0>
-    <#assign total = total + typeCounts.patents!0>
-    <#assign total = total + typeCounts.clinical_trials!0>
-  </#assign>
+  <#assign total = total + typeCounts.publications!0>
+  <#assign total = total + typeCounts.datasets!0>
+  <#assign total = total + typeCounts.grants!0>
+  <#assign total = total + typeCounts.patents!0>
+  <#assign total = total + typeCounts.clinical_trials!0>
 
   <a href="${urls.base}/search?searchMode=all">All (${total})</a>
   

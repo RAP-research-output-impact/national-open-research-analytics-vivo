@@ -43,7 +43,7 @@
         a             <http://vivo.deffopera.dk/ontology/osrap/NORASubjectArea> ;
 	rdfs:label    "Social Sciences" .
 
-<http://vivo.deffopera.dk/ontology/osrap/nora-subject-area-technical-sciences> 
+<http://vivo.deffopera.dk/ontology/osrap/nora-subject-area-humanities> 
         a             <http://vivo.deffopera.dk/ontology/osrap/NORASubjectArea> ;
 	rdfs:label    "Humanities" .
 

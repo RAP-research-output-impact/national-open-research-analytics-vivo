@@ -81,7 +81,7 @@ public class PagedSearchController extends FreemarkerHttpServlet {
     private static final String PARAM_CLASSGROUP = "classgroup";
     private static final String PARAM_RDFTYPE = "type";
     private static final String PARAM_SEARCHMODE = "searchMode";
-    private static final String PARAM_RECORD_TYPE = "param_content-type_ss";
+    private static final String PARAM_RECORD_TYPE = "facet_content-type_ss";
     private static final String PARAM_SORTFIELD = "sortField";
     // Nora make this field public
     public static final String PARAM_QUERY_TEXT = "querytext";

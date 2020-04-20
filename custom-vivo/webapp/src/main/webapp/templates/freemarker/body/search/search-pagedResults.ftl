@@ -6,6 +6,16 @@
 
 <div class="searchResultTypes">
 
+  <#assign total = 0>
+    <#assign total = total + ${typeCounts.publications!0}>
+    <#assign total = total + ${typeCounts.datasets!0}>
+    <#assign total = total + ${typeCounts.grants!0}>
+    <#assign total = total + ${typeCounts.patents!0}>
+    <#assign total = total + ${typeCounts.clinical_trials!0}>
+  </#assign>
+
+  <a href="${urls.base}/search?searchMode=all">All (${total})</a>
+  
   <a href="${urls.base}/search?classgroup=http%3A%2F%2Fvivoweb.org%2Fontology%23vitroClassGrouppublications">Publications (${typeCounts.publications!0})</a>
 
   <a href="${urls.base}/search?type=http%3A%2F%2Fvivoweb.org%2Fontology%2Fcore%23Dataset&facet_document-type_ss=http%3A%2F%2Fvivoweb.org%2Fontology%2Fcore%23Dataset">Datasets (${typeCounts.datasets!0})</a>

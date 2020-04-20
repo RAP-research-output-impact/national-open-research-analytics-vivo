@@ -21,6 +21,7 @@ public class NoraSearchFacets {
         commonSearchFacets.add(new SearchFacet("facet_hospital_ss", "Danish Hospitals"));
         commonSearchFacets.add(new SearchFacet("facet_organization_ss", "Other Organizations"));
         commonSearchFacets.add(new SearchFacet("facet_funder_ss", "Funders"));
+        commonSearchFacets.add(new SearchFacet("facet_main-subject-area_ss", "Main Subject Areas"));
         commonSearchFacets.add(new SearchFacet("facet_research-category_ss", "Subject Categories"));
             
         // Allow faceting by contributor by an appropriate request, but do 

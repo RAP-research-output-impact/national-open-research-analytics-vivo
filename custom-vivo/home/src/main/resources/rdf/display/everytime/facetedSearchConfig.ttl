@@ -566,6 +566,27 @@
         WHERE {
             ?uri vivo:hasSubjectArea ?for .
 	    ?for a <http://vivo.deffopera.dk/ontology/osrap/CategoryFOR> .
+	    ?for rdfs:label ?label .
+	    FILTER(REGEX(STR(?label), "^[0-9][0-9] "))
+        }
+    """ .
+
+:documentModifier_facet_main-subject-area
+    a   <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.SelectQueryDocumentModifier> ,
+            <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.DocumentModifier> ;
+    rdfs:label "Research category document modifier" ;
+    :hasTargetField "facet_main-subject-area_ss" ;
+    :hasTypeRestriction "http://purl.obolibrary.org/obo/IAO_0000030";
+    :hasTypeRestriction "http://vivoweb.org/ontology/core#Grant" ;
+    :hasTypeRestriction "http://purl.obolibrary.org/obo/ERO_0000016" ; # ClinicalTrial
+    :hasSelectQuery """
+	PREFIX vivo: <http://vivoweb.org/ontology/core#>
+	PREFIX bibo: <http://purl.org/ontology/bibo/> 
+        SELECT DISTINCT ?subjectArea 
+        WHERE {
+            ?uri vivo:hasSubjectArea ?for .
+	    ?for skos:broader ?subjectArea .
+	    ?subjectArea a <http://vivo.deffopera.dk/ontology/osrap/NORASubjectArea> .
         }
     """ .
 

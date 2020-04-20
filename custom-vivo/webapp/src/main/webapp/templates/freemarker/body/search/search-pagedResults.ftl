@@ -16,20 +16,12 @@
   <a href="${urls.base}/search?searchMode=all">All (${total})</a>
  
   <#list typeCounts as typeCount>
-    <#if typeCount.count > 0>
+    <#if (typeCount.count > 0)>
       <a href="${typeCount.url}"/search?>${typeCount.text} (${typeCount.count})</a>
     <#else>
       <span>${typeCount.text} (0)</span>
     </#if>
   </#list>
-
-  <a href="${urls.base}/search?type=http%3A%2F%2Fvivoweb.org%2Fontology%2Fcore%23Dataset&facet_document-type_ss=http%3A%2F%2Fvivoweb.org%2Fontology%2Fcore%23Dataset">Datasets (${typeCounts.datasets!0})</a>
-
-  <a href="${urls.base}/search?type=http%3A%2F%2Fvivoweb.org%2Fontology%2Fcore%23Grant">Grants (${typeCounts.grants!0})</a>
-
-  <a href="${urls.base}/search?type=http%3A%2F%2Fpurl.org%2Fontology%2Fbibo%2FPatent">Patents (${typeCounts.patents!0})</a>
-
-  <a href="${urls.base}/search?type=http%3A%2F%2Fpurl.obolibrary.org%2Fobo%2FERO_0000016">Clinical Trials (${typeCounts.clinical_trials!0})</a>
 
 </div> <!-- searchResultTypes -->
 

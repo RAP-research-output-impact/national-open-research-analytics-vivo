@@ -442,7 +442,7 @@ public class PagedSearchController extends FreemarkerHttpServlet {
                             for(int i = 0; i < contentTypes.length; i++) {
                                 String[] values = contentTypes[i].split(";;");
                                 for(int j = 0; j < values.length; j++) {
-                                    if(catName.equals(values[j]) || catName.equals(values[j])) {
+                                    if(catName.equals(values[j]) || catKey.equals(values[j])) {
                                         selected = true;
                                     }
                                 }
@@ -457,7 +457,7 @@ public class PagedSearchController extends FreemarkerHttpServlet {
                             url = url.substring(contextPath.length());
                         }
                         SearchFacetCategory catClone = new SearchFacetCategory(
-                                catName, cat.getUrl(), cat.getCount(), selected);                          
+                                catName, url, cat.getCount(), selected);                          
                         typeCounts.add(catClone);
                     } else {
                         typeCounts.add(new SearchFacetCategory(

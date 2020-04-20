@@ -93,7 +93,7 @@ public class PagedSearchController extends FreemarkerHttpServlet {
     // within a single facet. 
     // E.g. (year=2014 or year=2015) AND (university=DTU OR hospital=Rigshospitalet OR org=Red Cross)
     public static final List<String> UNION_FACETS = Arrays.asList(
-            "facet_university_ss", "facet_hospital_ss", "facet_organization_ss");                
+            "facet_university_ss", "facet_hospital_ss", "facet_organization_ss", "facet_year_ss");                
 
 
     protected static final Map<Format,Map<Result,String>> templateTable;

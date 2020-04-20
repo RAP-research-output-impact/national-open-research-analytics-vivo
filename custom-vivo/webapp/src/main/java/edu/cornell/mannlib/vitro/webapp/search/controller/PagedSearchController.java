@@ -264,16 +264,19 @@ public class PagedSearchController extends FreemarkerHttpServlet {
             List<SearchFacet> filteredSearchFacets = getFacetLinks(
                     NoraSearchFacets.getCommonSearchFacets(), vreq, response, queryText);
             // overlay the non-union facets with their new values
-            for(int i = 0; i < commonSearchFacets.size(); i++) {
-                SearchFacet cf = commonSearchFacets.get(i);
-                if(!UNION_FACETS.contains(cf.getFieldName())) {
+            List<SearchFacet> mergedFacets = new ArrayList<SearchFacet>(); 
+            for(SearchFacet cf : commonSearchFacets) {
+                if(UNION_FACETS.contains(cf.getFieldName())) {
+                    mergedFacets.add(cf);
+                } else {
                     for(SearchFacet filtered : filteredSearchFacets) {
                         if(filtered.getFieldName().equals(cf.getFieldName())) {
-                            commonSearchFacets.add(i, filtered);
+                            mergedFacets.add(filtered);
                         }
                     }
                 }
-            }       
+            }
+            body.put("commonFacets", mergedFacets);
 
             List<Individual> individuals = new ArrayList<Individual>(docs.size());
             Iterator<SearchResultDocument> docIter = docs.iterator();

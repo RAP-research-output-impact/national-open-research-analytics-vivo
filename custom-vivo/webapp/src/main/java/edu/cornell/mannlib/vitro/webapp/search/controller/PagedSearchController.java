@@ -561,7 +561,7 @@ public class PagedSearchController extends FreemarkerHttpServlet {
                 ParamMap facetParams = NoraGetQueryParamMap(request);
                 facetParams.put(PagedSearchController.PARAM_QUERY_TEXT, querytext);
                 String val = facetParams.get(ff.getName());
-                if ((val != null) && (!StringUtils.isEmpty(val))) {
+                if (!("facet_content-type_ss".equals(ff.getName())) && (val != null) && (!StringUtils.isEmpty(val))) {
                     facetParams.put(ff.getName(), val + ";;" + name);
                 } else {
                     facetParams.put(ff.getName(), name);
@@ -885,7 +885,7 @@ public class PagedSearchController extends FreemarkerHttpServlet {
                     StringBuilder builder = new StringBuilder();
                     for (String val : parameterValue.split(";;")) {
                         if(builder.length() > 0) {
-                            builder.append(" OR ");
+                            builder.append(" AND ");
                         }
                         builder.append(parameterName + ":\"" + val + "\"");
                     }

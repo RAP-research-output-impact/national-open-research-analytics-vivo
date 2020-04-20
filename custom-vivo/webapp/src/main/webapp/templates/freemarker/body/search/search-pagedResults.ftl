@@ -13,11 +13,15 @@
     <#assign total = total + typeCount.count>
   </#list>
 
-  <a href="${urls.base}/search?searchMode=all">All (${total})</a>
+  <#if allRecordsSelected?? && allRecordsSelected>
+    <a href="${urls.base}/search?searchMode=all"><strong>All records (${total!0})</strong></a>
+  <#else>
+    <a href="${urls.base}/search?searchMode=all">All records (${total!0})</a>
+  </#if>
  
   <#list typeCounts as typeCount>
     <#if (typeCount.count > 0) && typeCount.selected>
-      <a href="${typeCount.url}"/search?><strong>${typeCount.text}</strong> (${typeCount.count})</a>
+      <a href="${typeCount.url}"/search?><strong>${typeCount.text} (${typeCount.count}) </strong></a>
     <#elseif (typeCount.count > 0) && (!typeCount.selected)>
       <a href="${typeCount.url}"/search?>${typeCount.text} (${typeCount.count})</a>
     <#else>

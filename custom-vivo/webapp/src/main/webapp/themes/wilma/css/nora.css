@@ -48,7 +48,7 @@ footer {
 #nora-search-text {
   width: 20em;
 }
-.searchResultTypes a {
+.searchResultTypes a, span {
   margin-right: 1em;
 }
 

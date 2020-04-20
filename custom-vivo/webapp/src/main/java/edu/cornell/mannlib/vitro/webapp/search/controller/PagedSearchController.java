@@ -235,23 +235,6 @@ public class PagedSearchController extends FreemarkerHttpServlet {
                         vreq, "error_in_search_request"), queryText, format, vreq);
             }
             
-            Map<String, Object> body = new HashMap<String, Object>();
-            
-            // Nora
-            body.put("typeCounts", getTypeCounts(allRecordTypesResponse, vreq, queryText));
-            String searchMode = getParamSearchMode(vreq);
-            body.put(PARAM_SEARCHMODE, searchMode);
-            List<SearchFacet> commonSearchFacets = getFacetLinks(
-                    NoraSearchFacets.getCommonSearchFacets(), vreq, allOrgsResponse, queryText); 
-            if(!"all".equals(searchMode)) {
-                body.put("additionalFacets", getFacetLinks(
-                        NoraSearchFacets.getAdditionalSearchFacets(), vreq, mainResponse, queryText));
-            }
-            body.put("facetsAsText", NoraSearchFacets.getSearchFacetsAsText());
-            body.put(PARAM_FACET_AS_TEXT, vreq.getParameter(PARAM_FACET_AS_TEXT));
-            body.put(PARAM_FACET_TEXT_VALUE, vreq.getParameter(PARAM_FACET_TEXT_VALUE));
-            body.put("noraQueryReduce", NoraQueryReduce(vreq, grpDao, vclassDao));
-            
             SearchResultDocumentList docs = mainResponse.getResults();
             if (docs == null) {
                 log.error("Document list for a search was null");
@@ -263,6 +246,28 @@ public class PagedSearchController extends FreemarkerHttpServlet {
             if ( hitCount < 1 ) {
                 return doNoHits(queryText, format, vreq);
             }
+            
+            Map<String, Object> body = new HashMap<String, Object>();
+            
+            // Nora
+            body.put("typeCounts", getTypeCounts(allRecordTypesResponse, vreq, queryText));
+            int totalEntities = getTotalEntities(vreq);
+            body.put("totalEntities", totalEntities);
+            if(totalEntities == hitCount) {
+                body.put("allRecordsSelected", true);
+            }
+            String searchMode = getParamSearchMode(vreq);
+            body.put(PARAM_SEARCHMODE, searchMode);
+            List<SearchFacet> commonSearchFacets = getFacetLinks(
+                    NoraSearchFacets.getCommonSearchFacets(), vreq, allOrgsResponse, queryText); 
+            if(!"all".equals(searchMode)) {
+                body.put("additionalFacets", getFacetLinks(
+                        NoraSearchFacets.getAdditionalSearchFacets(), vreq, mainResponse, queryText));
+            }
+            body.put("facetsAsText", NoraSearchFacets.getSearchFacetsAsText());
+            body.put(PARAM_FACET_AS_TEXT, vreq.getParameter(PARAM_FACET_AS_TEXT));
+            body.put(PARAM_FACET_TEXT_VALUE, vreq.getParameter(PARAM_FACET_TEXT_VALUE));
+            body.put("noraQueryReduce", NoraQueryReduce(vreq, grpDao, vclassDao));            
             
             List<SearchFacet> filteredSearchFacets = getFacetLinks(
                     NoraSearchFacets.getCommonSearchFacets(), vreq, mainResponse, queryText);
@@ -468,30 +473,32 @@ public class PagedSearchController extends FreemarkerHttpServlet {
             }
         }
         return typeCounts;
-        
-//        VClassGroupsForRequest cache = VClassGroupCache.getVClassGroups(vreq);
-//        Map<String, List<String>> mode2types = new HashMap<String, List<String>>();
-//        mode2types.put("publications", Arrays.asList(
-//                "http://purl.org/ontology/bibo/AcademicArticle", 
-//                "http://purl.org/ontology/bibo/Chapter", 
-//                "http://vivoweb.org/ontology/core#ConferencePaper"));
-//        mode2types.put("datasets", Arrays.asList("http://vivoweb.org/ontology/core#Dataset"));
-//        mode2types.put("grants", Arrays.asList("http://vivoweb.org/ontology/core#Grant"));
-//        mode2types.put("patents", Arrays.asList("http://purl.org/ontology/bibo/Patent"));
-//        mode2types.put("clinical_trials", Arrays.asList("http://purl.obolibrary.org/obo/ERO_0000016"));
-//        Map<String, Integer> countsForTemplate = new HashMap<String, Integer>();
-//        for(String key : mode2types.keySet()) {
-//            int total = 0;
-//            for(String typeURI : mode2types.get(key)) {
-//                VClass vclass = cache.getCachedVClass(typeURI);
-//                if(vclass != null && vclass.getEntityCount() > 0) {
-//                   total += vclass.getEntityCount();   
-//                }
-//            }
-//            countsForTemplate.put(key, total);
-//        }
     }
-
+    
+    private int getTotalEntities(VitroRequest vreq) {
+        VClassGroupsForRequest cache = VClassGroupCache.getVClassGroups(vreq);
+        Map<String, List<String>> mode2types = new HashMap<String, List<String>>();
+        mode2types.put("publications", Arrays.asList(
+                "http://purl.org/ontology/bibo/AcademicArticle", 
+                "http://purl.org/ontology/bibo/Chapter", 
+                "http://vivoweb.org/ontology/core#ConferencePaper"));
+        mode2types.put("datasets", Arrays.asList("http://vivoweb.org/ontology/core#Dataset"));
+        mode2types.put("grants", Arrays.asList("http://vivoweb.org/ontology/core#Grant"));
+        mode2types.put("patents", Arrays.asList("http://purl.org/ontology/bibo/Patent"));
+        mode2types.put("clinical_trials", Arrays.asList("http://purl.obolibrary.org/obo/ERO_0000016"));
+        int total = 0;
+        //      Map<String, Integer> countsForTemplate = new HashMap<String, Integer>();
+        for(String key : mode2types.keySet()) {
+            for(String typeURI : mode2types.get(key)) {
+                VClass vclass = cache.getCachedVClass(typeURI);
+                if(vclass != null && vclass.getEntityCount() > 0) {
+                    total += vclass.getEntityCount();   
+                }
+            }
+            //        countsForTemplate.put(key, total);
+        }
+        return total;
+    }
 
     private int getHitsPerPage(VitroRequest vreq) {
         int hitsPerPage = DEFAULT_HITS_PER_PAGE;

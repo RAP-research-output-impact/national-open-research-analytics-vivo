@@ -265,7 +265,8 @@ SELECT ?researchCategory ?researchCategoryName
 WHERE {
   ?individualURI vivo:hasSubjectArea ?researchCategory .
   ?researchCategory a <http://vivo.deffopera.dk/ontology/osrap/CategoryFOR> .
-  ?researchCategory rdfs:label ?researchCategoryName 
+  ?researchCategory rdfs:label ?researchCategoryName .
+  FILTER(REGEX(STR(?researchCategoryName), "^[0-9][0-9] "))
 }
     """ ;                
     <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#saveToVar>

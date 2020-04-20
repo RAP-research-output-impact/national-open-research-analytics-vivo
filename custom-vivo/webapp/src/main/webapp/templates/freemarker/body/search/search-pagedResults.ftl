@@ -16,7 +16,9 @@
   <a href="${urls.base}/search?searchMode=all">All (${total})</a>
  
   <#list typeCounts as typeCount>
-    <#if (typeCount.count > 0)>
+    <#if (typeCount.count > 0) && typeCount.selected>
+      <a href="${typeCount.url}"/search?><strong>${typeCount.text}</strong> (${typeCount.count})</a>
+    <#elseif (typeCount.count > 0) && (!typeCount.selected)>
       <a href="${typeCount.url}"/search?>${typeCount.text} (${typeCount.count})</a>
     <#else>
       <span>${typeCount.text} (0)</span>

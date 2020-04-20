@@ -5,12 +5,24 @@ import edu.cornell.mannlib.vitro.webapp.web.templatemodels.LinkTemplateModel;
 
 public class SearchFacetCategory extends LinkTemplateModel {
 
-    private boolean selected = false;
-    long count;
+    private final boolean selected;
+    private final long count;
     
     public SearchFacetCategory(String label, ParamMap facetParams, long count) {
+        this(label, facetParams, count, false);
+        new LinkTemplateModel()
+    }
+    
+    public SearchFacetCategory(String label, ParamMap facetParams, long count, boolean selected) {
         super(label, "/search", facetParams);
         this.count = count;
+        this.selected = selected;
+    }
+    
+    public SearchFacetCategory(String label, String path, long count, boolean selected) {
+        super(label, path);
+        this.count = count;
+        this.selected = selected;
     }
     
     public long getCount() {

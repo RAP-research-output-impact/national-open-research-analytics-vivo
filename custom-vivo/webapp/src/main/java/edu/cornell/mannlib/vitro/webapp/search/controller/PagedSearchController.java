@@ -424,17 +424,31 @@ public class PagedSearchController extends FreemarkerHttpServlet {
                 allRecordTypesResponse, queryText);
         for(SearchFacet f : searchFacets) {
             if("facet_content-type_ss".equals(f.getFieldName())) {
-                for(String catName : Arrays.asList("publications", "datasets", 
-                        "grants", "patents", "clinical_trials")) {
+                for(String catName : Arrays.asList("Publications", "Datasets", 
+                        "Grants", "Patents", "Clinical trials")) {
+                    String catKey = catName.toLowerCase().replaceAll(" ", "_");
                     SearchFacetCategory cat = null;
                     for(SearchFacetCategory catg : f.getCategories()) {
-                        if(catName.equals(catg.getText())) {
+                        if(catKey.equals(catg.getText()) || catName.equals(catg.getText())) {
                             cat = catg;
                             break;
                         }
                     }                                      
                     if(cat != null) {
-                        typeCounts.add(cat);
+                        boolean selected = false;
+                        String[] contentTypes = vreq.getParameterValues(
+                                "facet_content-type_ss");
+                        for(int i = 0; i < contentTypes.length; i++) {
+                            String[] values = contentTypes[i].split(";;");
+                            for(int j = 0; j < values.length; j++) {
+                                if(catName.equals(values[j]) || catName.equals(values[j])) {
+                                    selected = true;
+                                }
+                            }
+                        }
+                        SearchFacetCategory catClone = new SearchFacetCategory(
+                                catName, cat.getUrl(), cat.getCount(), selected);                          
+                        typeCounts.add(catClone);
                     } else {
                         typeCounts.add(new SearchFacetCategory(
                                 catName, new ParamMap(), 0));

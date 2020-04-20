@@ -81,6 +81,7 @@ public class PagedSearchController extends FreemarkerHttpServlet {
     private static final String PARAM_CLASSGROUP = "classgroup";
     private static final String PARAM_RDFTYPE = "type";
     private static final String PARAM_SEARCHMODE = "searchMode";
+    private static final String PARAM_RECORD_TYPE = "param_content-type_ss";
     private static final String PARAM_SORTFIELD = "sortField";
     // Nora make this field public
     public static final String PARAM_QUERY_TEXT = "querytext";
@@ -850,22 +851,31 @@ public class PagedSearchController extends FreemarkerHttpServlet {
          return typeParam;
     }
     
+    private static String getParamRecordType(VitroRequest vreq) {
+        return vreq.getParameter(PARAM_RECORD_TYPE);
+    }
+    
     protected static String getParamSearchMode(VitroRequest vreq) {
         String searchModeParam = vreq.getParameter(PARAM_SEARCHMODE);
         if(searchModeParam != null) {
             return searchModeParam;
         } else if("http://vivoweb.org/ontology#vitroClassGrouppublications".equals(
-                getParamClassgroup(vreq))) {
+                getParamClassgroup(vreq)) || "publications".equals(getParamRecordType(vreq))) {
             return "publications";
-        } else if("http://vivoweb.org/ontology/core#Dataset".equals(getParamType(vreq))) {
+        } else if("http://vivoweb.org/ontology/core#Dataset".equals(
+                getParamType(vreq)) || "datasets".equals(getParamRecordType(vreq))) {
             return "datasets";
-        } else if("http://vivoweb.org/ontology/core#Grant".equals(getParamType(vreq))) {
+        } else if("http://vivoweb.org/ontology/core#Grant".equals(getParamType(
+                vreq)) || "grants".equals(getParamRecordType(vreq))) {
             return "grants";
-        } else if("http://purl.org/ontology/bibo/Patent".equals(getParamType(vreq))) {
+        } else if("http://purl.org/ontology/bibo/Patent".equals(getParamType(
+                vreq)) || "publications".equals(getParamRecordType(vreq))) {
             return "patents";
-        } else if("http://purl.obolibrary.org/obo/ERO_0000016".equals(getParamType(vreq))) {
+        } else if("http://purl.obolibrary.org/obo/ERO_0000016".equals(
+                getParamType(vreq)) || "clinical_trials".equals(getParamRecordType(vreq))) {
             return "clinical_trials";
-        } else if(OWL.Thing.getURI().equals(getParamType(vreq))) {
+        } else if(OWL.Thing.getURI().equals(getParamType(vreq)) 
+                || (getParamRecordType(vreq) == null)) {
             //(getParamClassgroup(vreq) == null && getParamType(vreq) == null){
             return "all";
         } else {

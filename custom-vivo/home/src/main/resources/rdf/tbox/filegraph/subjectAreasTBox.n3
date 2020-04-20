@@ -28,6 +28,7 @@
 @prefix obo:   <http://purl.obolibrary.org/obo/> .
 
 <http://vivo.deffopera.dk/ontology/osrap/NORASubjectArea> 
+        a owl:Class ;
         rdfs:subClassOf skos:Concept ;
 	rdfs:label    "NORA Subject Area" .
 

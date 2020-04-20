@@ -87,6 +87,14 @@ public class PagedSearchController extends FreemarkerHttpServlet {
     public static final String FACET_FIELD_PREFIX = "facet_";
     public static final String PARAM_FACET_AS_TEXT = "facetAsText";
     public static final String PARAM_FACET_TEXT_VALUE = "facetTextValue";
+    
+    // Treat these facets differently, where values are unioned across the 
+    // different facets.  For the remaining facets, union only the values
+    // within a single facet. 
+    // E.g. (year=2014 or year=2015) AND (university=DTU OR hospital=Rigshospitalet OR org=Red Cross)
+    public static final List<String> UNION_FACETS = Arrays.asList(
+            "facet_university_ss", "facet_hospital_ss", "facet_organization_ss");                
+
 
     protected static final Map<Format,Map<Result,String>> templateTable;
 
@@ -183,11 +191,10 @@ public class PagedSearchController extends FreemarkerHttpServlet {
 //                return doFailedSearch(badQueryMsg, queryText, format, vreq);
 //            }
 
-            boolean facetFields = true;
-
-            // use the facet-filter-less query to get the full list of possible facets,
-            // so that we can do unions instead of intersections
-            SearchQuery query = getQuery(!facetFields, queryText, hitsPerPage, startIndex, vreq);
+            // Do a search query with the union facets also excluded from the
+            // filtering so that we can get all possible results
+            SearchQuery query = getQuery(queryText, UNION_FACETS, UNION_FACETS, 
+                    hitsPerPage, startIndex, vreq);
             SearchEngine search = ApplicationUtils.instance().getSearchEngine();
             SearchResponse response = null;
 
@@ -210,8 +217,9 @@ public class PagedSearchController extends FreemarkerHttpServlet {
             body.put("typeCounts", getTypeCounts(vreq));
             String searchMode = getParamSearchMode(vreq);
             body.put(PARAM_SEARCHMODE, searchMode);
-            body.put("commonFacets", getFacetLinks(
-                    NoraSearchFacets.getCommonSearchFacets(), vreq, response, queryText));
+            List<SearchFacet> commonSearchFacets = getFacetLinks(
+                    NoraSearchFacets.getCommonSearchFacets(), vreq, response, queryText);
+            body.put("commonFacets", commonSearchFacets);                    
             if(!"all".equals(searchMode)) {
                 body.put("additionalFacets", getFacetLinks(
                         NoraSearchFacets.getAdditionalSearchFacets(), vreq, response, queryText));
@@ -223,7 +231,8 @@ public class PagedSearchController extends FreemarkerHttpServlet {
 
             // Now do a query with the facet filters.
             // TODO rework/refactor this 
-            query = getQuery(facetFields, queryText, hitsPerPage, startIndex, vreq);
+            query = getQuery(queryText, Arrays.asList(""), UNION_FACETS, 
+                    hitsPerPage, startIndex, vreq);
             search = ApplicationUtils.instance().getSearchEngine();
             response = null;
 
@@ -251,6 +260,20 @@ public class PagedSearchController extends FreemarkerHttpServlet {
             if ( hitCount < 1 ) {
                 return doNoHits(queryText, format, vreq);
             }
+            
+            List<SearchFacet> filteredSearchFacets = getFacetLinks(
+                    NoraSearchFacets.getCommonSearchFacets(), vreq, response, queryText);
+            // overlay the non-union facets with their new values
+            for(int i = 0; i < commonSearchFacets.size(); i++) {
+                SearchFacet cf = commonSearchFacets.get(i);
+                if(!UNION_FACETS.contains(cf.getFieldName())) {
+                    for(SearchFacet filtered : filteredSearchFacets) {
+                        if(filtered.getFieldName().equals(cf.getFieldName())) {
+                            commonSearchFacets.add(i, filtered);
+                        }
+                    }
+                }
+            }       
 
             List<Individual> individuals = new ArrayList<Individual>(docs.size());
             Iterator<SearchResultDocument> docIter = docs.iterator();
@@ -609,7 +632,15 @@ public class PagedSearchController extends FreemarkerHttpServlet {
         return text.toString();
     }
 
-    private SearchQuery getQuery(boolean includeFacetFields, String queryText, int hitsPerPage, int startIndex, VitroRequest vreq) {
+    private SearchQuery getQuery(String queryText, List<String> excludeFacets, 
+            List<String> unionFacets,  int hitsPerPage, int startIndex, 
+            VitroRequest vreq) {
+        if(excludeFacets == null) {
+            excludeFacets = new ArrayList<String>();
+        }
+        if(unionFacets == null) {
+            excludeFacets = new ArrayList<String>();
+        }
         // Nora: AND in search terms for specific "facet as text" field
         String facetAsText = vreq.getParameter(PARAM_FACET_AS_TEXT);
         if(facetAsText != null) {
@@ -709,9 +740,7 @@ public class PagedSearchController extends FreemarkerHttpServlet {
                 query.addFacetFields(facet.getFieldName()).setFacetLimit(-1);
             }
         }
-        if(includeFacetFields) {
-            addNoraFacetFields(query, vreq);
-        }
+        addNoraFacetFields(query, excludeFacets, unionFacets, vreq);
         log.debug("Query = " + query.toString());
         return query;
     }
@@ -778,19 +807,17 @@ public class PagedSearchController extends FreemarkerHttpServlet {
         }
     }
 
-    protected static void addNoraFacetFields(SearchQuery query, VitroRequest vreq) {       
+    protected static void addNoraFacetFields(SearchQuery query, 
+            List<String> excludeFacets, List<String> unionFacets, VitroRequest vreq) {       
         
         ParamMap facetParams = getFacetParamMap(vreq);
-        
-        // Treat these facets differently, where values are unioned across the 
-        // different facets.  For the remaining facets, union only the values
-        // within a single facet. 
-        // E.g. (year=2014 or year=2015) AND (university=DTU OR hospital=Rigshospitalet OR org=Red Cross)
-        List<String> unionFacets = Arrays.asList(
-                "facet_university_ss", "facet_hospital_ss", "facet_organization_ss");                
-        
+                
         // regular facet behavior
         for(String parameterName : facetParams.keySet()) {
+            if(excludeFacets.contains(parameterName)) {
+                // skip the excluded facet
+                continue;
+            }
             String parameterValue = facetParams.get(parameterName);
             if(!parameterValue.isEmpty() && !unionFacets.contains(parameterName)) {
                 if (parameterValue.contains(";;")) {

@@ -561,7 +561,8 @@
     :hasTypeRestriction "http://purl.obolibrary.org/obo/ERO_0000016" ; # ClinicalTrial
     :hasSelectQuery """
 	PREFIX vivo: <http://vivoweb.org/ontology/core#>
-	PREFIX bibo: <http://purl.org/ontology/bibo/> 
+	PREFIX bibo: <http://purl.org/ontology/bibo/>
+	PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
         SELECT DISTINCT ?for
         WHERE {
             ?uri vivo:hasSubjectArea ?for .

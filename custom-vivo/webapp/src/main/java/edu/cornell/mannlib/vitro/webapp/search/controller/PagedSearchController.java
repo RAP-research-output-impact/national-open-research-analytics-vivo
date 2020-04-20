@@ -869,7 +869,7 @@ public class PagedSearchController extends FreemarkerHttpServlet {
                 vreq)) || "grants".equals(getParamRecordType(vreq))) {
             return "grants";
         } else if("http://purl.org/ontology/bibo/Patent".equals(getParamType(
-                vreq)) || "publications".equals(getParamRecordType(vreq))) {
+                vreq)) || "patents".equals(getParamRecordType(vreq))) {
             return "patents";
         } else if("http://purl.obolibrary.org/obo/ERO_0000016".equals(
                 getParamType(vreq)) || "clinical_trials".equals(getParamRecordType(vreq))) {

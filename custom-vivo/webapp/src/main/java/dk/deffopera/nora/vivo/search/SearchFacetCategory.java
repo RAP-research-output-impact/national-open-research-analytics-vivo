@@ -28,7 +28,7 @@ public class SearchFacetCategory extends LinkTemplateModel {
         return this.count;
     }
     
-    public boolean selected() {
+    public boolean isSelected() {
         return this.selected;
     }
     

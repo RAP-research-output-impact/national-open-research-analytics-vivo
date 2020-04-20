@@ -18,7 +18,7 @@ public class SearchFacetCategory extends LinkTemplateModel {
         this.selected = selected;
     }
     
-    public SearchFacetCategory(String label, String path, long count, boolean selected) {
+    public SearchFacetCategory(String label, String path, long count, boolean selected) {        
         super(label, path);
         this.count = count;
         this.selected = selected;

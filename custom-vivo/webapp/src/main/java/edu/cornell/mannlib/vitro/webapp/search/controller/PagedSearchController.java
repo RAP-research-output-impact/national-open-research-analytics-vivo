@@ -438,13 +438,23 @@ public class PagedSearchController extends FreemarkerHttpServlet {
                         boolean selected = false;
                         String[] contentTypes = vreq.getParameterValues(
                                 "facet_content-type_ss");
-                        for(int i = 0; i < contentTypes.length; i++) {
-                            String[] values = contentTypes[i].split(";;");
-                            for(int j = 0; j < values.length; j++) {
-                                if(catName.equals(values[j]) || catName.equals(values[j])) {
-                                    selected = true;
+                        if(contentTypes != null) {
+                            for(int i = 0; i < contentTypes.length; i++) {
+                                String[] values = contentTypes[i].split(";;");
+                                for(int j = 0; j < values.length; j++) {
+                                    if(catName.equals(values[j]) || catName.equals(values[j])) {
+                                        selected = true;
+                                    }
                                 }
                             }
+                        }
+                        String url = cat.getUrl();
+                        // The LinkTemplateModel will happily prepend the context path to something
+                        // that already starts with the context path, making it impossible
+                        // to clone a SearchFacetCategory unless we do this trickery.
+                        String contextPath = UrlBuilder.getUrl("/");
+                        if(url.startsWith(contextPath)) {
+                            url = url.substring(contextPath.length());
                         }
                         SearchFacetCategory catClone = new SearchFacetCategory(
                                 catName, cat.getUrl(), cat.getCount(), selected);                          

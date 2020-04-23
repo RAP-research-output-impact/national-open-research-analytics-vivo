@@ -44,7 +44,7 @@ CONSTRUCT {
     ?x g:authors ?author .
     ?author g:authorRank ?position .
     OPTIONAL { ?author g:corresponding ?corresponding . BIND(true AS ?correspondingAuthor) }
-    ?author g:affiliations ?affiliation .
+    OPTIONAL { ?author g:affiliations ?affiliation }
     OPTIONAL {
       ?author g:researcher_id ?researcherId 
     }

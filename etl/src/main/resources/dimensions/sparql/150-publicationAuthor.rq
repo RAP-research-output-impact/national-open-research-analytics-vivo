@@ -36,7 +36,7 @@ CONSTRUCT {
 } WHERE {
     ?x a foaf:Person .
     OPTIONAL { ?x g:first_name ?firstName }
-    OPTIONAL { ?x g:orcid ?orcid . BIND(IRI(CONCAT(STR(abox:), "orcid-", SUBSTR(REPLACE(STR(?orcid), "[\\[\\]']", ""), 1, 19) )) AS ?orcidId) }    
+    OPTIONAL { ?x g:orcid ?orcid . BIND(IRI(CONCAT("https://orcid.org/", SUBSTR(REPLACE(STR(?orcid), "[\\[\\]']", ""), 1, 19) )) AS ?orcidId) }    
     ?x g:last_name ?lastName .
     BIND(IRI(CONCAT(STR(?x), "-vcard")) AS ?vcard)
     BIND(IRI(CONCAT(STR(?x), "-vcard-name")) AS ?name)

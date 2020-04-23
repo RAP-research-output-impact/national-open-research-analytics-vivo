@@ -213,7 +213,6 @@ public class DimensionsConnector extends ConnectorDataSource
                 if(meta.has("matchingstatus")) {
                     jsonObj.put("matchingstatus", meta.getString("matchingstatus"));    
                 }
-                //log.info(jsonObj.toString(2));
                 JSONArray authorAffiliations = jsonObj.getJSONArray("author_affiliations");
                 List<String> affiliationGrids = new ArrayList<String>(); 
                 for(int aai = 0; aai < authorAffiliations.length(); aai++) {
@@ -239,10 +238,7 @@ public class DimensionsConnector extends ConnectorDataSource
                                     || hgrids.values().contains(whoGrid))) {                        
                         //log.info("***** Grid only from who: " + whoGrid);
                     }
-                }
-                if(log.isDebugEnabled()) {
-                    log.debug(jsonObj.toString(2));
-                }
+                }                         
                 try {                            
                     JSONArray authors = jsonObj.getJSONArray("authors");
                     for(int authi = 0; authi < authors.length(); authi++) {
@@ -253,6 +249,10 @@ public class DimensionsConnector extends ConnectorDataSource
                     log.info(jsonObj.toString(2));
                     throw (e);
                 }
+                if(log.isDebugEnabled()) {
+                    log.debug(jsonObj.toString(2));
+                }
+                log.info(jsonObj.toString(2));
                 results.add(toRdf(jsonObj.toString()));
             }
             return results;
@@ -324,27 +324,27 @@ public class DimensionsConnector extends ConnectorDataSource
         model = renameByIdentifier(model, model.getProperty(
                 XmlToRdf.GENERIC_NS + "publication_id"), ABOX, "");
         queries = Arrays.asList(
-                //"120-publicationDate.rq",
-                //"130-publicationJournal.rq",
-                //"140-publicationAuthorship.rq"
+                "120-publicationDate.rq",
+                "130-publicationJournal.rq",
+                "140-publicationAuthorship.rq"
                 );
         for(String query : queries) {
             construct(SPARQL_RESOURCE_DIR + query, model, ABOX + getPrefixName() + "-");
         }
         model = renameByIdentifier(model, model.getProperty(
                XmlToRdf.GENERIC_NS + "person_researcher_id"), ABOX, "");
-        //model = renameByIdentifier(model, model.getProperty(
-        //        XmlToRdf.GENERIC_NS + "person_orcidStr"), ABOX, "orcid-");
+        model = renameByIdentifier(model, model.getProperty(
+                XmlToRdf.GENERIC_NS + "person_orcidStr"), ABOX, "orcid-");
         queries = Arrays.asList(         
-                //"150-publicationAuthor.rq",
-                //"160-publicationAuthorPosition.rq",
-                //"170-publisher.rq",
-                //"180-mesh.rq",
-                //"190-for.rq",
-                //"200-rcdc.rq",
-                //"210-hrcs.rq",
-                //"220-openAccess.rq",
-                //"230-funding.rq"
+                "150-publicationAuthor.rq",
+                "160-publicationAuthorPosition.rq",
+                "170-publisher.rq",
+                "180-mesh.rq",
+                "190-for.rq",
+                "200-rcdc.rq",
+                "210-hrcs.rq",
+                "220-openAccess.rq",
+                "230-funding.rq"
                 );
         for(String query : queries) {
             construct(SPARQL_RESOURCE_DIR + query, model, ABOX + getPrefixName() + "-");            

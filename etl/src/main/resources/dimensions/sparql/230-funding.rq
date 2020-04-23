@@ -26,30 +26,32 @@ PREFIX abox:     <http://vivo.deffopera.dk/individual/>
 
 CONSTRUCT {
     ?x vivo:informationResourceSupportedBy ?grantInd .
-    ?grantInd a vivo:Grant .
-    ?grantInd rdfs:label ?title .
-    ?grantInd vivo:sponsorAwardId ?grantNumber .
-    ?grantInd vivo:totalAwardAmount ?fundingEur .
-    ?grantInd bibo:abstract ?abstract .
-    ?grantInd vivo:assignedBy ?fundingOrg .
-    ?fundingOrg a vivo:FundingOrganization .
-    ?fundingOrg rdfs:label ?funderName .
-    ?fundingOrg vivo:abbreviaton ?acronym .
-    ?fundingOrg osrap:countryName ?countryName .
+# Grant details no longer directly available at time of publications ingest.
+# Just make link to URI that will be further described later.
+#    ?grantInd a vivo:Grant .
+#    ?grantInd rdfs:label ?title .
+#    ?grantInd vivo:sponsorAwardId ?grantNumber .
+#    ?grantInd vivo:totalAwardAmount ?fundingEur .
+#    ?grantInd bibo:abstract ?abstract .
+#    ?grantInd vivo:assignedBy ?fundingOrg .
+#    ?fundingOrg a vivo:FundingOrganization .
+#    ?fundingOrg rdfs:label ?funderName .
+#    ?fundingOrg vivo:abbreviaton ?acronym .
+#    ?fundingOrg osrap:countryName ?countryName .
 } WHERE {
     ?x g:supporting_grant_ids ?id .
-    ?grant g:id ?id .
-    ?grant g:title ?title .
-    ?grant g:grant_number ?grantNumber .
-    ?grant g:funding_eur ?fundingEur .
-    OPTIONAL {
-        ?grant g:abstract ?abstract 
-    }
-    ?grant g:funders ?funder .
-    ?funder g:name ?funderName 
-    OPTIONAL { ?funder g:acronym ?acronym }
-    ?funder g:id ?funderId .
-    ?funder g:country_name ?countryName 
+#    ?grant g:id ?id .
+#    ?grant g:title ?title .
+#    ?grant g:grant_number ?grantNumber .
+#    ?grant g:funding_eur ?fundingEur .
+#    OPTIONAL {
+#        ?grant g:abstract ?abstract 
+#    }
+#    ?grant g:funders ?funder .
+#    ?funder g:name ?funderName 
+#    OPTIONAL { ?funder g:acronym ?acronym }
+#    ?funder g:id ?funderId .
+#    ?funder g:country_name ?countryName 
     BIND(IRI(CONCAT(STR(abox:), STR(?id))) AS ?grantInd) .
-    BIND(IRI(CONCAT(STR(abox:), STR(?funderId))) AS ?fundingOrg) .
+#    BIND(IRI(CONCAT(STR(abox:), STR(?funderId))) AS ?fundingOrg) .
 }

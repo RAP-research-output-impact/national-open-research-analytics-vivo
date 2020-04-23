@@ -209,7 +209,7 @@ public abstract class ConnectorDataSource extends DataSourceBase {
             }
         } finally {
             if(it != null) {
-                log.info("CLosing iterator");
+                log.info("Closing iterator");
                 it.close();       
             }
         }        

@@ -31,7 +31,7 @@ h1.vivo-logo {
   background-color: white;
   width: 75px;
   height: 75px;
-  top: 26px;
+  top: 0px;
 }
 
 h3 {
@@ -58,10 +58,13 @@ body {
 .displace2 {
   position: absolute;
   left: 120px;
-  top: 60px;
+  top: 30px;
   color: white;
   font-size: 0.8em;
   width:800px;
+}
+.displace2 a {
+  color: #24ddff /* TODO change this once we figure out the header background */ 
 }
 ul#main-nav {
   width:1062px;

@@ -16,7 +16,7 @@
   <#if allRecordsSelected?? && allRecordsSelected>
     <a href="${urls.base}/search?searchMode=all"><strong>All records (${totalEntities!0})</strong></a>
   <#else>
-    <a href="${urls.base}/search?searchMode=all">All records (${totalEntities!0})</a>
+    <a href="${urls.base}/search?searchMode=all">All types (${totalEntities!0})</a>
   </#if>
  
   <#list typeCounts as typeCount>
@@ -104,14 +104,6 @@
     </div>
     <div id="nora-search-form">
         <form action="" method="GET">
-	    <select name="searchMode">
-              <option value="all" <#if searchMode?? && searchMode = "all">selected</#if>>all data</option>
-              <option value="publications" <#if searchMode?? && searchMode = "publications">selected</#if>>publications</option>
-              <option value="datasets" <#if searchMode?? && searchMode = "datasets">selected</#if>>datasets</option>
-              <option value="grants" <#if searchMode?? && searchMode = "grants">selected</#if>>grants</option>
-              <option value="patents" <#if searchMode?? && searchMode = "patents">selected</#if>>patents</option>
-              <option value="clinical_trials" <#if searchMode?? && searchMode = "clinical_trials">selected</#if>>clinical trials</option>
-	    </select>
             <input type="text" id="nora-search-text" name="querytext" value="${querytext}" />
 	  <#--
             <strong>AND</strong>
@@ -135,13 +127,16 @@
             <#if classGroupURI?has_content>
                 <input type="hidden" name="classgroup" value="${classGroupURI}" />
             </#if>
+	    <#if searchMode?has_content>
+                <input type="hidden" name="searchMode" value="${searchMode}" />
+	    </#if>
             <input id="nora-search-submit" type="submit" value="Search"/>
         </form>
         <!--
         <span id="searchHelp" style="text-align: right;"><a href="${urls.base}/searchHelp" title="${i18n().search_help}">${i18n().not_expected_results}</a></span>
         -->
     </div>
-    <div style="width: 54.5%; float: right;">
+    <div style="width: 60%; float: right;">
         <#list noraQueryReduce as link>
             <div class="qr-box">
                 <span class="qr-text">${link.text}</span>
@@ -150,7 +145,7 @@
         </#list>
     </div>
     <#if sortFormHiddenFields?? && commonFacets?has_content>
-        <div style="width: 54.5%; float: right; text-align: right;">
+        <div style="width: 60%; float: right; text-align: right;">
           Sort by <form style="display: inline;" action="${urls.base}/search" method="GET">
             <select name="sortField" onchange="this.form.submit()">
               <option <#if sortField?? && sortField = "sort_year_s|ASC">selected="selected"</#if> value="sort_year_s|ASC">year (ascending)</option>

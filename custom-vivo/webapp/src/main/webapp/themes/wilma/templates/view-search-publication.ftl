@@ -6,7 +6,7 @@
         </#if>
     </div>
     <div class="publication-short-view-details" style="margin-left:32px;">
-    <h5 style="padding: 0 0 0 0;">
+    <h4 style="padding: 0 0 0 0;">
     <#if publication.p??>
     <a href="${individual.profileUrl}"">
     </#if>
@@ -16,9 +16,9 @@
     <#if publication.p??>
       </a>&nbsp;
     </#if>
-    </h6>
+    </h4>
     <#if publication.authorList??>
-       <p style="font-size:0.8em;margin-bottom:0;">
+       <p>
        <#assign count = 0>
        <#assign authors = publication.authorList?split(";")>
        <#assign authorLength = authors?size>

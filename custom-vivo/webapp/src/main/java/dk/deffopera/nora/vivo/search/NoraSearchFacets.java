@@ -15,7 +15,9 @@ public class NoraSearchFacets {
             
     static {
         // facets common to all record types
-        commonSearchFacets.add(new SearchFacet("facet_content-type_ss", "Record Types"));
+        SearchFacet recordTypes = new SearchFacet("facet_content-type_ss", "Record Types");
+        recordTypes.setDisplayInSidebar(false);
+        commonSearchFacets.add(recordTypes);
         commonSearchFacets.add(new SearchFacet("facet_year_ss", "Years"));
         commonSearchFacets.add(new SearchFacet("facet_university_ss", "Danish Universities"));
         commonSearchFacets.add(new SearchFacet("facet_hospital_ss", "Danish Hospitals"));

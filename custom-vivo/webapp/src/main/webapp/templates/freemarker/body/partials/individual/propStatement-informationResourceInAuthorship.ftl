@@ -17,6 +17,7 @@
     <div class="pub_author-name">
     <#if statement.author??>
         <a href="${urls.base}/search?searchMode=all&facet_contributor_ss=${statement.uri("author")}" title="${i18n().author_name}">${statement.authorName!}</a> 
+	<#if statement.corresponding??>*<#assign correspondingAuthorExists = "true"></#if>
 	<#if statement.rank?? && authorAffiliations??>
           <#list authorAffiliations as authorAffiliation>
             <#if authorAffiliation.ranks?has_content>

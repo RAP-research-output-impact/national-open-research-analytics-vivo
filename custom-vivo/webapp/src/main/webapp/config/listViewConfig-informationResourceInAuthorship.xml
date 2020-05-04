@@ -14,7 +14,7 @@
 
         SELECT DISTINCT 
             ?authorship ?rank
-            ?author (MAX(?authorName_) AS ?authorName)
+            ?author (MAX(?authorName_) AS ?authorName) (MAX(?corresponding_) AS ?corresponding) 
         WHERE {
             ?subject ?property ?authorship .
             ?authorship a core:Authorship .
@@ -24,6 +24,10 @@
             ?authorship core:relates ?author .
             ?author a foaf:Agent .
             ?author rdfs:label ?authorName_ .
+	    OPTIONAL {
+              ?authorship core:isCorrespondingAuthor ?corresponding_
+	      FILTER(?corresponding == true)
+	    }
         <critical-data-required>
             FILTER ( bound(?author) )
         </critical-data-required>

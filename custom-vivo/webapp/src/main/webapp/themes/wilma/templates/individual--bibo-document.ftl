@@ -165,6 +165,7 @@
   <#if pg.getProperty(vivo + "relatedBy", vivo + "Authorship")??>
     <@p.objectProperty pg.getProperty(vivo + "relatedBy", vivo + "Authorship") false />
   </#if>
+  <p>* Corresponding author</p>
 </div>
 <!-- end .authors-box -->
 

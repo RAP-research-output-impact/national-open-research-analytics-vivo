@@ -30,7 +30,7 @@
        </#list>
        </p>
     </#if>
-    <p style="font-size:0.8em;margin-bottom:0;">
+    <p>
     <#if publication.year??>
        ${publication.year},
     </#if>

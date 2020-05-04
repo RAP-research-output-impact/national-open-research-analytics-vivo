@@ -80,6 +80,9 @@ footer {
 .searchResultTypes a, .searchResultTypes span {
   margin-right: 1em;
 }
+.searchhits p {
+  margin-bottom: 0;
+}
 
 /* general */
 /* 

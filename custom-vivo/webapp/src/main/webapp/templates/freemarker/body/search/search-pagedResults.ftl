@@ -14,7 +14,7 @@
   </#list>
 
   <#if allRecordsSelected?? && allRecordsSelected>
-    <a href="${urls.base}/search?searchMode=all"><strong>All records (${totalEntities!0})</strong></a>
+    <a href="${urls.base}/search?searchMode=all"><strong>All types (${totalEntities!0})</strong></a>
   <#else>
     <a href="${urls.base}/search?searchMode=all">All types (${totalEntities!0})</a>
   </#if>

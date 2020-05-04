@@ -160,20 +160,26 @@ PREFIX vitro:    <http://vitro.mannlib.cornell.edu/ns/vitro/0.7#>
 PREFIX vivo:     <http://vivoweb.org/ontology/core#>
 
 SELECT ?grant ?grantLabel ?funder ?funderLabel ?grantNumber ?awardAmountEur
+FILTER(BOUND(?grant))
+{
+SELECT ?grant (MAX(?grantLabel_) AS ?grantLabel) ?funder (MAX(?funderLabel_) AS ?funderLabel)
+(MIN(?grantNumber_) AS ?grantNumber) (MIN(?awardAmountEur_) AS ?awardAmountEur)
 WHERE {
   ?individualURI vivo:informationResourceSupportedBy ?grant .
-  ?grant rdfs:label ?grantLabel .
+  ?grant rdfs:label ?grantLabel_ .
   OPTIONAL {
     ?grant vivo:assignedBy ?funder .
-    ?funder rdfs:label ?funderLabel .
+    ?funder rdfs:label ?funderLabel_ .
   }
   OPTIONAL {
-    ?grant vivo:sponsorAwardId ?grantNumber
+    ?grant vivo:sponsorAwardId ?grantNumber_
   }
   OPTIONAL {
-    ?grant vivo:totalAwardAmount ?awardAmountEur
+    ?grant vivo:totalAwardAmount ?awardAmountEur_
   }
-} ORDER BY DESC(?awardAmountEur)
+} GROUP BY ?grant ?funder ORDER BY DESC(?awardAmountEur)
+}
+}
     """ ;                
     <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#saveToVar>
                 "supportingGrants" .

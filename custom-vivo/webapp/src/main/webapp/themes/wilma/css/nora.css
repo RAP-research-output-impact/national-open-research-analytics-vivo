@@ -16,7 +16,8 @@
 
 #individual-intro h1 {
   color:black;
-  font-size: 1.2em;
+  font-size: 1.3em;
+  font-weight: bolder;
   margin-bottom: 1.5ex;
 }
   
@@ -123,7 +124,7 @@ footer {
 */
 
 .n_main a {
-  display: inline-block;
+  /* display: inline-block; */ /* causes word-wrap problems with long author affiliations */
   text-decoration: none;
 }
 .n_main p {

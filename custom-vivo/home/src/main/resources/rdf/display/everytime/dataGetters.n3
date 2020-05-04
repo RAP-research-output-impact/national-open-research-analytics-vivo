@@ -30,8 +30,8 @@ SELECT ?affiliation (GROUP_CONCAT(DISTINCT ?rank;separator=";") AS ?ranks) (MIN(
 (MIN(?rank) AS ?minRank) ?grid ?type
 WHERE {  
 {
-SELECT ?rank (COALESCE(MIN(?affiliation_), owl:Nothing) AS ?affiliation) 
-    (MIN(?grid_) AS ?grid) (MIN(?type_) AS ?type) WHERE {
+SELECT ?rank (COALESCE(?affiliation_, owl:Nothing) AS ?affiliation) 
+    (?grid_ AS ?grid) (?type_ AS ?type) WHERE {
   ?individualURI a bibo:Document .
   ?individualURI vivo:relatedBy ?authorship .
   ?authorship a vivo:Authorship .
@@ -52,11 +52,11 @@ SELECT ?rank (COALESCE(MIN(?affiliation_), owl:Nothing) AS ?affiliation)
       BIND("organization" AS ?type_)
   }
   OPTIONAL {
-     ?role <http://vivo.deffopera.dk/ontology/osrap/relatedToOrganization> ?affiliation_ .
+     ?authorship <http://vivo.deffopera.dk/ontology/osrap/relatedToOrganization> ?affiliation_ .
      FILTER(REGEX(STR(?affiliation_), "grid"))
      BIND(CONCAT("grid", STRAFTER(STR(?affiliation_), "grid")) AS ?grid_)
   }
-} GROUP BY ?rank ORDER BY ?rank
+} ORDER BY ?rank
 }
   ?affiliation rdfs:label ?affiliationName_  
 } GROUP BY ?affiliation ?type ?grid ORDER BY ?minRank
@@ -358,8 +358,8 @@ SELECT ?affiliation (GROUP_CONCAT(DISTINCT ?rank;separator=";") AS ?ranks) (MIN(
 (MIN(?rank) AS ?minRank) ?grid ?type
 WHERE {  
 {
-SELECT ?rank (COALESCE(MIN(?affiliation_), owl:Nothing) AS ?affiliation) 
-    (MIN(?grid_) AS ?grid) (MIN(?type_) AS ?type) WHERE {
+SELECT ?rank (COALESCE(?affiliation_, owl:Nothing) AS ?affiliation) 
+    (?grid_ AS ?grid) (?type_ AS ?type) WHERE {
   ?individualURI a vivo:Grant .
   ?individualURI vivo:relates ?role .
   ?role a obo:BFO_0000023 . # Role
@@ -385,7 +385,7 @@ SELECT ?rank (COALESCE(MIN(?affiliation_), owl:Nothing) AS ?affiliation)
      FILTER(REGEX(STR(?affiliation_), "grid"))
      BIND(CONCAT("grid", STRAFTER(STR(?affiliation_), "grid")) AS ?grid_)
   }
-} GROUP BY ?rank ORDER BY ?rank
+} ORDER BY ?rank
 }
   ?affiliation rdfs:label ?affiliationName_ 
 } GROUP BY ?affiliation ?type ?grid ORDER BY ?minRank
@@ -504,8 +504,8 @@ SELECT ?affiliation (GROUP_CONCAT(DISTINCT ?rank;separator=";") AS ?ranks) (MIN(
 (MIN(?rank) AS ?minRank) ?grid ?type
 WHERE {  
 {
-SELECT ?rank (COALESCE(MIN(?affiliation_), owl:Nothing) AS ?affiliation) 
-    (MIN(?grid_) AS ?grid) (MIN(?type_) AS ?type) WHERE {
+SELECT ?rank (COALESCE(?affiliation_, owl:Nothing) AS ?affiliation) 
+    (?grid_ AS ?grid) (?type_ AS ?type) WHERE {
   ?individualURI a obo:ERO_0000016 . # ClinicalTrial
   ?individualURI obo:BFO_0000055 ?role . # realizes
   ?role a obo:BFO_0000023 . # Role
@@ -531,7 +531,7 @@ SELECT ?rank (COALESCE(MIN(?affiliation_), owl:Nothing) AS ?affiliation)
      FILTER(REGEX(STR(?affiliation_), "grid"))
      BIND(CONCAT("grid", STRAFTER(STR(?affiliation_), "grid")) AS ?grid_)
   }
-} GROUP BY ?rank ORDER BY ?rank
+} ORDER BY ?rank
 }
   ?affiliation rdfs:label ?affiliationName_  
 } GROUP BY ?affiliation ?type ?grid ORDER BY ?minRank

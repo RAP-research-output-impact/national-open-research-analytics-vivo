@@ -6,6 +6,14 @@
 
 /* override wilma */
 
+#admin {
+  margin-bottom: 4ex;
+}
+
+#individual-intro {
+  margin-top: 0;
+}
+
 #individual-intro h1 {
   color:black;
   font-size: 1.2em;
@@ -25,7 +33,8 @@ h1.vivo-logo {
 
 h3 {
    color: black;
-   padding: 10px 0 0 0;
+   /* padding: 10px 0 0 0; */
+   padding: 2ex 0 0 0;
 }
 
 body {
@@ -118,7 +127,8 @@ footer {
   text-decoration: none;
 }
 .n_main p {
-	line-height: 1.4;
+  line-height: 1.4;
+  margin-bottom: 0; 
 }
 
 /* long-list */

@@ -406,7 +406,7 @@ PREFIX vitro:    <http://vitro.mannlib.cornell.edu/ns/vitro/0.7#>
 PREFIX vivo:     <http://vivoweb.org/ontology/core#>
 
 SELECT DISTINCT 
-    ?rank ?investigator ?investigatorName
+    ?rank ?investigator (MAX(?investigatorName_) AS ?investigatorName)
 WHERE {
     ?individualURI a vivo:Grant .
     ?individualURI vivo:relates ?role . 
@@ -415,8 +415,8 @@ WHERE {
     ?role vivo:rank ?rank .
     ?role obo:RO_0000052 ?investigator . # inheresIn
     ?investigator a foaf:Agent .
-    ?investigator rdfs:label ?investigatorName .
-} ORDER BY ?rank ?investigatorName        
+    ?investigator rdfs:label ?investigatorName_ .
+} GROUP BY ?rank ?investigator ORDER BY ?rank ?investigatorName        
     """ ;                
 	<http://vitro.mannlib.cornell.edu/ontologies/display/1.1#saveToVar>
                 "grantInvestigators" .
@@ -552,7 +552,7 @@ PREFIX vitro:    <http://vitro.mannlib.cornell.edu/ns/vitro/0.7#>
 PREFIX vivo:     <http://vivoweb.org/ontology/core#>
 
 SELECT DISTINCT 
-    ?rank ?investigator ?investigatorName
+    ?rank ?investigator (MAX(?investigatorName_) AS ?investigatorName)
 WHERE {
     ?individualURI a obo:ERO_0000016 . # ClinicalTrial
     ?individualURI obo:BFO_0000055 ?role . # realizes 
@@ -561,8 +561,8 @@ WHERE {
     ?role vivo:rank ?rank .
     ?role obo:RO_0000052 ?investigator . # inheresIn
     ?investigator a foaf:Agent .
-    ?investigator rdfs:label ?investigatorName .
-} ORDER BY ?rank ?investigatorName        
+    ?investigator rdfs:label ?investigatorName_ .
+} GROUP BY ?rank ?investigator ORDER BY ?rank ?investigatorName        
     """ ;                
     <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#saveToVar>
                 "clinicalTrialInvestigators" .

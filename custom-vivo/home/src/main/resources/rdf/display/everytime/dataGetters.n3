@@ -1,6 +1,9 @@
 <freemarker:individual--bibo-document.ftl> 
         <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#hasDataGetter> 
                  <http://vitro.mannlib.cornell.edu/ns/default#authorAffiliationsDataGetter> .
+<freemarker:individual--bibo-document.ftl> 
+        <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#hasDataGetter> 
+                 <http://vitro.mannlib.cornell.edu/ns/default#vcardUrlDataGetter> .
 <freemarker:individual--vivo-dataset.ftl> 
         <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#hasDataGetter> 
                  <http://vitro.mannlib.cornell.edu/ns/default#authorAffiliationsDataGetter> .
@@ -81,7 +84,7 @@ PREFIX vitro:    <http://vitro.mannlib.cornell.edu/ns/vitro/0.7#>
 PREFIX vivo:     <http://vivoweb.org/ontology/core#>
 
 SELECT ?publisher ?publisherName ?issn ?year ?timesCited ?fieldCitationRatio ?relativeCitationRatio ?license
-       ?typeLabel ?openAccess ?openAccessLabel
+       ?typeLabel ?openAccess ?openAccessLabel 
 WHERE {
   ?individualURI a bibo:Document .
   OPTIONAL {
@@ -188,35 +191,38 @@ PREFIX foaf:     <http://xmlns.com/foaf/0.1/>
 PREFIX vitro:    <http://vitro.mannlib.cornell.edu/ns/vitro/0.7#>
 PREFIX vivo:     <http://vivoweb.org/ontology/core#>
 
-SELECT ?publication ?label ?year ?journalObj ?journal ?type ?typeLabel
+SELECT ?publication (MIN(?label_) AS ?label) (MIN(?year_) AS ?year) 
+?journalObj (MIN(?journal_) AS ?journal) ?type (MIN(?typeLabel_) AS ?typeLabel)
 WHERE {
   {
     ?publication vivo:informationResourceSupportedBy ?individualURI .
-    ?publication rdfs:label ?label .
+    FILTER NOT EXISTS { ?publication a <http://nora.deffopera.dk/ontology/display/HideFromSearch> }
+    ?publication rdfs:label ?label_ .
   } UNION {
     ?individualURI cito:isCitedAsDataSourceBy ?publication .
-    ?publication rdfs:label ?label .
+    ?publication rdfs:label ?label_ .
   }
   OPTIONAL {
     ?publication vivo:dateTimeValue ?dtv .
     ?dtv vivo:dateTime ?dateTime .
-    BIND(STRBEFORE(STR(?dateTime), "-") AS ?year)
+    BIND(STRBEFORE(STR(?dateTime), "-") AS ?year_)
   }
   OPTIONAL {
     ?publication vivo:hasPublicationVenue ?journalObj .
-    ?journalObj rdfs:label ?journal .
+    ?journalObj rdfs:label ?journal_ .
   }
   OPTIONAL { 
     ?publication vitro:mostSpecificType bibo:AcademicArticle .
     BIND(bibo:AcademicArticle AS ?type)
-    BIND("Article" AS ?typeLabel)
+    BIND("Article" AS ?typeLabel_)
   }
   OPTIONAL { 
     ?publication vitro:mostSpecificType ?type .
     FILTER(?type != bibo:AcademicArticle)
-    ?type rdfs:label ?typeLabel .
+    FILTER(?type != <http://nora.deffopera.dk/ontology/display/HideFromSearch>)
+    ?type rdfs:label ?typeLabel_ .
   }
-} ORDER BY DESC(?year) ?label
+} GROUP BY ?publication ?journalObj ?type ORDER BY DESC(?year) ?label
     """ ;                
     <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#saveToVar>
                 "supportedPublications" .

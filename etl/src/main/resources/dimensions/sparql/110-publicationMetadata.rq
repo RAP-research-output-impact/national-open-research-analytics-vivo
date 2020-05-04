@@ -36,6 +36,11 @@ CONSTRUCT {
     ?x osrap:relativeCitationRatio ?relativeCitationRatio .
     ?x osrap:fieldCitationRatio ?fieldCitationRatio .
     ?x osrap:matchingstatus ?matchingstatus .
+    ?x obo:ARG_2000028 ?vcard .
+    ?vcard a vcard:Kind .
+    ?vcard vcard:hasURL ?url .
+    ?url a vcard:URL .
+    ?url vcard:url ?linkoutUrl
 } WHERE {
     ?x g:title ?title .
     ?x g:id ?id 
@@ -65,5 +70,11 @@ CONSTRUCT {
     }
     OPTIONAL {
       ?x g:matchingstatus ?matchingstatus .
+    }
+    OPTIONAL {
+      ?x g:linkout ?linkout .
+      BIND(IRI(CONCAT(STR(?x), "-vcard")) AS ?vcard)
+      BIND(IRI(CONCAT(STR(?x), "-vcard-url")) AS ?url)
+      BIND(xsd:anyURI(?linkout) AS ?linkoutUrl)
     }
 }

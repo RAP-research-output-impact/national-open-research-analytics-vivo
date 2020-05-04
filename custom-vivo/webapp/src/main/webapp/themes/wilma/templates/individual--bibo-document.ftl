@@ -226,7 +226,13 @@
 <#if pubMeta?has_content && pubMeta[0].openAccessLabel?has_content>
 <div class="pub_categories">
   <h3>Open access</h3>
-  <p>${pubMeta[0].openAccessLabel}</p>
+  <p>
+    <#if vcardUrl?has_content>
+      <a href="${vcardUrl[0].url}" title="link to ${pubMeta[0].openAccessLabel} open-access full text">${pubMeta[0].openAccessLabel}</a>
+    <#else>
+      ${pubMeta[0].openAccessLabel}
+    </#if>
+  </p>
 </div>
 </#if>
 

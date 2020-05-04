@@ -14,7 +14,7 @@
 
         SELECT DISTINCT 
             ?authorship ?rank
-            ?author ?authorName
+            ?author (MAX(?authorName_) AS ?authorName)
         WHERE {
             ?subject ?property ?authorship .
             ?authorship a core:Authorship .
@@ -23,11 +23,11 @@
             ?authorship a core:Authorship .
             ?authorship core:relates ?author .
             ?author a foaf:Agent .
-            ?author rdfs:label ?authorName .
+            ?author rdfs:label ?authorName_ .
         <critical-data-required>
             FILTER ( bound(?author) )
         </critical-data-required>
-        } ORDER BY ?rank (fn:lower-case(?authorName))
+        } GROUP BY ?authorship ?rank ?author ORDER BY ?rank (fn:lower-case(?authorName))
     </query-select>
 
     <template>propStatement-informationResourceInAuthorship.ftl</template>

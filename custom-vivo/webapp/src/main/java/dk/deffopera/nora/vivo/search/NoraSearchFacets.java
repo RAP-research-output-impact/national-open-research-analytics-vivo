@@ -33,8 +33,10 @@ public class NoraSearchFacets {
         commonSearchFacets.add(contributor);
         
         // facets not indexed for all record types
-        additionalSearchFacets.add(new SearchFacet("facet_document-type_ss", "Document Types"));        
-        additionalSearchFacets.add(new SearchFacet("facet_publication-year_ss", "Publication Years"));
+        additionalSearchFacets.add(new SearchFacet("facet_document-type_ss", "Publication Types"));
+        SearchFacet pubYears = new SearchFacet("facet_publication-year_ss", "Publication Years");
+        pubYears.setDisplayInSidebar(false);
+        additionalSearchFacets.add(pubYears);
         additionalSearchFacets.add(new SearchFacet("facet_start-year_ss", "Start Year"));
         additionalSearchFacets.add(new SearchFacet("facet_granted-year_ss", "Granted Years"));        
         additionalSearchFacets.add(new SearchFacet("facet_journal_ss", "Journals"));

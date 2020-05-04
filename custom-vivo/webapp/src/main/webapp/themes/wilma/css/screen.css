@@ -3,5 +3,5 @@
 @import url("reset.css");
 @import url("wilma.css");
 @import url("base.css");
-@import url("dtu.css");
-@import url("nora.css");
+@import url("dtu.css?version=20200504");
+@import url("nora.css?version=20200504");

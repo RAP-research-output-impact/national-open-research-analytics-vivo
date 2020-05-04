@@ -963,6 +963,10 @@ public class PagedSearchController extends FreemarkerHttpServlet {
             map.put(PARAM_FACET_TEXT_VALUE, s);
             map.put(PARAM_FACET_AS_TEXT, vreq.getParameter(PARAM_FACET_AS_TEXT));
         }
+        s = getParamSortField(vreq);
+        if(!StringUtils.isEmpty(s)) {
+            map.put(PARAM_SORTFIELD, s);
+        }
         s = vreq.getParameter(PARAM_QUERY_TEXT);
         if(!StringUtils.isEmpty(s)) {
             map.put(PARAM_QUERY_TEXT, s);

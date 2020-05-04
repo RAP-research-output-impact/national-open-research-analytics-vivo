@@ -183,7 +183,7 @@
       <#if !authorAffiliation.type?has_content>
         <li>(${authorAffiliation?index + 1}) ${authorAffiliation.affiliationName}</li>
       <#else>
-          <li>(${authorAffiliation?index + 1}) <a href="${urls.base}/search?searchMode=publicationss&facet_${authorAffiliation.type!organization}_ss=${authorAffiliation.affiliation}">${authorAffiliation.affiliationName}</a></li>
+          <li>(${authorAffiliation?index + 1}) <a href="${urls.base}/search?searchMode=publications&facet_${authorAffiliation.type!organization}_ss=${authorAffiliation.affiliation}">${authorAffiliation.affiliationName}</a></li>
       </#if>
     </#if>
   </#if>

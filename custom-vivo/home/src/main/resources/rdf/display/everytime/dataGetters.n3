@@ -159,7 +159,8 @@ PREFIX foaf:     <http://xmlns.com/foaf/0.1/>
 PREFIX vitro:    <http://vitro.mannlib.cornell.edu/ns/vitro/0.7#>
 PREFIX vivo:     <http://vivoweb.org/ontology/core#>
 
-SELECT ?grant ?grantLabel ?funder ?funderLabel ?grantNumber ?awardAmountEur
+SELECT ?grant ?grantLabel ?funder ?funderLabel ?grantNumber ?awardAmountEur 
+WHERE {
 FILTER(BOUND(?grant))
 {
 SELECT ?grant (MAX(?grantLabel_) AS ?grantLabel) ?funder (MAX(?funderLabel_) AS ?funderLabel)

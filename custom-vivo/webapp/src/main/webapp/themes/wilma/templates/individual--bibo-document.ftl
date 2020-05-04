@@ -262,11 +262,11 @@
       <#if pubMeta[0].timesCited??>
         <p>Times Cited: <span>${pubMeta[0].timesCited}</span></p>
       </#if>
-      <#if pubMeta[0].relativeCitationRatio??>
-        <p>Relative Citation ratio (RCR): <span>${pubMeta[0].relativeCitationRatio}</span></p>
-      </#if>
       <#if pubMeta[0].fieldCitationRatio??>
         <p>Field Citation Ratio (FCR): <span>${pubMeta[0].fieldCitationRatio}</span></p>
+      </#if>
+      <#if pubMeta[0].relativeCitationRatio??>
+        <p>Relative Citation ratio (RCR): <span>${pubMeta[0].relativeCitationRatio}</span></p>
       </#if>
     </div>
     <!-- end pv-metrics -->

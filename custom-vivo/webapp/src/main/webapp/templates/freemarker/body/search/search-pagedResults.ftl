@@ -37,19 +37,12 @@
     <#-- Refinement links -->
     <div class="searchTOC-box">
         <table border="1" class="searchTOC">
-            <tr>
-                <td>
-                    <h4 class="hitCount">Results: ${hitCount}</h4>
-                    <hr width="80%"/>
-                    <div class="searchTOC-header">Use Facets to Refine Results</div>
-                </td>
-            </tr>
             <#if commonFacets?has_content>
 	        <tr class="search-facets-head">
-                  <td style="align:left">GENERAL FACETS:</td>
+                  <td style="text-align:left;">GENERAL FILTERS:</td>
 		</tr>
                 <#list commonFacets as facet>
-		  <#if facet.displayInSidebar && facet.categories?has_content && (facet.categories?size > 1)>
+		  <#if facet.displayInSidebar && facet.categories?has_content>
                     <tr class="search-facets-head">
                         <td style="align: left">
                             <h4 class="search-facets-title"><div class="search-facets-toggle">+</div>${facet.publicName}</h4>
@@ -84,10 +77,10 @@
                   <#assign recordTypeLabel = "CLINCAL TRIAL">
 	        </#if>	
 	        <tr class="search-facets-head">
-                  <td style="align:left">${recordTypeLabel} FACETS:</td>
+                  <td style="text-align:left;">${recordTypeLabel} FILTERS:</td>
 		</tr>
                 <#list additionalFacets as facet>
-		  <#if facet.displayInSidebar && facet.categories?has_content && (facet.categories?size > 1)>
+		  <#if facet.displayInSidebar && facet.categories?has_content>
                     <tr class="search-facets-head">
                         <td style="align: left">
                             <h4 class="search-facets-title"><div class="search-facets-toggle">+</div>${facet.publicName}</h4>
@@ -148,7 +141,7 @@
         <span id="searchHelp" style="text-align: right;"><a href="${urls.base}/searchHelp" title="${i18n().search_help}">${i18n().not_expected_results}</a></span>
         -->
     </div>
-    <div style="width: 57.5%; float: right;">
+    <div style="width: 54.5%; float: right;">
         <#list noraQueryReduce as link>
             <div class="qr-box">
                 <span class="qr-text">${link.text}</span>
@@ -157,7 +150,7 @@
         </#list>
     </div>
     <#if sortFormHiddenFields?? && commonFacets?has_content>
-        <div style="width: 57.5%; float: right; text-align: right;">
+        <div style="width: 54.5%; float: right; text-align: right;">
           Sort by <form style="display: inline;" action="${urls.base}/search" method="GET">
             <select name="sortField" onchange="this.form.submit()">
               <option <#if sortField?? && sortField = "sort_year_s|ASC">selected="selected"</#if> value="sort_year_s|ASC">year (ascending)</option>
@@ -195,7 +188,7 @@
         });
     </script>
     <#-- Search results -->
-    <div style="float: right; text-align: left; width: 60%;">
+    <div style="float: right; text-align: left; width: 63%;">
         <ul class="searchhits">
             <#list individuals as individual>
                 <li>                        

@@ -46,7 +46,8 @@ ul#main-nav {
   width:1062px;
 }
 #wrapper-content {
-  width:1024px;
+  width: 1024px;
+  overflow: auto;
 }
 footer {
   width: 1064px;

@@ -191,6 +191,12 @@ PREFIX foaf:     <http://xmlns.com/foaf/0.1/>
 PREFIX vitro:    <http://vitro.mannlib.cornell.edu/ns/vitro/0.7#>
 PREFIX vivo:     <http://vivoweb.org/ontology/core#>
 
+# Add outer query because inner query with GROUP BY will return a single row with no bound 
+# ?publication if there are no results
+SELECT ?publication ?label ?year ?journalObj ?journal ?type ?typeLabel
+WHERE {
+FILTER(BOUND(?publication))
+{
 SELECT ?publication (MIN(?label_) AS ?label) (MIN(?year_) AS ?year) 
 ?journalObj (MIN(?journal_) AS ?journal) ?type (MIN(?typeLabel_) AS ?typeLabel)
 WHERE {
@@ -223,6 +229,8 @@ WHERE {
     ?type rdfs:label ?typeLabel_ .
   }
 } GROUP BY ?publication ?journalObj ?type ORDER BY DESC(?year) ?label
+}
+}
     """ ;                
     <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#saveToVar>
                 "supportedPublications" .

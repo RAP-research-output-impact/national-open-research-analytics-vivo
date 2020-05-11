@@ -14,6 +14,7 @@ public class SearchFacet {
     private String publicName;
     private String fieldName;
     private boolean displayInSidebar = true;
+    private boolean isUnionFacet = false;
 
     private List<SearchFacetCategory> categories = new ArrayList<SearchFacetCategory>();
     
@@ -23,13 +24,19 @@ public class SearchFacet {
     }
     
     public SearchFacet(String fieldName, String publicName, boolean displayInSidebar) {
-        this.fieldName = fieldName;
-        this.publicName = publicName;
+        this(fieldName, publicName);
         this.displayInSidebar = displayInSidebar;
     }
     
+    public SearchFacet(String fieldName, String publicName, 
+            boolean displayInSidebar, boolean isUnionFacet) {
+        this(fieldName, publicName, displayInSidebar);
+        this.isUnionFacet = isUnionFacet;
+    }
+    
     public SearchFacet clone() {
-        return new SearchFacet(this.fieldName, this.publicName, this.displayInSidebar);        
+        return new SearchFacet(this.fieldName, this.publicName, 
+                this.displayInSidebar, this.isUnionFacet);        
     }
     
     /**
@@ -74,6 +81,15 @@ public class SearchFacet {
 
     public void setDisplayInSidebar(boolean displayInSidebar) {
         this.displayInSidebar = displayInSidebar;
+    }
+    
+    /**
+     * Should the values of this facet be ORed (including across 
+     * the other union facets) rather than ANDed?
+     * @return true if facet is a ORed facet, otherwise false
+     */
+    public boolean isUnionFacet() {
+        return this.isUnionFacet;
     }
     
 }

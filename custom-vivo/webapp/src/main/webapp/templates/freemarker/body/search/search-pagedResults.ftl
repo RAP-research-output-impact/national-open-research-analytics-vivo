@@ -50,13 +50,31 @@
                     </tr>
                     <tr class="search-facets" style="display: none;">
                         <td>
-                            <ul>
+			  <#if facet.unionFacet>
+		            <form action="${urls.base}/search" method="GET">
+                              <ul>
+                                <#list facet.categories as category>
+                                    <#if category.text?has_content && category.text != 'Journal' && category.text != 'Book' && category.text != 'Conference'>
+                                        <li><input name="${facet.fieldName}" value="${category.value!}" type="checkbox"><a href="${category.url}" title="${category.text}">${category.text}</a><span>(${category.count})</span></li>
+                                    </#if>
+                                </#list>
+                              </ul>
+	                        <#list sortFormHiddenFields as field>
+	                          <#if field.name?? && (field.name != "sortField") && (field.name != "startIndex") && field.value??>
+                                    <input type="hidden" name="${field.name}" value="${field.value}"/>
+                                  </#if>
+	                        </#list>
+				<input style="align: left;" type="submit" name="submit" value="limit to selected items"/>
+			     </form>
+                          <#else>
+                              <ul>
                                 <#list facet.categories as category>
                                     <#if category.text?has_content && category.text != 'Journal' && category.text != 'Book' && category.text != 'Conference'>
                                         <li><a href="${category.url}" title="${category.text}">${category.text}</a><span>(${category.count})</span></li>
                                     </#if>
                                 </#list>
-                            </ul>
+                              </ul>	
+			  </#if>
                         </td>
                     </tr>
 		  </#if>

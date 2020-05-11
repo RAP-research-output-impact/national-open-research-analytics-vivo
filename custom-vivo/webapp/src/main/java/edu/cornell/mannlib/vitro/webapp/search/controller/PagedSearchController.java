@@ -87,15 +87,7 @@ public class PagedSearchController extends FreemarkerHttpServlet {
     public static final String PARAM_QUERY_TEXT = "querytext";
     public static final String FACET_FIELD_PREFIX = "facet_";
     public static final String PARAM_FACET_AS_TEXT = "facetAsText";
-    public static final String PARAM_FACET_TEXT_VALUE = "facetTextValue";
-    
-    // Treat these facets differently, where values are unioned across the 
-    // different facets.  For the remaining facets, union only the values
-    // within a single facet. 
-    // E.g. (year=2014 or year=2015) AND (university=DTU OR hospital=Rigshospitalet OR org=Red Cross)
-    public static final List<String> UNION_FACETS = Arrays.asList(
-            "facet_university_ss", "facet_hospital_ss", "facet_organization_ss", "facet_year_ss");                
-
+    public static final String PARAM_FACET_TEXT_VALUE = "facetTextValue";                  
 
     protected static final Map<Format,Map<Result,String>> templateTable;
 
@@ -200,21 +192,23 @@ public class PagedSearchController extends FreemarkerHttpServlet {
             // don't currently have that option through the VIVO search engine
             // interface.
             
+            List<String> unionFacetNames = getUnionFacetNames();
+            
             // Do a search query with the union facets also excluded from the
             // filtering so that we can get all possible results
             SearchQuery allRecordTypesQuery = getQuery(queryText, Arrays.asList(
-                    "facet_content-type_ss"), UNION_FACETS, 
+                    "facet_content-type_ss"), unionFacetNames, 
                     hitsPerPage, startIndex, vreq);
             SearchResponse allRecordTypesResponse = null;
             
             // Do a search query with the union facets also excluded from the
             // filtering so that we can get all possible results
-            SearchQuery allOrgsQuery = getQuery(queryText, UNION_FACETS, UNION_FACETS, 
+            SearchQuery allOrgsQuery = getQuery(queryText, unionFacetNames, unionFacetNames, 
                     hitsPerPage, startIndex, vreq);
             SearchResponse allOrgsResponse = null;
             
             // Do the main query with the facet filters.
-            SearchQuery mainQuery = getQuery(queryText, Arrays.asList(""), UNION_FACETS, 
+            SearchQuery mainQuery = getQuery(queryText, Arrays.asList(""), unionFacetNames, 
                     hitsPerPage, startIndex, vreq);
             search = ApplicationUtils.instance().getSearchEngine();
             SearchResponse mainResponse = null;
@@ -275,7 +269,7 @@ public class PagedSearchController extends FreemarkerHttpServlet {
             // overlay the non-union facets with their new values
             List<SearchFacet> mergedFacets = new ArrayList<SearchFacet>(); 
             for(SearchFacet cf : commonSearchFacets) {
-                if(UNION_FACETS.contains(cf.getFieldName())) {
+                if(cf.isUnionFacet()) {
                     mergedFacets.add(cf);
                 } else {
                     for(SearchFacet filtered : filteredSearchFacets) {
@@ -412,9 +406,19 @@ public class PagedSearchController extends FreemarkerHttpServlet {
         }
     }
     
-    // TODO refactor this into the SearchFacet interface
-    private static boolean isUnionFacet(SearchFacet facet) {
-        return UNION_FACETS.contains(facet.getFieldName());
+    private List<String> getUnionFacetNames() {
+        List<String> unionFacetNames = new ArrayList<String>();
+        for(SearchFacet facet : NoraSearchFacets.getCommonSearchFacets()) {
+            if(facet.isUnionFacet()) {
+                unionFacetNames.add(facet.getFieldName());
+            }
+        }
+        for(SearchFacet facet : NoraSearchFacets.getAdditionalSearchFacets()) {
+            if(facet.isUnionFacet()) {
+                unionFacetNames.add(facet.getFieldName());
+            }
+        }
+        return unionFacetNames;
     }
     
     private List<Param> getSortFormParameters(Map <String, String> parameterMap) {
@@ -468,7 +472,7 @@ public class PagedSearchController extends FreemarkerHttpServlet {
                             url = url.substring(contextPath.length());
                         }
                         SearchFacetCategory catClone = new SearchFacetCategory(
-                                catName, url, cat.getCount(), selected);                          
+                                catName, cat.getValue(), url, cat.getCount(), selected);                          
                         typeCounts.add(catClone);
                     } else {
                         typeCounts.add(new SearchFacetCategory(
@@ -561,25 +565,19 @@ public class PagedSearchController extends FreemarkerHttpServlet {
                     continue;
                 }
                 String name = value.getName();
-                String label = name;
-                if(name.startsWith("http://")) {
-                    IndividualDao iDao = request.getWebappDaoFactory()
-                            .getIndividualDao();
-                    Individual ind = iDao.getIndividualByURI(name);
-                    if(ind != null) {
-                        label = ind.getRdfsLabel();
-                    }
-                }
+                String label = humanReadableFacetValue(name, request);
                 // need a fresh copy of the params because we're gonna modify it
                 ParamMap facetParams = NoraGetQueryParamMap(request);
                 facetParams.put(PagedSearchController.PARAM_QUERY_TEXT, querytext);
                 String val = facetParams.get(ff.getName());
-                if (!("facet_content-type_ss".equals(ff.getName())) && (val != null) && (!StringUtils.isEmpty(val))) {
+                if (!("facet_content-type_ss".equals(ff.getName())) 
+                        && (val != null) && (!StringUtils.isEmpty(val))) {
                     facetParams.put(ff.getName(), val + ";;" + name);
                 } else {
                     facetParams.put(ff.getName(), name);
                 }
-                SearchFacetCategory category = new SearchFacetCategory(label, facetParams, value.getCount());
+                SearchFacetCategory category = new SearchFacetCategory(
+                        label, name, facetParams, value.getCount());
                 sf.getCategories().add(category);
             }
             searchFacets.add(sf);
@@ -711,7 +709,7 @@ public class PagedSearchController extends FreemarkerHttpServlet {
             excludeFacets = new ArrayList<String>();
         }
         if(unionFacets == null) {
-            excludeFacets = new ArrayList<String>();
+            unionFacets = new ArrayList<String>();
         }
         // Nora: AND in search terms for specific "facet as text" field
         String facetAsText = vreq.getParameter(PARAM_FACET_AS_TEXT);
@@ -902,8 +900,6 @@ public class PagedSearchController extends FreemarkerHttpServlet {
             String parameterValue = facetParams.get(parameterName);
             if(!parameterValue.isEmpty() && !unionFacets.contains(parameterName)) {
                 if (parameterValue.contains(";;")) {
-                    // nora - treat multiple values for the same filter as unions,
-                    // not intersections
                     StringBuilder builder = new StringBuilder();
                     for (String val : parameterValue.split(";;")) {
                         if(builder.length() > 0) {
@@ -949,12 +945,15 @@ public class PagedSearchController extends FreemarkerHttpServlet {
         while(parameterNames.hasMoreElements()) {
             String parameterName = parameterNames.nextElement();
             if(parameterName.startsWith(FACET_FIELD_PREFIX)) {
-                String parameterValue = vreq.getParameter(parameterName);
-                String s = map.get(parameterName);
-                if ((s != null) && (!StringUtils.isEmpty(s))) {
-                    map.put(parameterName, s + ";;" + parameterValue);
-                } else {
-                    map.put(parameterName, parameterValue);
+                String[] parameterValues = vreq.getParameterValues(parameterName);
+                for(int i = 0; i < parameterValues.length; i++) {
+                    String parameterValue = parameterValues[i];
+                    String s = map.get(parameterName);
+                    if ((s != null) && (!StringUtils.isEmpty(s))) {
+                        map.put(parameterName, s + ";;" + parameterValue);
+                    } else {
+                        map.put(parameterName, parameterValue);
+                    }
                 }
             }
         }
@@ -1047,8 +1046,8 @@ public class PagedSearchController extends FreemarkerHttpServlet {
                 if(textFacet != null) {
                    label = textFacet.getPublicName();
                 }
-                if (!isUnionFacet(textFacet) && s.contains(";;")) {
-                    List<String> vals = Arrays.asList(s.split(";;"));
+                if (!textFacet.isUnionFacet() && s.contains(";;")) {
+                    List<String> vals = new ArrayList<String>(Arrays.asList(s.split(";;")));
                     for (int i = 0; i < vals.size(); i++) {
                         String val = vals.get(i);
                         String valSaved = humanReadableFacetValue(vals.get(i), vreq);                        
@@ -1058,9 +1057,9 @@ public class PagedSearchController extends FreemarkerHttpServlet {
                         qr.add(new LinkTemplateModel(label + ": " + val, "/search", map));
                     }
                     map.put(key, s);
-                } else if (isUnionFacet(textFacet) && s.contains(";;")) {
+                } else if (textFacet.isUnionFacet() && s.contains(";;")) {
                     StringBuilder valueLabels = new StringBuilder();
-                    List<String> vals = Arrays.asList(s.split(";;"));
+                    List<String> vals = new ArrayList<String>(Arrays.asList(s.split(";;")));
                     for (String val : vals) {
                         if(valueLabels.length() > 0) {
                             valueLabels.append(" OR ");

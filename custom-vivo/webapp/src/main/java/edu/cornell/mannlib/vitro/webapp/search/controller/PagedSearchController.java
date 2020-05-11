@@ -268,7 +268,7 @@ public class PagedSearchController extends FreemarkerHttpServlet {
             body.put("facetsAsText", NoraSearchFacets.getSearchFacetsAsText());
             body.put(PARAM_FACET_AS_TEXT, vreq.getParameter(PARAM_FACET_AS_TEXT));
             body.put(PARAM_FACET_TEXT_VALUE, vreq.getParameter(PARAM_FACET_TEXT_VALUE));
-            body.put("noraQueryReduce", NoraQueryReduce(vreq, grpDao, vclassDao));            
+            body.put("noraQueryReduce", getNoraQueryReduceLinks(vreq, grpDao, vclassDao));            
             
             List<SearchFacet> filteredSearchFacets = getFacetLinks(
                     NoraSearchFacets.getCommonSearchFacets(), vreq, mainResponse, queryText);
@@ -410,6 +410,11 @@ public class PagedSearchController extends FreemarkerHttpServlet {
         } catch (Throwable e) {
             return doSearchError(e,format);
         }
+    }
+    
+    // TODO refactor this into the SearchFacet interface
+    private static boolean isUnionFacet(SearchFacet facet) {
+        return UNION_FACETS.contains(facet.getFieldName());
     }
     
     private List<Param> getSortFormParameters(Map <String, String> parameterMap) {
@@ -983,7 +988,7 @@ public class PagedSearchController extends FreemarkerHttpServlet {
         return map;
     }
 
-    private static List<LinkTemplateModel> NoraQueryReduce(
+    private static List<LinkTemplateModel> getNoraQueryReduceLinks(
             VitroRequest vreq, VClassGroupDao grpDao, VClassDao vclassDao) {
         ParamMap map = NoraGetQueryParamMap(vreq);
         List<LinkTemplateModel> qr = new ArrayList<LinkTemplateModel>();
@@ -1042,35 +1047,32 @@ public class PagedSearchController extends FreemarkerHttpServlet {
                 if(textFacet != null) {
                    label = textFacet.getPublicName();
                 }
-                if (s.contains(";;")) {
-                    ArrayList<String> vals = new ArrayList(Arrays.asList(s.split(";;")));
+                if (!isUnionFacet(textFacet) && s.contains(";;")) {
+                    List<String> vals = Arrays.asList(s.split(";;"));
                     for (int i = 0; i < vals.size(); i++) {
                         String val = vals.get(i);
-                        String valSaved = vals.get(i);
-                        if(val.startsWith("http://")) {
-                            IndividualDao iDao = vreq.getWebappDaoFactory()
-                                    .getIndividualDao();
-                            Individual ind = iDao.getIndividualByURI(val);
-                            if(ind != null) {
-                                val = ind.getRdfsLabel();
-                            }
-                        }
+                        String valSaved = humanReadableFacetValue(vals.get(i), vreq);                        
                         vals.remove(i);
                         map.put(key, StringUtils.join(vals, ";;"));
                         vals.add(i, valSaved);
                         qr.add(new LinkTemplateModel(label + ": " + val, "/search", map));
                     }
                     map.put(key, s);
-                } else {
-                    String val = s;
-                    if(val.startsWith("http://")) {
-                        IndividualDao iDao = vreq.getWebappDaoFactory()
-                                .getIndividualDao();
-                        Individual ind = iDao.getIndividualByURI(val);
-                        if(ind != null) {
-                            val = ind.getRdfsLabel();
+                } else if (isUnionFacet(textFacet) && s.contains(";;")) {
+                    StringBuilder valueLabels = new StringBuilder();
+                    List<String> vals = Arrays.asList(s.split(";;"));
+                    for (String val : vals) {
+                        if(valueLabels.length() > 0) {
+                            valueLabels.append(" OR ");
                         }
+                        valueLabels.append(humanReadableFacetValue(val, vreq));                         
                     }
+                    map.remove(key);
+                    qr.add(new LinkTemplateModel(label + ": " 
+                            + valueLabels.toString(), "/search", map));                   
+                    map.put(key, s);
+                } else {
+                    String val = humanReadableFacetValue(s, vreq);                    
                     map.remove(key);
                     qr.add(new LinkTemplateModel(label + ": " + val, "/search", map));
                     map.put(key, s);
@@ -1078,6 +1080,27 @@ public class PagedSearchController extends FreemarkerHttpServlet {
             }
         }
         return qr;
+    }
+    
+    /**
+     * If the facet value is an RDF IRI, look up and return the rdfs:label, if
+     * available.  Otherwise return the raw facet value.
+     * @param facetValue
+     * @param vreq
+     * @return the facet value's rdfs:label (if IRI and label available), 
+     * otherwise original value
+     */
+    private static String humanReadableFacetValue(String facetValue, 
+            VitroRequest vreq) {
+        if(facetValue.startsWith("http://")) {
+            IndividualDao iDao = vreq.getWebappDaoFactory()
+                    .getIndividualDao();
+            Individual ind = iDao.getIndividualByURI(facetValue);
+            if(ind != null) {
+                facetValue = ind.getRdfsLabel();
+            }
+        }
+        return facetValue;
     }
 
     public static class VClassGroupSearchLink extends LinkTemplateModel {

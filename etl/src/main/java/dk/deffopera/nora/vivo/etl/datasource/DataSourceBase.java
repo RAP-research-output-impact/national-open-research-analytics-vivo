@@ -114,7 +114,10 @@ public abstract class DataSourceBase {
         log.debug("Pre-query model size: " + pre);
         long start = System.currentTimeMillis();
         Model n = constructQuery(queryName, m, namespaceEtc, null);
-        log.debug((System.currentTimeMillis() - start) + " ms");
+        long duration = System.currentTimeMillis() - start;
+        if(duration >= 100) {
+          log.warn(duration + " ms to run " + queryName);
+        }
         log.debug("Query " + queryName + " constructed " + n.size() + " triples.");
         m.add(n);
         log.debug("Post-query model size: " + m.size());

@@ -22,6 +22,7 @@ PREFIX vivo:     <http://vivoweb.org/ontology/core#>
 PREFIX scires:   <http://vivoweb.org/ontology/scientific-research#>
 PREFIX g:        <http://ingest.mannlib.cornell.edu/generalizedXMLtoRDF/0.1/> 
 PREFIX osrap:    <http://vivo.deffopera.dk/ontology/osrap/>
+PREFIX abox:     <http://vivo.deffopera.dk/individual/>
 
 CONSTRUCT {
     ?x bibo:doi ?doi .
@@ -36,6 +37,7 @@ CONSTRUCT {
     ?x osrap:relativeCitationRatio ?relativeCitationRatio .
     ?x osrap:fieldCitationRatio ?fieldCitationRatio .
     ?x osrap:matchingstatus ?matchingstatus .
+    ?x osrap:relatedToOrganization ?org .
     ?x obo:ARG_2000028 ?vcard .
     ?vcard a vcard:Kind .
     ?vcard vcard:hasURL ?url .
@@ -69,7 +71,16 @@ CONSTRUCT {
       ?x g:field_citation_ratio ?fieldCitationRatio
     }
     OPTIONAL {
-      ?x g:matchingstatus ?matchingstatus .
+      ?meta g:raw ?x .
+      ?meta g:matchingstatus ?matchingstatus .
+    }
+    OPTIONAL {
+      ?meta g:raw ?x .
+      ?record g:meta ?meta .
+      ?record g:who ?who .
+      ?who g:organisation ?organisation .
+      ?organisation g:gridid ?grid .
+      BIND(IRI(CONCAT(STR(abox:), ?grid)) AS ?org)
     }
     OPTIONAL {
       ?x g:linkout ?linkout .

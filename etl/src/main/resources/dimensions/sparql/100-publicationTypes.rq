@@ -21,13 +21,20 @@ PREFIX vitro-public: <http://vitro.mannlib.cornell.edu/ns/vitro/public#>
 PREFIX vivo:     <http://vivoweb.org/ontology/core#>
 PREFIX scires:   <http://vivoweb.org/ontology/scientific-research#>
 PREFIX g:        <http://ingest.mannlib.cornell.edu/generalizedXMLtoRDF/0.1/> 
+PREFIX osrap:    <http://vivo.deffopera.dk/ontology/osrap/>
 
 CONSTRUCT {
     ?a a bibo:AcademicArticle .
     ?b a vivo:ConferencePaper .
-    ?c a bibo:Chapter 
+    ?c a bibo:Chapter .
+    ?d a bibo:Book .
+    ?e a osrap:Monograph .
+    ?f a osrap:Preprint .
 } WHERE {
     { ?a g:type "article" } UNION 
     { ?b g:type "proceeding" } UNION 
-    { ?c g:type "chapter" } 
+    { ?c g:type "chapter" }  UNION 
+    { ?d g:type "book" }  UNION 
+    { ?e g:type "monograph" }  UNION 
+    { ?f g:type "preprint" } 
 }

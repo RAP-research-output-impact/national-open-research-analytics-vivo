@@ -131,7 +131,7 @@ public class DimensionsConnector extends ConnectorDataSource
     
     @Override
     public int getBatchSize() {
-        return 1;
+        return 1000;
     }
     
     protected String getToken(String username, String password) {
@@ -162,22 +162,22 @@ public class DimensionsConnector extends ConnectorDataSource
         protected MongoCollection<Document> collection;
         protected MongoCursor<Document> cursor;
         protected int toRdfIteration = 0;
-        protected int MONGO_DOCS_PER_ITERATION = 50;
+        protected int MONGO_DOCS_PER_ITERATION = 1;
                
         protected MongoIterator() {}
         
         public MongoIterator(MongoCollection<Document> collection) {
             this.collection = collection;
-            Iterator<String> distincts = collection.distinct("meta.raw.dbname", String.class).iterator();
-            while(distincts.hasNext()) {
-                String distinct = distincts.next();
-                log.info("dbname: " + distinct);
-            }
+            //Iterator<String> distincts = collection.distinct("meta.raw.type", String.class).iterator();
+            //while(distincts.hasNext()) {
+            //    String distinct = distincts.next();
+            //    log.info("type: " + distinct);
+            //}
             cursor = collection.find(
-                    //Filters.and(
+                    Filters.and(
                             Filters.eq("meta.raw.dbname", "publications")
-                    //        Filters.eq("meta.matchingstatus", "dim-ddf")
-                    //)
+                            //Filters.eq("meta.raw.id", "pub.1100249993")
+                    )
                  )
                     .noCursorTimeout(true).iterator();
         }
@@ -196,9 +196,10 @@ public class DimensionsConnector extends ConnectorDataSource
                 long start = System.currentTimeMillis();
                 //log.info("Getting next document from cursor");
                 Document d = cursor.next();
-                log.info((System.currentTimeMillis() - start) + " ms to retrieve document");
+                //log.info((System.currentTimeMillis() - start) + " ms to retrieve document");
                 String jsonStr = d.toJson();   
                 JSONObject jsonObj = new JSONObject(jsonStr);
+                JSONObject fullJsonObj = jsonObj;
                 JSONArray organisations = jsonObj.getJSONObject("who").getJSONArray("organisations");
                 List<String> whoGrids = new ArrayList<String>();
                 for(int orgi = 0; orgi < organisations.length(); orgi++) {
@@ -252,8 +253,10 @@ public class DimensionsConnector extends ConnectorDataSource
                 if(log.isDebugEnabled()) {
                     log.debug(jsonObj.toString(2));
                 }
-                log.info(jsonObj.toString(2));
-                results.add(toRdf(jsonObj.toString()));
+                if(toRdfIteration == 0) {
+                  log.info(fullJsonObj.toString(2));
+                }
+                results.add(toRdf(fullJsonObj.toString()));
             }
             return results;
         }
@@ -313,6 +316,7 @@ public class DimensionsConnector extends ConnectorDataSource
     
     @Override
     protected Model mapToVIVO(Model model) {
+        long start = System.currentTimeMillis();
         List<String> queries = Arrays.asList(
                 //"050-orcidId.rq",
                 "100-publicationTypes.rq",
@@ -326,7 +330,9 @@ public class DimensionsConnector extends ConnectorDataSource
         queries = Arrays.asList(
                 "120-publicationDate.rq",
                 "130-publicationJournal.rq",
-                "140-publicationAuthorship.rq"
+                //"140-publicationAuthorship.rq"
+                "141-publicationAuthorship1.rq",
+                "142-publicationAuthorship2.rq"
                 );
         for(String query : queries) {
             construct(SPARQL_RESOURCE_DIR + query, model, ABOX + getPrefixName() + "-");
@@ -351,6 +357,7 @@ public class DimensionsConnector extends ConnectorDataSource
         }
         model = renameByIdentifier(model, model.getProperty(
                 XmlToRdf.GENERIC_NS + "org_id"), ABOX, "");
+        log.info((System.currentTimeMillis() - start) + " ms to map to VIVO");
         return model;
     }
 

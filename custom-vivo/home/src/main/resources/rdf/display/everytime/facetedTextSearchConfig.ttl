@@ -169,7 +169,7 @@
         WHERE {
 	  {
 	    ?uri a obo:IAO_0000030 .
-	    ?uri nora:relatedToOrganization ?org /
+	    ?uri nora:relatedToOrganization ?org .
 	    ?org a vivo:Hospital .
 	    ?org rdfs:label ?orgLabel 
 	  } UNION {

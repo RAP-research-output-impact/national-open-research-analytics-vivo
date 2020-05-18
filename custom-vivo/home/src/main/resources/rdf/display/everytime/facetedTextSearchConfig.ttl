@@ -49,7 +49,14 @@
         PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> 
         SELECT DISTINCT ?orgLabel
         WHERE {
+	  FILTER(REGEX(STR(?org), "grid"))
 	  {
+	    ?uri a obo:IAO_0000030 .
+	    ?uri nora:relatedToOrganization ?org .
+	    ?org rdfs:label ?orgLabel .
+	    FILTER NOT EXISTS { ?org a vivo:University }
+	    FILTER NOT EXISTS { ?org a vivo:Hospital }
+	  } UNION {
             ?authorship vivo:relates ?uri .
 	    ?authorship a vivo:Authorship .
 	    ?authorship nora:relatedToOrganization ?org .
@@ -105,6 +112,11 @@
         SELECT DISTINCT ?orgLabel
         WHERE {
 	  {
+            ?uri a obo:IAO_0000030 .
+	    ?uri nora:relatedToOrganization ?org .
+	    ?org a vivo:University .
+	    ?org rdfs:label ?orgLabel .
+	  } UNION {
             ?authorship vivo:relates ?uri .
 	    ?authorship a vivo:Authorship .
 	    ?authorship nora:relatedToOrganization ?org .
@@ -156,6 +168,11 @@
         SELECT DISTINCT ?orgLabel 
         WHERE {
 	  {
+	    ?uri a obo:IAO_0000030 .
+	    ?uri nora:relatedToOrganization ?org /
+	    ?org a vivo:Hospital .
+	    ?org rdfs:label ?orgLabel 
+	  } UNION {
             ?authorship vivo:relates ?uri .
 	    ?authorship a vivo:Authorship .
 	    ?authorship nora:relatedToOrganization ?org .

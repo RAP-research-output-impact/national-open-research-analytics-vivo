@@ -210,7 +210,13 @@
 	PREFIX obo: <http://purl.obolibrary.org/obo/> 
         SELECT DISTINCT ?org
         WHERE {
+	  FILTER(REGEX(STR(?org), "grid"))
 	  {
+	    ?uri a obo:IAO_0000030 .
+	    ?uri nora:relatedToOrganization ?org .
+	    FILTER NOT EXISTS { ?org a vivo:University }
+	    FILTER NOT EXISTS { ?org a vivo:Hospital }
+	  } UNION {
             ?authorship vivo:relates ?uri .
 	    ?authorship a vivo:Authorship .
 	    ?authorship nora:relatedToOrganization ?org .
@@ -259,6 +265,10 @@
         SELECT DISTINCT ?org
         WHERE {
 	  {
+	    ?uri a obo:IAO_0000030 .
+	    ?uri nora:relatedToOrganization ?org .
+	    ?org a vivo:University .
+	  } UNION {
             ?authorship vivo:relates ?uri .
 	    ?authorship a vivo:Authorship .
 	    ?authorship nora:relatedToOrganization ?org .
@@ -302,6 +312,10 @@
         SELECT DISTINCT ?org
         WHERE {
 	  {
+	    ?uri a obo:IAO_0000030 .
+	    ?uri nora:relatedToOrganization ?org .
+	    ?org a vivo:Hospital .
+	  } UNION {
             ?authorship vivo:relates ?uri .
 	    ?authorship a vivo:Authorship .
 	    ?authorship nora:relatedToOrganization ?org .

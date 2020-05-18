@@ -67,8 +67,6 @@
         WHERE {
             ?uri vitro:mostSpecificType ?type 
 	    FILTER (?type != bibo:Journal)
-	    FILTER (?type != bibo:Book)
-	    FILTER (?type != wos:Conference)
         }
     """ .
 

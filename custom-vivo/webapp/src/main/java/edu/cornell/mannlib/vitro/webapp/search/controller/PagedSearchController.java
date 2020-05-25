@@ -73,7 +73,7 @@ public class PagedSearchController extends FreemarkerHttpServlet {
 
     protected static final int DEFAULT_HITS_PER_PAGE = 10;
     protected static final int DEFAULT_MAX_HIT_COUNT = 1000;
-    protected static final int FACET_LIMIT = 250;
+    protected static final int FACET_LIMIT = 500;
 
     private static final String PARAM_XML_REQUEST = "xml";
     private static final String PARAM_CSV_REQUEST = "csv";

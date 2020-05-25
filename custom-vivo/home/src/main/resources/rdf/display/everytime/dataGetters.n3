@@ -59,7 +59,7 @@ SELECT ?rank (COALESCE(?affiliation_, owl:Nothing) AS ?affiliation)
 } ORDER BY ?rank
 }
   ?affiliation rdfs:label ?affiliationLabel_
-  OPTIONAL { ?affiliation vivo:abbreviation ?affiliationAbbreviation_ }
+  OPTIONAL { ?affiliation rdfs:label ?affiliationAbbreviation_ }
   BIND(COALESCE(?affiliationAbbrevation_, ?affiliationLabel_) AS ?affiliationName_)   
 } GROUP BY ?affiliation ?type ?grid ORDER BY ?minRank
     """ ;                
@@ -410,7 +410,9 @@ SELECT ?rank (COALESCE(?affiliation_, owl:Nothing) AS ?affiliation)
   }
 } ORDER BY ?rank
 }
-  ?affiliation rdfs:label ?affiliationName_ 
+  ?affiliation rdfs:label ?affiliationLabel_
+  OPTIONAL { ?affiliation rdfs:label ?affiliationAbbreviation_ }
+  BIND(COALESCE(?affiliationAbbrevation_, ?affiliationLabel_) AS ?affiliationName_)   
 } GROUP BY ?affiliation ?type ?grid ORDER BY ?minRank
     """ ;                
 	<http://vitro.mannlib.cornell.edu/ontologies/display/1.1#saveToVar>
@@ -556,7 +558,9 @@ SELECT ?rank (COALESCE(?affiliation_, owl:Nothing) AS ?affiliation)
   }
 } ORDER BY ?rank
 }
-  ?affiliation rdfs:label ?affiliationName_  
+  ?affiliation rdfs:label ?affiliationLabel_
+  OPTIONAL { ?affiliation rdfs:label ?affiliationAbbreviation_ }
+  BIND(COALESCE(?affiliationAbbrevation_, ?affiliationLabel_) AS ?affiliationName_)   
 } GROUP BY ?affiliation ?type ?grid ORDER BY ?minRank
     """ ;                
     <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#saveToVar>

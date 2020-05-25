@@ -572,7 +572,6 @@ public class PagedSearchController extends FreemarkerHttpServlet {
                 continue;
             }
             for(Count value : ff.getValues()) {
-                log.info(sf.getPublicName() + ": " + value.getName() + " = " + value.getCount());
                 if(value.getCount() < 1) {
                     continue;
                 }

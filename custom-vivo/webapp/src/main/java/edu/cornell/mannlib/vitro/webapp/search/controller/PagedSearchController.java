@@ -27,8 +27,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.jena.query.ParameterizedSparqlString;
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.vocabulary.OWL;
-
-import com.hp.hpl.jena.vocabulary.RDFS;
+import org.apache.jena.vocabulary.RDFS;
 
 import dk.deffopera.nora.vivo.search.NoraSearchFacets;
 import dk.deffopera.nora.vivo.search.Param;

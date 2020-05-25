@@ -73,6 +73,7 @@ public class PagedSearchController extends FreemarkerHttpServlet {
 
     protected static final int DEFAULT_HITS_PER_PAGE = 10;
     protected static final int DEFAULT_MAX_HIT_COUNT = 1000;
+    protected static final int FACET_LIMIT = 15000;
 
     private static final String PARAM_XML_REQUEST = "xml";
     private static final String PARAM_CSV_REQUEST = "csv";
@@ -804,11 +805,11 @@ public class PagedSearchController extends FreemarkerHttpServlet {
             query.addFacetFields(VitroSearchTermNames.CLASSGROUP_URI).setFacetLimit(-1);
         }
         for(SearchFacet facet : NoraSearchFacets.getCommonSearchFacets()) {
-            query.addFacetFields(facet.getFieldName()).setFacetLimit(2000).setFacetMinCount(1);
+            query.addFacetFields(facet.getFieldName()).setFacetLimit(FACET_LIMIT).setFacetMinCount(1);
         }
         if(!"all".equals(getParamSearchMode(vreq))) {
             for(SearchFacet facet : NoraSearchFacets.getAdditionalSearchFacets()) {
-                query.addFacetFields(facet.getFieldName()).setFacetLimit(2000).setFacetMinCount(1);
+                query.addFacetFields(facet.getFieldName()).setFacetLimit(FACET_LIMIT).setFacetMinCount(1);
             }
         }
         addNoraFacetFields(query, excludeFacets, unionFacets, vreq);

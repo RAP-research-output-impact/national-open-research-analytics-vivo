@@ -73,7 +73,7 @@ public class PagedSearchController extends FreemarkerHttpServlet {
 
     protected static final int DEFAULT_HITS_PER_PAGE = 10;
     protected static final int DEFAULT_MAX_HIT_COUNT = 1000;
-    protected static final int FACET_LIMIT = 15000;
+    protected static final int FACET_LIMIT = 250;
 
     private static final String PARAM_XML_REQUEST = "xml";
     private static final String PARAM_CSV_REQUEST = "csv";
@@ -197,16 +197,16 @@ public class PagedSearchController extends FreemarkerHttpServlet {
             
             // Do a search query with the union facets also excluded from the
             // filtering so that we can get all possible results
-            SearchQuery allRecordTypesQuery = getQuery(queryText, Arrays.asList(
-                    "facet_content-type_ss"), unionFacetNames, 
-                    hitsPerPage, startIndex, vreq);
-            SearchResponse allRecordTypesResponse = null;
+//            SearchQuery allRecordTypesQuery = getQuery(queryText, Arrays.asList(
+//                    "facet_content-type_ss"), unionFacetNames, 
+//                    hitsPerPage, startIndex, vreq);
+//            SearchResponse allRecordTypesResponse = null;
             
             // Do a search query with the union facets also excluded from the
             // filtering so that we can get all possible results
-            SearchQuery allOrgsQuery = getQuery(queryText, unionFacetNames, unionFacetNames, 
-                    hitsPerPage, startIndex, vreq);
-            SearchResponse allOrgsResponse = null;
+//            SearchQuery allOrgsQuery = getQuery(queryText, unionFacetNames, unionFacetNames, 
+//                    hitsPerPage, startIndex, vreq);
+//            SearchResponse allOrgsResponse = null;
             
             // Do the main query with the facet filters.
             SearchQuery mainQuery = getQuery(queryText, Arrays.asList(""), unionFacetNames, 
@@ -215,8 +215,8 @@ public class PagedSearchController extends FreemarkerHttpServlet {
             SearchResponse mainResponse = null;
 
             try {
-                allRecordTypesResponse = search.query(allRecordTypesQuery);
-                allOrgsResponse = search.query(allOrgsQuery);
+                //allRecordTypesResponse = search.query(allRecordTypesQuery);
+                //allOrgsResponse = search.query(allOrgsQuery);
                 mainResponse = search.query(mainQuery);                
             } catch (Exception ex) {
                 String msg = makeBadSearchMessage(queryText, ex.getMessage(), vreq);
@@ -224,8 +224,7 @@ public class PagedSearchController extends FreemarkerHttpServlet {
                 return doFailedSearch(msg, queryText, format, vreq);
             }
 
-            if (allRecordTypesResponse == null || allOrgsResponse == null 
-                    || mainResponse == null) {
+            if (mainResponse == null) {
                 log.error("Search response was null");
                 return doFailedSearch(I18n.text(
                         vreq, "error_in_search_request"), queryText, format, vreq);
@@ -246,7 +245,7 @@ public class PagedSearchController extends FreemarkerHttpServlet {
             Map<String, Object> body = new HashMap<String, Object>();
             
             // Nora
-            body.put("typeCounts", getTypeCounts(allRecordTypesResponse, vreq, queryText));
+            body.put("typeCounts", getTypeCounts(mainResponse, vreq, queryText));
             int totalEntities = getTotalEntities(vreq);
             body.put("totalEntities", totalEntities);
             if(totalEntities == hitCount) {
@@ -255,7 +254,7 @@ public class PagedSearchController extends FreemarkerHttpServlet {
             String searchMode = getParamSearchMode(vreq);
             body.put(PARAM_SEARCHMODE, searchMode);
             List<SearchFacet> commonSearchFacets = getFacetLinks(
-                    NoraSearchFacets.getCommonSearchFacets(), vreq, allOrgsResponse, queryText); 
+                    NoraSearchFacets.getCommonSearchFacets(), vreq, mainResponse, queryText); 
             if(!"all".equals(searchMode)) {
                 body.put("additionalFacets", getFacetLinks(
                         NoraSearchFacets.getAdditionalSearchFacets(), vreq, mainResponse, queryText));

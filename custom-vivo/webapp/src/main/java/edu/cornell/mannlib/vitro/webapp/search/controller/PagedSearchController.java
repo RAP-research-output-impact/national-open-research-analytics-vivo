@@ -24,7 +24,11 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.jena.query.ParameterizedSparqlString;
+import org.apache.jena.query.QuerySolution;
 import org.apache.jena.vocabulary.OWL;
+
+import com.hp.hpl.jena.vocabulary.RDFS;
 
 import dk.deffopera.nora.vivo.search.NoraSearchFacets;
 import dk.deffopera.nora.vivo.search.Param;
@@ -57,6 +61,8 @@ import edu.cornell.mannlib.vitro.webapp.modules.searchEngine.SearchQuery.Order;
 import edu.cornell.mannlib.vitro.webapp.modules.searchEngine.SearchResponse;
 import edu.cornell.mannlib.vitro.webapp.modules.searchEngine.SearchResultDocument;
 import edu.cornell.mannlib.vitro.webapp.modules.searchEngine.SearchResultDocumentList;
+import edu.cornell.mannlib.vitro.webapp.rdfservice.RDFServiceException;
+import edu.cornell.mannlib.vitro.webapp.rdfservice.ResultSetConsumer;
 import edu.cornell.mannlib.vitro.webapp.search.VitroSearchTermNames;
 import edu.cornell.mannlib.vitro.webapp.web.templatemodels.LinkTemplateModel;
 import edu.cornell.mannlib.vitro.webapp.web.templatemodels.searchresult.IndividualSearchResult;
@@ -88,7 +94,12 @@ public class PagedSearchController extends FreemarkerHttpServlet {
     public static final String PARAM_QUERY_TEXT = "querytext";
     public static final String FACET_FIELD_PREFIX = "facet_";
     public static final String PARAM_FACET_AS_TEXT = "facetAsText";
-    public static final String PARAM_FACET_TEXT_VALUE = "facetTextValue";                  
+    public static final String PARAM_FACET_TEXT_VALUE = "facetTextValue";   
+    
+    protected static final String LABEL_ABBR_QUERY = "SELECT ?label ?abbr WHERE { \n"
+                                                   + "  ?x <" + RDFS.label.getURI() + "> ?label \n"
+                                                   + "  OPTIONAL { ?x <http://vivoweb.org/ontology/core#abbreviation> ?abbr } \n"
+                                                   + "} \n";     
 
     protected static final Map<Format,Map<Result,String>> templateTable;
 
@@ -1093,14 +1104,57 @@ public class PagedSearchController extends FreemarkerHttpServlet {
     private static String humanReadableFacetValue(String facetValue, 
             VitroRequest vreq) {
         if(facetValue.startsWith("http://")) {
-            IndividualDao iDao = vreq.getWebappDaoFactory()
-                    .getIndividualDao();
-            Individual ind = iDao.getIndividualByURI(facetValue);
-            if(ind != null) {
-                facetValue = ind.getRdfsLabel();
-            }
+            //IndividualDao iDao = vreq.getWebappDaoFactory()
+            //        .getIndividualDao();
+            //Individual ind = iDao.getIndividualByURI(facetValue);
+            ParameterizedSparqlString pss = new ParameterizedSparqlString(
+                    LABEL_ABBR_QUERY);
+            pss.setIri("x", facetValue);
+            try {
+                LabelAbbrConsumer consumer = new LabelAbbrConsumer();
+                vreq.getRDFService().sparqlSelectQuery(
+                        pss.toString(), consumer);
+                if(consumer.getAbbreviation() != null) {
+                    return consumer.getAbbreviation();
+                } else if(consumer.getLabel() != null) {
+                    return consumer.getLabel();
+                } else {
+                    return facetValue;
+                }
+            } catch (RDFServiceException e) {
+                log.error(e, e);
+                return facetValue;
+            }            
+            //if(ind != null) {            
+            //    facetValue = ind.getRdfsLabel();
+            //}
         }
         return facetValue;
+    }
+    
+    private static class LabelAbbrConsumer extends ResultSetConsumer {
+
+        private String label;
+        private String abbreviation;
+        
+        public String getLabel() {
+            return label;
+        }
+        
+        public String getAbbreviation() {
+            return abbreviation;
+        }
+        
+        @Override
+        protected void processQuerySolution(QuerySolution qsoln) {
+            if(qsoln.contains("label") && qsoln.get("label").isLiteral()) {
+                label = qsoln.getLiteral("label").getLexicalForm();
+            }
+            if(qsoln.contains("abbr") && qsoln.get("abbr").isLiteral()) {
+                abbreviation = qsoln.getLiteral("abbr").getLexicalForm();
+            }
+        }
+        
     }
 
     public static class VClassGroupSearchLink extends LinkTemplateModel {
@@ -1336,4 +1390,5 @@ public class PagedSearchController extends FreemarkerHttpServlet {
 
         return Collections.unmodifiableMap(table);
     }
+    
 }

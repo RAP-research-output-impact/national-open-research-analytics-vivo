@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -12,7 +11,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.RDFNode;
 import org.bson.Document;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -31,6 +29,7 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.MongoIterable;
 import com.mongodb.client.model.Filters;
 
 import dk.deffopera.nora.vivo.etl.datasource.DataSource;
@@ -125,6 +124,16 @@ public class DimensionsConnector extends ConnectorDataSource
                         .credential(credential)
                         .build());
         MongoDatabase database = mongoClient.getDatabase("opera");
+        MongoIterable<String> collNames = database.listCollectionNames();
+        for(String collName : collNames) {
+            log.info("Collection name: " + collName);
+        }
+        MongoCollection<Document> gridCollection = database.getCollection("uni-org-type");
+        MongoCursor<Document> gridCursor = gridCollection.find().cursor();
+        while(gridCursor.hasNext()) {
+           Document gridDoc = gridCursor.next();
+           log.info(gridDoc.toJson());
+        }
         MongoCollection<Document> collection = database.getCollection(mongoCollection);        
         this.mongoCollection = collection;
     }
@@ -175,7 +184,9 @@ public class DimensionsConnector extends ConnectorDataSource
             //}
             cursor = collection.find(
                     Filters.and(
-                            Filters.eq("meta.raw.dbname", "publications")
+                            Filters.eq("meta.raw.dbname", "publications"),
+                            Filters.eq("meta.raw.type", "book")
+                            //Filters.exists("meta.raw.author_affiliations", false)
                             //Filters.eq("meta.raw.id", "pub.1100249993")
                     )
                  )
@@ -214,38 +225,42 @@ public class DimensionsConnector extends ConnectorDataSource
                 if(meta.has("matchingstatus")) {
                     jsonObj.put("matchingstatus", meta.getString("matchingstatus"));    
                 }
-                JSONArray authorAffiliations = jsonObj.getJSONArray("author_affiliations");
-                List<String> affiliationGrids = new ArrayList<String>(); 
-                for(int aai = 0; aai < authorAffiliations.length(); aai++) {
-                    JSONArray authorAffiliationsInner = authorAffiliations.getJSONArray(aai);
-                    for(int aaj = 0; aaj < authorAffiliationsInner.length(); aaj++) {
-                        JSONObject authorAffiliation = authorAffiliationsInner.getJSONObject(aaj);
-                        JSONArray affiliations = authorAffiliation.getJSONArray("affiliations");
-                        for(int aak = 0; aak < affiliations.length(); aak++) {
-                            JSONObject affiliation = affiliations.getJSONObject(aak);
-                            if(affiliation.has("id")) {
-                                String id = affiliation.getString("id");
-                                if(id != null && id.startsWith("grid")) {
-                                    affiliationGrids.add(id);
-                                }
-                            } 
+                if(jsonObj.has("author_affiliations")) {
+                    JSONArray authorAffiliations = jsonObj.getJSONArray("author_affiliations");
+                    List<String> affiliationGrids = new ArrayList<String>(); 
+                    for(int aai = 0; aai < authorAffiliations.length(); aai++) {
+                        JSONArray authorAffiliationsInner = authorAffiliations.getJSONArray(aai);
+                        for(int aaj = 0; aaj < authorAffiliationsInner.length(); aaj++) {
+                            JSONObject authorAffiliation = authorAffiliationsInner.getJSONObject(aaj);
+                            JSONArray affiliations = authorAffiliation.getJSONArray("affiliations");
+                            for(int aak = 0; aak < affiliations.length(); aak++) {
+                                JSONObject affiliation = affiliations.getJSONObject(aak);
+                                if(affiliation.has("id")) {
+                                    String id = affiliation.getString("id");
+                                    if(id != null && id.startsWith("grid")) {
+                                        affiliationGrids.add(id);
+                                    }
+                                } 
+                            }
                         }
                     }
                 }
                 //log.info(affiliationGrids.size() + " grids in affiliations " + affiliationGrids);
-                for(String whoGrid : whoGrids) {
-                    if(!affiliationGrids.contains(whoGrid) 
-                            && (ugrids.values().contains(whoGrid) 
-                                    || hgrids.values().contains(whoGrid))) {                        
+                //for(String whoGrid : whoGrids) {
+                //    if(!affiliationGrids.contains(whoGrid) 
+                //            && (ugrids.values().contains(whoGrid) 
+                //                    || hgrids.values().contains(whoGrid))) {                        
                         //log.info("***** Grid only from who: " + whoGrid);
+                //    }
+                //}                         
+                try {               
+                    if(jsonObj.has("authors")) {
+                        JSONArray authors = jsonObj.getJSONArray("authors");
+                        for(int authi = 0; authi < authors.length(); authi++) {
+                            JSONObject author = authors.getJSONObject(authi);
+                            author.put("authorRank", authi + 1);
+                        }                           
                     }
-                }                         
-                try {                            
-                    JSONArray authors = jsonObj.getJSONArray("authors");
-                    for(int authi = 0; authi < authors.length(); authi++) {
-                        JSONObject author = authors.getJSONObject(authi);
-                        author.put("authorRank", authi + 1);
-                    }                                    
                 } catch (JSONException e) {
                     log.info(jsonObj.toString(2));
                     throw (e);

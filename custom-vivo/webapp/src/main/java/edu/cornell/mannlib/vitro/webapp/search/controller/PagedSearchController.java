@@ -804,11 +804,11 @@ public class PagedSearchController extends FreemarkerHttpServlet {
             query.addFacetFields(VitroSearchTermNames.CLASSGROUP_URI).setFacetLimit(-1);
         }
         for(SearchFacet facet : NoraSearchFacets.getCommonSearchFacets()) {
-            query.addFacetFields(facet.getFieldName()).setFacetLimit(-1);
+            query.addFacetFields(facet.getFieldName()).setFacetLimit(2000).setFacetMinCount(1);
         }
         if(!"all".equals(getParamSearchMode(vreq))) {
             for(SearchFacet facet : NoraSearchFacets.getAdditionalSearchFacets()) {
-                query.addFacetFields(facet.getFieldName()).setFacetLimit(-1);
+                query.addFacetFields(facet.getFieldName()).setFacetLimit(2000).setFacetMinCount(1);
             }
         }
         addNoraFacetFields(query, excludeFacets, unionFacets, vreq);

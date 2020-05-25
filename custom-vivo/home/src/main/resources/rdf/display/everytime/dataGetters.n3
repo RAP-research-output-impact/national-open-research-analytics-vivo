@@ -60,7 +60,7 @@ SELECT ?rank (COALESCE(?affiliation_, owl:Nothing) AS ?affiliation)
 }
   ?affiliation rdfs:label ?affiliationLabel_
   OPTIONAL { ?affiliation vivo:abbreviation ?affiliationAbbreviation_ }
-  BIND(COALESCE(?affiliationAbbrevation_, ?affiliationLabel_) AS ?affiliationName_)   
+  BIND(COALESCE(?affiliationAbbreviation_, ?affiliationLabel_) AS ?affiliationName_)   
 } GROUP BY ?affiliation ?type ?grid ORDER BY ?minRank
     """ ;                
 	<http://vitro.mannlib.cornell.edu/ontologies/display/1.1#saveToVar>
@@ -412,7 +412,7 @@ SELECT ?rank (COALESCE(?affiliation_, owl:Nothing) AS ?affiliation)
 }
   ?affiliation rdfs:label ?affiliationLabel_
   OPTIONAL { ?affiliation vivo:abbreviation ?affiliationAbbreviation_ }
-  BIND(COALESCE(?affiliationAbbrevation_, ?affiliationLabel_) AS ?affiliationName_)   
+  BIND(COALESCE(?affiliationAbbreviation_, ?affiliationLabel_) AS ?affiliationName_)   
 } GROUP BY ?affiliation ?type ?grid ORDER BY ?minRank
     """ ;                
 	<http://vitro.mannlib.cornell.edu/ontologies/display/1.1#saveToVar>
@@ -560,7 +560,7 @@ SELECT ?rank (COALESCE(?affiliation_, owl:Nothing) AS ?affiliation)
 }
   ?affiliation rdfs:label ?affiliationLabel_
   OPTIONAL { ?affiliation vivo:abbreviation ?affiliationAbbreviation_ }
-  BIND(COALESCE(?affiliationAbbrevation_, ?affiliationLabel_) AS ?affiliationName_)   
+  BIND(COALESCE(?affiliationAbbreviation_, ?affiliationLabel_) AS ?affiliationName_)   
 } GROUP BY ?affiliation ?type ?grid ORDER BY ?minRank
     """ ;                
     <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#saveToVar>

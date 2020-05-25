@@ -29,32 +29,32 @@
 
 <http://vivo.deffopera.dk/individual/grid.5254.6>
         a                 vivo:University ;
-        vivo:abbreviaton  "KU" .
+        vivo:abbreviation  "KU" .
 
 <http://vivo.deffopera.dk/individual/grid.5170.3>
         a                 vivo:University ;
-        vivo:abbreviaton  "DTU" .
+        vivo:abbreviation  "DTU" .
 
 <http://vivo.deffopera.dk/individual/grid.7048.b>
         a                 vivo:University ;
-        vivo:abbreviaton  "AU" .
+        vivo:abbreviation  "AU" .
 
 <http://vivo.deffopera.dk/individual/grid.10825.3e>
         a                 vivo:University ;
-        vivo:abbreviaton  "SDU" .
+        vivo:abbreviation  "SDU" .
 
 <http://vivo.deffopera.dk/individual/grid.5117.2>
         a                 vivo:University ;
-        vivo:abbreviaton  "AAU" .
+        vivo:abbreviation  "AAU" .
 
 <http://vivo.deffopera.dk/individual/grid.4655.2>
         a                 vivo:University ;
-        vivo:abbreviaton  "CBS" .
+        vivo:abbreviation  "CBS" .
 
 <http://vivo.deffopera.dk/individual/grid.11702.35>
         a                 vivo:University ;
-        vivo:abbreviaton  "RUC" .
+        vivo:abbreviation  "RUC" .
 
 <http://vivo.deffopera.dk/individual/grid.32190.39>
         a                 vivo:University ;
-        vivo:abbreviaton  "ITU" .
+        vivo:abbreviation  "ITU" .

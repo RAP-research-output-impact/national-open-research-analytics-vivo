@@ -54,7 +54,7 @@
 		            <form action="${urls.base}/search" method="GET">
                               <ul>
                                 <#list facet.categories as category>
-                                    <#if category.text?has_content && category.text != 'Journal' && category.text != 'Book' && category.text != 'Conference'>
+                                    <#if category.text?has_content>
                                         <li><input name="${facet.fieldName}" value="${category.value!}" type="checkbox"><a href="${category.url}" title="${category.text}">${category.text}</a><span>(${category.count})</span></li>
                                     </#if>
                                 </#list>
@@ -69,7 +69,7 @@
                           <#else>
                               <ul>
                                 <#list facet.categories as category>
-                                    <#if category.text?has_content && category.text != 'Journal' && category.text != 'Book' && category.text != 'Conference'>
+                                    <#if category.text?has_content>
                                         <li><a href="${category.url}" title="${category.text}">${category.text}</a><span>(${category.count})</span></li>
                                     </#if>
                                 </#list>
@@ -108,7 +108,7 @@
                         <td>
                             <ul>
                                 <#list facet.categories as category>
-                                    <#if category.text?has_content && category.text != 'Journal' && category.text != 'Book' && category.text != 'Conference'>
+                                    <#if category.text?has_content>
                                         <li><a href="${category.url}" title="${category.text}">${category.text}</a><span>(${category.count})</span></li>
                                     </#if>
                                 </#list>

@@ -192,6 +192,51 @@
         }
     """ .
 
+:documentModifier_facet_organization-all
+    a   <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.SelectQueryDocumentModifier> ,
+            <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.DocumentModifier> ;
+    rdfs:label "ALl organization (parent facet) document modifier" ;
+    :hasTargetField "facet_organization-all_ss" ;
+    :hasTypeRestriction "http://purl.obolibrary.org/obo/IAO_0000030";
+    :hasTypeRestriction "http://vivoweb.org/ontology/core#Grant" ;
+    :hasTypeRestriction "http://purl.obolibrary.org/obo/ERO_0000016" ; # ClinicalTrial
+    :hasSelectQuery """
+	PREFIX vivo: <http://vivoweb.org/ontology/core#>
+	PREFIX wos: <http://webofscience.com/ontology/wos#> 
+	PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+	PREFIX nora:    <http://vivo.deffopera.dk/ontology/osrap/>
+	PREFIX obo: <http://purl.obolibrary.org/obo/> 
+        SELECT DISTINCT ?org
+        WHERE {
+	  FILTER(REGEX(STR(?org), "grid"))
+	  {
+	    ?uri a obo:IAO_0000030 .
+	    ?uri nora:relatedToOrganization ?org .
+	  } UNION {
+            ?authorship vivo:relates ?uri .
+	    ?authorship a vivo:Authorship .
+	    ?authorship nora:relatedToOrganization ?org .
+	    ?org a foaf:Organization .
+	  } UNION {
+            ?uri a vivo:Grant .
+	    ?uri vivo:relates ?role .
+	    ?role a obo:BFO_0000023 .
+	    ?role nora:relatedToOrganization ?org .
+	    ?org a foaf:Organization .
+	  } UNION {
+            ?uri a obo:ERO_0000016 . # ClinicalTrial
+	    ?uri obo:BFO_0000055 ?role .
+	    ?role a obo:BFO_0000023 .
+	    ?role nora:relatedToOrganization ?org .
+	    ?org a foaf:Organization .
+	  } UNION {
+            ?uri nora:assigneeOriginal ?org .
+	    ?org a foaf:Organization .
+	  }
+        }
+    """ .
+
+
 :documentModifier_facet_organization
     a   <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.SelectQueryDocumentModifier> ,
             <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.DocumentModifier> ;

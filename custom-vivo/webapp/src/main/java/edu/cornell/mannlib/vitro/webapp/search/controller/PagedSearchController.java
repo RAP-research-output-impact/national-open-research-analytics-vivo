@@ -594,12 +594,12 @@ public class PagedSearchController extends FreemarkerHttpServlet {
             }
             if(sf.getParentFacet() == null) {
                 searchFacets.add(sf);
-                log.info("Added facet " + sf.getPublicName() + " to template.");
+                log.debug("Added facet " + sf.getPublicName() + " to template.");
             } else {
                 if(sf.isDisplayInSidebar() && !sf.getCategories().isEmpty() 
                         && !searchFacets.contains(sf.getParentFacet())) {
                     searchFacets.add(sf.getParentFacet());
-                    log.info("Added facet " + sf.getPublicName() + " to template.");
+                    log.debug("Added facet " + sf.getPublicName() + " to template.");
                 }
             }            
             
@@ -766,7 +766,7 @@ public class PagedSearchController extends FreemarkerHttpServlet {
             }
         }
 
-        log.info("query text is " + queryText);
+        log.debug("query text is " + queryText);
 
         // Lowercase the search term to support wildcard searches: The search engine applies no text
         // processing to a wildcard search term.
@@ -780,7 +780,7 @@ public class PagedSearchController extends FreemarkerHttpServlet {
             String[] sortAndDirection = sortField.split("\\|");
             // this string replacement may no longer be necessary
             sortField = sortAndDirection[0].replace("facet_", "sort_").replace("_ss", "_s");
-            log.info("adding sort field " + sortField);
+            log.debug("adding sort field " + sortField);
             if("DESC".equals(sortAndDirection[1])) {
                 query.addSortField(sortField, Order.DESC);    
             } else {
@@ -932,8 +932,10 @@ public class PagedSearchController extends FreemarkerHttpServlet {
                         }
                         builder.append(parameterName + ":\"" + val + "\"");
                     }
+                    log.info("Query: " + builder.toString());
                     query.addFilterQuery(builder.toString());
                 } else {
+                    log.info("Query: " + parameterName + ":\"" + parameterValue + "\"");
                     query.addFilterQuery(parameterName + ":\"" + parameterValue + "\"");
                 }
             }
@@ -1013,7 +1015,7 @@ public class PagedSearchController extends FreemarkerHttpServlet {
                 if(sf.isUnionFacet()) {
                     builder.append(GROUP_DELIMITER);
                 }
-                log.info(parameterName + " = " + builder.toString());
+                log.debug(parameterName + " = " + builder.toString());
                 map.put(parameterName, builder.toString());
             }
         }
@@ -1099,7 +1101,7 @@ public class PagedSearchController extends FreemarkerHttpServlet {
         }
 */
         for(String key : NoraSearchFacets.getFacetFields()) {
-            log.info("Building query reduce link for " + key);
+            log.debug("Building query reduce link for " + key);
             s = map.get(key);
             if ((s != null) && (!StringUtils.isEmpty(s))) {
                 String label = key;

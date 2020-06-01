@@ -593,13 +593,15 @@ public class PagedSearchController extends FreemarkerHttpServlet {
                 sf.getCategories().add(category);
             }
             if(sf.getParentFacet() == null) {
-                searchFacets.add(sf);    
+                searchFacets.add(sf);
+                log.info("Added facet " + sf.getPublicName() + " to template.");
             } else {
                 if(!searchFacets.contains(sf.getParentFacet())) {
                     searchFacets.add(sf.getParentFacet());
+                    log.info("Added facet " + sf.getPublicName() + " to template.");
                 }
             }            
-            log.debug("Added facet " + sf.getPublicName() + " to template.");
+            
         }
         return searchFacets;
     }

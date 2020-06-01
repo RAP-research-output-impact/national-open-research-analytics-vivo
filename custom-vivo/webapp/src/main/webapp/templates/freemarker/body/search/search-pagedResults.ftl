@@ -53,7 +53,7 @@
 			  <#if facet.childFacets?has_content>
                             <#list facet.childFacets as child>
                               <h5 class="search-facets-title">${child.publicName}</h5>
-			      <@facetCategories facet />
+			      <@facetCategories child />
 			    </#list>
 			  <#else>
 			    <@facetCategories facet />

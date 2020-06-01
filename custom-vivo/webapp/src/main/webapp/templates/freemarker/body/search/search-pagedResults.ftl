@@ -225,7 +225,7 @@
 <#macro facetCategories facet>
   <#if facet.unionFacet>
     <form action="${urls.base}/search" method="GET">
-      <p style="text-align:left;"><em>
+      <p style="margin-bottom:0;text-align:left;"><em>
       Check one or more and </em>
       <input style="align: left;" type="submit" name="submit" value="SEARCH"/>
       </p>

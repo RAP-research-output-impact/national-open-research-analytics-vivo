@@ -47,10 +47,8 @@ public class SearchFacet {
     }
     
     public SearchFacet clone() {
-        SearchFacet clonedParent = (this.getParentFacet() == null) 
-                ? null : this.getParentFacet().clone();
         return new SearchFacet(this.fieldName, this.publicName, 
-                this.displayInSidebar, this.isUnionFacet, clonedParent);        
+                this.displayInSidebar, this.isUnionFacet, this.getParentFacet());        
     }
     
     /**

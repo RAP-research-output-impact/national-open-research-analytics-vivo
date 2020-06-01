@@ -249,10 +249,10 @@
   <#else>
     <#if facet.childFacets?has_content>
       <#list facet.childFacets as child>
-        <@facetCategories facet>
+        <@facetCategoriesLinkis facet />
       </#list>
     <#else>
-      <@facetCategories facet>
+      <@facetCategoriesLinks facet />
     </#if>
   </#if>
 </#macro>
@@ -274,7 +274,7 @@
   </ul>
 </#macro>
 
-<#macro facetCategories facet>
+<#macro facetCategoriesLinks facet>
   <ul>
     <#list facet.categories as category>
       <#if category.text?has_content>

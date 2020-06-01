@@ -120,7 +120,7 @@ public class SearchFacet {
         for(int i = 0; i < this.childFacets.size(); i++) {
             if(childFacet.getFieldName().equals(
                     this.childFacets.get(i).getFieldName())) {
-                this.childFacets.add(i, childFacet);
+                this.childFacets.set(i, childFacet);
                 return;
             }
         }

@@ -50,7 +50,7 @@
                     </tr>
                     <tr class="search-facets" style="display: none;">
                         <td>
-			  <@facetCategories child />
+			  <@facetCategories facet />
                         </td>
                     </tr>
 		  </#if>
@@ -82,13 +82,7 @@
                     </tr>
                     <tr class="search-facets" style="display: none;">
                         <td>
-                            <ul>
-                                <#list facet.categories as category>
-                                    <#if category.text?has_content>
-                                        <li><a href="${category.url}" title="${category.text}">${category.text}</a><span>(${category.count})</span></li>
-                                    </#if>
-                                </#list>
-                            </ul>
+			  <@facetCategories facet />
                         </td>
                     </tr>
 		  </#if>

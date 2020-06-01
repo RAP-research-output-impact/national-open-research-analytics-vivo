@@ -249,7 +249,7 @@
   <#else>
     <#if facet.childFacets?has_content>
       <#list facet.childFacets as child>
-        <@facetCategoriesLinks facet />
+        <@facetCategoriesLinks child />
       </#list>
     <#else>
       <@facetCategoriesLinks facet />

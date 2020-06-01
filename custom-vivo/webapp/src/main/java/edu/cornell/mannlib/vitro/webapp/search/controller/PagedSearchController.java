@@ -919,6 +919,10 @@ public class PagedSearchController extends FreemarkerHttpServlet {
                 continue;
             }
             String parameterValue = facetParams.get(parameterName);
+            if(parameterValue.endsWith(GROUP_DELIMITER)) {
+                parameterValue = parameterValue.substring(
+                        0, parameterValue.length() - GROUP_DELIMITER.length());
+            }
             if(!parameterValue.isEmpty() && !unionFacets.contains(parameterName)) {
                 if (parameterValue.contains(VALUE_DELIMITER)) {
                     StringBuilder builder = new StringBuilder();
@@ -944,8 +948,12 @@ public class PagedSearchController extends FreemarkerHttpServlet {
                 // skip the excluded facet
                 continue;
             }
+            if(parameterValue.endsWith(GROUP_DELIMITER)) {
+                parameterValue = parameterValue.substring(
+                        0, parameterValue.length() - GROUP_DELIMITER.length());
+            }
             if(!parameterValue.isEmpty() && unionFacets.contains(parameterName)) {
-                for(String group: parameterValue.split(GROUP_DELIMITER)) {
+                for(String group: parameterValue.split(Pattern.quote(GROUP_DELIMITER))) {
                     if(group.trim().isEmpty()) {
                         continue;
                     }

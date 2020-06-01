@@ -16,13 +16,19 @@ public class NoraSearchFacets {
     private static final boolean IS_UNION_FACET = true;
             
     static {
+        List<SearchFacet> allFacets = new ArrayList<SearchFacet>();
+        
         // facets common to all record types
         SearchFacet recordTypes = new SearchFacet("facet_content-type_ss", "Record Types");
         recordTypes.setDisplayInSidebar(false);
         commonSearchFacets.add(recordTypes);
         commonSearchFacets.add(new SearchFacet("facet_year_ss", "Years", DISPLAY_IN_SIDEBAR, IS_UNION_FACET));
-        commonSearchFacets.add(new SearchFacet("facet_university_ss", "Danish Universities", DISPLAY_IN_SIDEBAR, IS_UNION_FACET));
-        commonSearchFacets.add(new SearchFacet("facet_hospital_ss", "Danish Hospitals", DISPLAY_IN_SIDEBAR, IS_UNION_FACET));
+        
+        SearchFacet danishOrgsParent = new SearchFacet("facet_organization-all_ss", "Danish Universities & Hospitals", DISPLAY_IN_SIDEBAR, IS_UNION_FACET);
+        allFacets.add(danishOrgsParent);
+        commonSearchFacets.add(new SearchFacet("facet_university_ss", "Danish Universities", DISPLAY_IN_SIDEBAR, IS_UNION_FACET, danishOrgsParent));
+        commonSearchFacets.add(new SearchFacet("facet_hospital_ss", "Danish Hospitals", DISPLAY_IN_SIDEBAR, IS_UNION_FACET, danishOrgsParent));
+        
         commonSearchFacets.add(new SearchFacet("facet_organization_ss", "Other Organizations", DISPLAY_IN_SIDEBAR, IS_UNION_FACET));
         commonSearchFacets.add(new SearchFacet("facet_funder_ss", "Funders"));
         commonSearchFacets.add(new SearchFacet("facet_main-subject-area_ss", "Main Subject Areas"));
@@ -50,7 +56,6 @@ public class NoraSearchFacets {
         additionalSearchFacets.add(new SearchFacet("facet_phase_ss", "Phase"));                
         additionalSearchFacets.add(new SearchFacet("facet_retrieval_ss", "Retrieval"));
         
-        List<SearchFacet> allFacets = new ArrayList<SearchFacet>();
         allFacets.addAll(commonSearchFacets);
         allFacets.addAll(additionalSearchFacets);
         for(SearchFacet facet : allFacets) {

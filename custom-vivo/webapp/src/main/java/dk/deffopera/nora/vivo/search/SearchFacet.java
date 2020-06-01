@@ -15,6 +15,8 @@ public class SearchFacet {
     private String fieldName;
     private boolean displayInSidebar = true;
     private boolean isUnionFacet = false;
+    private SearchFacet parentFacet = null;
+    private List<SearchFacet> childFacets = new ArrayList<SearchFacet>();
 
     private List<SearchFacetCategory> categories = new ArrayList<SearchFacetCategory>();
     
@@ -34,9 +36,21 @@ public class SearchFacet {
         this.isUnionFacet = isUnionFacet;
     }
     
+    public SearchFacet(String fieldName, String publicName, 
+            boolean displayInSidebar, boolean isUnionFacet, 
+            SearchFacet parentFacet) {
+        this(fieldName, publicName, displayInSidebar, isUnionFacet);
+        this.parentFacet = parentFacet;
+        if(parentFacet != null) {
+            parentFacet.addChildFacet(this);
+        }
+    }
+    
     public SearchFacet clone() {
+        SearchFacet clonedParent = (this.getParentFacet() == null) 
+                ? null : this.getParentFacet().clone();
         return new SearchFacet(this.fieldName, this.publicName, 
-                this.displayInSidebar, this.isUnionFacet);        
+                this.displayInSidebar, this.isUnionFacet, clonedParent);        
     }
     
     /**
@@ -90,6 +104,22 @@ public class SearchFacet {
      */
     public boolean isUnionFacet() {
         return this.isUnionFacet;
+    }
+    
+    public SearchFacet getParentFacet() {
+        return this.parentFacet;
+    }
+    
+    public void setParentFacet(SearchFacet parentFacet) {
+        this.parentFacet = parentFacet;
+    }
+    
+    public List<SearchFacet> getChildFacets() {
+        return this.childFacets;
+    }
+    
+    public void addChildFacet(SearchFacet childFacet) {
+        this.childFacets.add(childFacet);
     }
     
 }

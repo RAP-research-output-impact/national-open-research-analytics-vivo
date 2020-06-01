@@ -50,30 +50,13 @@
                     </tr>
                     <tr class="search-facets" style="display: none;">
                         <td>
-			  <#if facet.unionFacet>
-		            <form action="${urls.base}/search" method="GET">
-                              <ul>
-                                <#list facet.categories as category>
-                                    <#if category.text?has_content>
-                                        <li><input name="${facet.fieldName}" value="${category.value!}" type="checkbox"><a href="${category.url}" title="${category.text}">${category.text}</a><span>(${category.count})</span></li>
-                                    </#if>
-                                </#list>
-                              </ul>
-	                        <#list sortFormHiddenFields as field>
-	                          <#if field.name?? && (field.name != "sortField") && (field.name != "startIndex") && field.value??>
-                                    <input type="hidden" name="${field.name}" value="${field.value}"/>
-                                  </#if>
-	                        </#list>
-				<input style="align: left;" type="submit" name="submit" value="limit to selected items"/>
-			     </form>
-                          <#else>
-                              <ul>
-                                <#list facet.categories as category>
-                                    <#if category.text?has_content>
-                                        <li><a href="${category.url}" title="${category.text}">${category.text}</a><span>(${category.count})</span></li>
-                                    </#if>
-                                </#list>
-                              </ul>	
+			  <#if facet.childFacets?has_content>
+                            <#list facet.childFacets as child>
+                              <h5 class="search-facets-title">${child.publicName}</h5>
+			      <@facetCategories facet />
+			    </#list>
+			  <#else>
+			    <@facetCategories facet />
 			  </#if>
                         </td>
                     </tr>
@@ -251,6 +234,42 @@
         </#if>
     </#if>
 </div> <!-- end contentsBrowseGroup -->
+
+<#macro facetCategories facet>
+  <#if facet.unionFacet>
+    <form action="${urls.base}/search" method="GET">
+      <ul>
+        <#list facet.categories as category>
+          <#if category.text?has_content>
+	    <#if facet.parentFacet??>
+              <#assign facetFieldName = parentFacet.fieldName>
+	    <#else>
+              <#assign facetFieldName = facet.fieldName>
+	    </#if>
+            <li><input name="${facetFieldName}" value="${category.value!}" type="checkbox">
+	      <a href="${category.url}" title="${category.text}">${category.text}</a><span>(${category.count})</span>
+	    </li>
+          </#if>
+        </#list>
+      </ul>
+      <#list sortFormHiddenFields as field>
+        <#if field.name?? && (field.name != "sortField") && (field.name != "startIndex") && field.value??>
+          <input type="hidden" name="${field.name}" value="${field.value}"/>
+        </#if>
+      </#list>
+      <input style="align: left;" type="submit" name="submit" value="limit to selected items"/>
+    </form>
+  <#else>
+    <ul>
+      <#list facet.categories as category>
+        <#if category.text?has_content>
+          <li><a href="${category.url}" title="${category.text}">${category.text}</a><span>(${category.count})</span></li>
+        </#if>
+      </#list>
+    </ul>	
+  </#if>
+</#macro>
+
 
 ${stylesheets.add('<link rel="stylesheet" href="//code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />',
   				  '<link rel="stylesheet" href="${urls.base}/css/search.css" />')}

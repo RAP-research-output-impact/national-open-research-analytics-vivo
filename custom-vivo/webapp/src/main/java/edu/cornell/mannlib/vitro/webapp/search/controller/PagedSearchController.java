@@ -89,6 +89,8 @@ public class PagedSearchController extends FreemarkerHttpServlet {
     private static final String PARAM_SEARCHMODE = "searchMode";
     private static final String PARAM_RECORD_TYPE = "facet_content-type_ss";
     private static final String PARAM_SORTFIELD = "sortField";
+    private static final String VALUE_DELIMITER = ";;";
+    private static final String GROUP_DELIMITER = "||";
     // Nora make this field public
     public static final String PARAM_QUERY_TEXT = "querytext";
     public static final String FACET_FIELD_PREFIX = "facet_";
@@ -465,7 +467,7 @@ public class PagedSearchController extends FreemarkerHttpServlet {
                                 "facet_content-type_ss");
                         if(contentTypes != null) {
                             for(int i = 0; i < contentTypes.length; i++) {
-                                String[] values = contentTypes[i].split(";;");
+                                String[] values = contentTypes[i].split(VALUE_DELIMITER);
                                 for(int j = 0; j < values.length; j++) {
                                     if(catName.equals(values[j]) || catKey.equals(values[j])) {
                                         selected = true;
@@ -582,7 +584,7 @@ public class PagedSearchController extends FreemarkerHttpServlet {
                 String val = facetParams.get(ff.getName());
                 if (!("facet_content-type_ss".equals(ff.getName())) 
                         && (val != null) && (!StringUtils.isEmpty(val))) {
-                    facetParams.put(ff.getName(), val + ";;" + name);
+                    facetParams.put(ff.getName(), val + VALUE_DELIMITER + name);
                 } else {
                     facetParams.put(ff.getName(), name);
                 }
@@ -590,7 +592,13 @@ public class PagedSearchController extends FreemarkerHttpServlet {
                         label, name, facetParams, value.getCount());
                 sf.getCategories().add(category);
             }
-            searchFacets.add(sf);
+            if(sf.getParentFacet() == null) {
+                searchFacets.add(sf);    
+            } else {
+                if(!searchFacets.contains(sf.getParentFacet())) {
+                    searchFacets.add(sf.getParentFacet());
+                }
+            }            
             log.debug("Added facet " + sf.getPublicName() + " to template.");
         }
         return searchFacets;
@@ -909,9 +917,9 @@ public class PagedSearchController extends FreemarkerHttpServlet {
             }
             String parameterValue = facetParams.get(parameterName);
             if(!parameterValue.isEmpty() && !unionFacets.contains(parameterName)) {
-                if (parameterValue.contains(";;")) {
+                if (parameterValue.contains(VALUE_DELIMITER)) {
                     StringBuilder builder = new StringBuilder();
-                    for (String val : parameterValue.split(";;")) {
+                    for (String val : parameterValue.split(VALUE_DELIMITER)) {
                         if(builder.length() > 0) {
                             builder.append(" AND ");
                         }
@@ -933,13 +941,21 @@ public class PagedSearchController extends FreemarkerHttpServlet {
                 // skip the excluded facet
                 continue;
             }
-            if(!parameterValue.isEmpty() && unionFacets.contains(parameterName)) {    
-                for (String val : parameterValue.split(";;")) {
+            if(!parameterValue.isEmpty() && unionFacets.contains(parameterName)) {
+                for(String value: parameterValue.split(GROUP_DELIMITER)) {
                     if(builder.length() > 0) {
-                        builder.append(" OR ");
+                        builder.append(" AND ");
                     }
-                    builder.append(parameterName + ":\"" + val + "\"");
-                }                
+                    builder.append("( ");
+                    StringBuilder valBuilder = new StringBuilder();
+                    for (String val : parameterValue.split(VALUE_DELIMITER)) {
+                        if(valBuilder.length() > 0) {
+                            valBuilder.append(" OR ");
+                        }
+                        valBuilder.append(parameterName + ":\"" + val + "\"");
+                    }
+                    builder.append(valBuilder).append(")");
+                }                             
             }
         }
         if(builder.length() > 0) {
@@ -958,9 +974,13 @@ public class PagedSearchController extends FreemarkerHttpServlet {
                 String[] parameterValues = vreq.getParameterValues(parameterName);
                 for(int i = 0; i < parameterValues.length; i++) {
                     String parameterValue = parameterValues[i];
-                    String s = map.get(parameterName);
-                    if ((s != null) && (!StringUtils.isEmpty(s))) {
-                        map.put(parameterName, s + ";;" + parameterValue);
+                    String existing = map.get(parameterName);
+                    if ((existing != null) && (!StringUtils.isEmpty(existing))) {
+                        if(parameterValue.contains(VALUE_DELIMITER)) {
+                            map.put(parameterName, existing + GROUP_DELIMITER + parameterValue);
+                        } else {
+                            map.put(parameterName, existing + VALUE_DELIMITER + parameterValue);
+                        }
                     } else {
                         map.put(parameterName, parameterValue);
                     }
@@ -1049,6 +1069,7 @@ public class PagedSearchController extends FreemarkerHttpServlet {
         }
 */
         for(String key : NoraSearchFacets.getFacetFields()) {
+            log.info("Building query reduce link for " + key);
             s = map.get(key);
             if ((s != null) && (!StringUtils.isEmpty(s))) {
                 String label = key;
@@ -1056,30 +1077,38 @@ public class PagedSearchController extends FreemarkerHttpServlet {
                 if(textFacet != null) {
                    label = textFacet.getPublicName();
                 }
-                if (!textFacet.isUnionFacet() && s.contains(";;")) {
-                    List<String> vals = new ArrayList<String>(Arrays.asList(s.split(";;")));
+                if (!textFacet.isUnionFacet() && s.contains(VALUE_DELIMITER)) {
+                    List<String> vals = new ArrayList<String>(Arrays.asList(
+                            s.split(Pattern.quote(VALUE_DELIMITER))));
                     for (int i = 0; i < vals.size(); i++) {
                         String val = vals.get(i);
-                        String valSaved = humanReadableFacetValue(vals.get(i), vreq);                        
-                        vals.remove(i);
-                        map.put(key, StringUtils.join(vals, ";;"));
-                        vals.add(i, valSaved);
-                        qr.add(new LinkTemplateModel(label + ": " + val, "/search", map));
+                        String valueLabel = humanReadableFacetValue(val, vreq);
+                        map.put(key, StringUtils.join(vals, VALUE_DELIMITER));
+                        vals.add(i, val);
+                        qr.add(new LinkTemplateModel(label + ": " + valueLabel, "/search", map));
                     }
                     map.put(key, s);
-                } else if (textFacet.isUnionFacet() && s.contains(";;")) {
-                    StringBuilder valueLabels = new StringBuilder();
-                    List<String> vals = new ArrayList<String>(Arrays.asList(s.split(";;")));
-                    for (String val : vals) {
-                        if(valueLabels.length() > 0) {
-                            valueLabels.append(" OR ");
+                } else if (textFacet.isUnionFacet() 
+                        && (s.contains(VALUE_DELIMITER) || s.contains(GROUP_DELIMITER))) {
+                    List<String> groups = new ArrayList<String>(Arrays.asList(
+                            s.split(Pattern.quote(GROUP_DELIMITER))));
+                    for (int i = 0; i < groups.size(); i++) {
+                        String group = groups.get(i);                     
+                        groups.remove(i);
+                        map.put(key, StringUtils.join(groups, GROUP_DELIMITER));
+                        StringBuilder valueLabels = new StringBuilder();
+                        List<String> vals = new ArrayList<String>(Arrays.asList(
+                                group.split(Pattern.quote(VALUE_DELIMITER))));
+                        for (String val : vals) {
+                            if(valueLabels.length() > 0) {
+                                valueLabels.append(" OR ");
+                            }
+                            valueLabels.append(humanReadableFacetValue(val, vreq));                         
                         }
-                        valueLabels.append(humanReadableFacetValue(val, vreq));                         
+                        qr.add(new LinkTemplateModel(label + ": " 
+                                + valueLabels.toString(), "/search", map));                   
+                        groups.add(i, group);
                     }
-                    map.remove(key);
-                    qr.add(new LinkTemplateModel(label + ": " 
-                            + valueLabels.toString(), "/search", map));                   
-                    map.put(key, s);
                 } else {
                     String val = humanReadableFacetValue(s, vreq);                    
                     map.remove(key);

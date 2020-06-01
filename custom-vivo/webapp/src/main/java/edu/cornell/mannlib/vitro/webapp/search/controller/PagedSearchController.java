@@ -945,13 +945,16 @@ public class PagedSearchController extends FreemarkerHttpServlet {
                 continue;
             }
             if(!parameterValue.isEmpty() && unionFacets.contains(parameterName)) {
-                for(String value: parameterValue.split(GROUP_DELIMITER)) {
+                for(String group: parameterValue.split(GROUP_DELIMITER)) {
+                    if(group.trim().isEmpty()) {
+                        continue;
+                    }
                     if(builder.length() > 0) {
                         builder.append(" AND ");
                     }
                     builder.append("( ");
                     StringBuilder valBuilder = new StringBuilder();
-                    for (String val : parameterValue.split(VALUE_DELIMITER)) {
+                    for (String val : group.split(VALUE_DELIMITER)) {
                         if(valBuilder.length() > 0) {
                             valBuilder.append(" OR ");
                         }
@@ -1106,7 +1109,10 @@ public class PagedSearchController extends FreemarkerHttpServlet {
                     List<String> groups = new ArrayList<String>(Arrays.asList(
                             s.split(Pattern.quote(GROUP_DELIMITER))));
                     for (int i = 0; i < groups.size(); i++) {
-                        String group = groups.get(i);                     
+                        String group = groups.get(i);        
+                        if(group.trim().isEmpty()) {
+                            continue;
+                        }
                         groups.remove(i);
                         map.put(key, StringUtils.join(groups, GROUP_DELIMITER));
                         StringBuilder valueLabels = new StringBuilder();

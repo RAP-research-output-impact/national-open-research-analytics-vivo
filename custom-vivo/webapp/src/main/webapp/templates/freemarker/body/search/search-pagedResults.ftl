@@ -42,7 +42,7 @@
                   <td style="text-align:left;">GENERAL FILTERS:</td>
 		</tr>
                 <#list commonFacets as facet>
-		  <#if facet.displayInSidebar && facet.categories?has_content>
+		  <#if facet.displayInSidebar>
                     <tr class="search-facets-head">
                         <td style="align: left">
                             <h4 class="search-facets-title"><div class="search-facets-toggle">+</div>${facet.publicName}</h4>
@@ -242,7 +242,7 @@
         <#list facet.categories as category>
           <#if category.text?has_content>
 	    <#if facet.parentFacet??>
-              <#assign facetFieldName = parentFacet.fieldName>
+              <#assign facetFieldName = facet.parentFacet.fieldName>
 	    <#else>
               <#assign facetFieldName = facet.fieldName>
 	    </#if>

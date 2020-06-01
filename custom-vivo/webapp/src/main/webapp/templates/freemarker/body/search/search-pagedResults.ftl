@@ -225,9 +225,13 @@
 <#macro facetCategories facet>
   <#if facet.unionFacet>
     <form action="${urls.base}/search" method="GET">
+      <p style="text-align:left;"><em>
+      Check one or more and </em>
+      <input style="align: left;" type="submit" name="submit" value="SEARCH"/>
+      </p>
       <#if facet.childFacets?has_content>
         <#list facet.childFacets as child>
-          <h5 class="search-facets-title">${child.publicName}</h5>
+          <h5 style="text-align:left;" class="search-facets-title">${child.publicName}</h5>
 	  <@facetCategoriesCheckboxes child />
 	</#list>
       <#else>
@@ -238,7 +242,6 @@
           <input type="hidden" name="${field.name}" value="${field.value}"/>
         </#if>
       </#list>
-      <input style="align: left;" type="submit" name="submit" value="limit to selected items"/>
     </form>
   <#else>
     <#if facet.childFacets?has_content>

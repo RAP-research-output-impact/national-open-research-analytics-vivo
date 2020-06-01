@@ -973,6 +973,7 @@ public class PagedSearchController extends FreemarkerHttpServlet {
             }
         }
         if(builder.length() > 0) {
+            log.info("Query: " + builder.toString());
             query.addFilterQuery(builder.toString());    
         }
         

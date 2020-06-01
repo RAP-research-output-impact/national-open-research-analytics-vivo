@@ -974,20 +974,30 @@ public class PagedSearchController extends FreemarkerHttpServlet {
         while(parameterNames.hasMoreElements()) {
             String parameterName = parameterNames.nextElement();
             if(parameterName.startsWith(FACET_FIELD_PREFIX)) {
-                String[] parameterValues = vreq.getParameterValues(parameterName);
+                int previousValueIndex = -1;
+                StringBuilder builder = new StringBuilder(); 
+                String[] parameterValues = vreq.getParameterValues(parameterName);              
                 for(int i = 0; i < parameterValues.length; i++) {
                     String parameterValue = parameterValues[i];
-                    String existing = map.get(parameterName);
-                    if ((existing != null) && (!StringUtils.isEmpty(existing))) {
-                        if(parameterValue.contains(VALUE_DELIMITER)) {
-                            map.put(parameterName, existing + GROUP_DELIMITER + parameterValue);
-                        } else {
-                            map.put(parameterName, existing + VALUE_DELIMITER + parameterValue);
-                        }
-                    } else {
-                        map.put(parameterName, parameterValue);
+                    if(parameterValue.endsWith(GROUP_DELIMITER)) {
+                        previousValueIndex = i;
                     }
                 }
+                if(previousValueIndex >= 0) {
+                    builder.append(parameterValues[previousValueIndex]);
+                }
+                StringBuilder newValues = new StringBuilder();
+                for(int i = 0; i < parameterValues.length; i++) {
+                    if(i != previousValueIndex) {
+                        if(newValues.length() > 0) {
+                            newValues.append(VALUE_DELIMITER);    
+                        }
+                        newValues.append(parameterValues[i]);
+                    }
+                }
+                builder.append(newValues);
+                builder.append(GROUP_DELIMITER);
+                map.put(parameterName, builder.toString());
             }
         }
         return map;

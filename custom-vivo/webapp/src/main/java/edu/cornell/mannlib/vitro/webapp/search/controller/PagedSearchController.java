@@ -1000,6 +1000,7 @@ public class PagedSearchController extends FreemarkerHttpServlet {
                 }
                 builder.append(newValues);
                 builder.append(GROUP_DELIMITER);
+                log.info(parameterName + " = " + builder.toString());
                 map.put(parameterName, builder.toString());
             }
         }

@@ -420,12 +420,7 @@ public class PagedSearchController extends FreemarkerHttpServlet {
     
     private List<String> getUnionFacetNames() {
         List<String> unionFacetNames = new ArrayList<String>();
-        for(SearchFacet facet : NoraSearchFacets.getCommonSearchFacets()) {
-            if(facet.isUnionFacet()) {
-                unionFacetNames.add(facet.getFieldName());
-            }
-        }
-        for(SearchFacet facet : NoraSearchFacets.getAdditionalSearchFacets()) {
+        for(SearchFacet facet : NoraSearchFacets.getAllSearchFacets()) {
             if(facet.isUnionFacet()) {
                 unionFacetNames.add(facet.getFieldName());
             }
@@ -932,10 +927,10 @@ public class PagedSearchController extends FreemarkerHttpServlet {
                         }
                         builder.append(parameterName + ":\"" + val + "\"");
                     }
-                    log.info("Query: " + builder.toString());
+                    log.info("Query path1: " + builder.toString());
                     query.addFilterQuery(builder.toString());
                 } else {
-                    log.info("Query: " + parameterName + ":\"" + parameterValue + "\"");
+                    log.info("Query path2: " + parameterName + ":\"" + parameterValue + "\"");
                     query.addFilterQuery(parameterName + ":\"" + parameterValue + "\"");
                 }
             }
@@ -975,7 +970,7 @@ public class PagedSearchController extends FreemarkerHttpServlet {
             }
         }
         if(builder.length() > 0) {
-            log.info("Query: " + builder.toString());
+            log.info("Query path 3: " + builder.toString());
             query.addFilterQuery(builder.toString());    
         }
         

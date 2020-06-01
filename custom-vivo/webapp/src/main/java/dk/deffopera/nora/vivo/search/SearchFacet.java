@@ -117,6 +117,13 @@ public class SearchFacet {
     }
     
     public void addChildFacet(SearchFacet childFacet) {
+        for(int i = 0; i < this.childFacets.size(); i++) {
+            if(childFacet.getFieldName().equals(
+                    this.childFacets.get(i).getFieldName())) {
+                this.childFacets.add(i, childFacet);
+                return;
+            }
+        }
         this.childFacets.add(childFacet);
     }
     

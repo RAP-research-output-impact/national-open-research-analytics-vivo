@@ -23,6 +23,8 @@ bibo:Book display:hasCustomView :publicationSearchView .
 bibo:Chapter display:hasCustomView :publicationSearchView .
 vivo:ConferencePaper display:hasCustomView :publicationSearchView .
 vivo:Dataset display:hasCustomView :publicationSearchView .
+<http://vivo.deffopera.dk/ontology/osrap/Preprint> display:hasCustomView :publicationSearchView .
+<http://vivo.deffopera.dk/ontology/osrap/Monograph> display:hasCustomView :publicationSearchView .
 
 :publicationSearchView
     a display:customViewForIndividual ;

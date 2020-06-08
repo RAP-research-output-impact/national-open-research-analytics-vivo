@@ -192,6 +192,23 @@
 </ol>
 </#if>
 
+<#if countries?has_content || continents?has_content>
+<div class="pub_categories">
+  <#if countries?has_content>
+  <p>Countries</p>
+    <#list countries as country>
+      <p><a href="${urls.base}/search?searchMode=all&facet_country_ss=${country.country?url}">${country.countryLabel}</a></p>
+    </#list>
+  </#if>
+  <#if continents?has_content>
+  <p>Continents</p>
+    <#list continents as continent>
+      <p><a href="${urls.base}/search?searchMode=all&facet_continent_ss=${continent.continent?url}">${continent.continentLabel}</a></p>
+    </#list>
+  </#if>
+</div>
+</#if>
+
 <#if abstract?has_content>
 <!-- abstract -->
 <h3>Description</h3>

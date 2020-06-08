@@ -41,6 +41,9 @@ public class NoraSearchFacets {
         // not display the facet in the sidebar
         commonSearchFacets.add(new SearchFacet("facet_contributor_ss", "Contributor", !DISPLAY_IN_SIDEBAR));
         
+        commonSearchFacets.add(new SearchFacet("facet_country_ss", "Country", DISPLAY_IN_SIDEBAR));
+        commonSearchFacets.add(new SearchFacet("facet_continent_ss", "Continent", DISPLAY_IN_SIDEBAR));
+        
         // facets not indexed for all record types
         additionalSearchFacets.add(new SearchFacet("facet_document-type_ss", "Publication Types"));
         additionalSearchFacets.add(new SearchFacet("facet_publication-year_ss", "Publication Years", !DISPLAY_IN_SIDEBAR));

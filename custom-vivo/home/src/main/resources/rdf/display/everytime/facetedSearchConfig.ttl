@@ -236,6 +236,123 @@
         }
     """ .
 
+:documentModifier_facet_country
+    a   <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.SelectQueryDocumentModifier> ,
+            <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.DocumentModifier> ;
+    rdfs:label "Country document modifier" ;
+    :hasTargetField "facet_country_ss" ;
+    :hasTypeRestriction "http://purl.obolibrary.org/obo/IAO_0000030";
+    :hasTypeRestriction "http://vivoweb.org/ontology/core#Grant" ;
+    :hasTypeRestriction "http://purl.obolibrary.org/obo/ERO_0000016" ; # ClinicalTrial
+    :hasSelectQuery """
+	PREFIX vivo: <http://vivoweb.org/ontology/core#>
+	PREFIX wos: <http://webofscience.com/ontology/wos#> 
+	PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+	PREFIX nora:    <http://vivo.deffopera.dk/ontology/osrap/>
+	PREFIX obo: <http://purl.obolibrary.org/obo/> 
+        SELECT DISTINCT ?country
+        WHERE {
+	  FILTER(REGEX(STR(?org), "grid"))
+	  {
+	    ?uri a obo:IAO_0000030 .
+	    ?uri nora:relatedToOrganization ?org .
+	    ?org nora:countryCode ?countryCode .
+	    ?country <http://aims.fao.org/aos/geopolitical.owl#codeISO2> ?countryCode .
+	  } UNION {
+            ?authorship vivo:relates ?uri .
+	    ?authorship a vivo:Authorship .
+	    ?authorship nora:relatedToOrganization ?org .
+	    ?org a foaf:Organization .
+	    ?org nora:countryCode ?countryCode .
+	    ?country <http://aims.fao.org/aos/geopolitical.owl#codeISO2> ?countryCode .
+	  } UNION {
+            ?uri a vivo:Grant .
+	    ?uri vivo:relates ?role .
+	    ?role a obo:BFO_0000023 .
+	    ?role nora:relatedToOrganization ?org .
+	    ?org a foaf:Organization .
+	    ?org nora:countryCode ?countryCode .
+	    ?country <http://aims.fao.org/aos/geopolitical.owl#codeISO2> ?countryCode .
+	  } UNION {
+            ?uri a obo:ERO_0000016 . # ClinicalTrial
+	    ?uri obo:BFO_0000055 ?role .
+	    ?role a obo:BFO_0000023 .
+	    ?role nora:relatedToOrganization ?org .
+	    ?org a foaf:Organization .
+	    ?org nora:countryCode ?countryCode .
+	    ?country <http://aims.fao.org/aos/geopolitical.owl#codeISO2> ?countryCode .
+	  } UNION {
+            ?uri nora:assigneeOriginal ?org .
+	    ?org a foaf:Organization .
+	    ?org nora:countryCode ?countryCode .
+	    ?country <http://aims.fao.org/aos/geopolitical.owl#codeISO2> ?countryCode .
+	  }
+        }
+    """ .
+
+:documentModifier_facet_continent
+    a   <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.SelectQueryDocumentModifier> ,
+            <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.DocumentModifier> ;
+    rdfs:label "Continent document modifier" ;
+    :hasTargetField "facet_continent_ss" ;
+    :hasTypeRestriction "http://purl.obolibrary.org/obo/IAO_0000030";
+    :hasTypeRestriction "http://vivoweb.org/ontology/core#Grant" ;
+    :hasTypeRestriction "http://purl.obolibrary.org/obo/ERO_0000016" ; # ClinicalTrial
+    :hasSelectQuery """
+	PREFIX vivo: <http://vivoweb.org/ontology/core#>
+	PREFIX wos: <http://webofscience.com/ontology/wos#> 
+	PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+	PREFIX nora:    <http://vivo.deffopera.dk/ontology/osrap/>
+	PREFIX obo: <http://purl.obolibrary.org/obo/> 
+        SELECT DISTINCT ?continent
+        WHERE {
+	  FILTER(REGEX(STR(?org), "grid"))
+	  {
+	    ?uri a obo:IAO_0000030 .
+	    ?uri nora:relatedToOrganization ?org .
+	    ?org nora:countryCode ?countryCode .
+	    ?country <http://aims.fao.org/aos/geopolitical.owl#codeISO2> ?countryCode .
+	    ?country <http://aims.fao.org/aos/geopolitical.owl#isInGroup> ?continent .
+	    ?continent a vivo:Continent .
+	  } UNION {
+            ?authorship vivo:relates ?uri .
+	    ?authorship a vivo:Authorship .
+	    ?authorship nora:relatedToOrganization ?org .
+	    ?org a foaf:Organization .
+	    ?org nora:countryCode ?countryCode .
+	    ?country <http://aims.fao.org/aos/geopolitical.owl#codeISO2> ?countryCode .
+	    ?country <http://aims.fao.org/aos/geopolitical.owl#isInGroup> ?continent .
+	    ?continent a vivo:Continent .
+	  } UNION {
+            ?uri a vivo:Grant .
+	    ?uri vivo:relates ?role .
+	    ?role a obo:BFO_0000023 .
+	    ?role nora:relatedToOrganization ?org .
+	    ?org a foaf:Organization .
+	    ?org nora:countryCode ?countryCode .
+	    ?country <http://aims.fao.org/aos/geopolitical.owl#codeISO2> ?countryCode .
+	    ?country <http://aims.fao.org/aos/geopolitical.owl#isInGroup> ?continent .
+	    ?continent a vivo:Continent .
+	  } UNION {
+            ?uri a obo:ERO_0000016 . # ClinicalTrial
+	    ?uri obo:BFO_0000055 ?role .
+	    ?role a obo:BFO_0000023 .
+	    ?role nora:relatedToOrganization ?org .
+	    ?org a foaf:Organization .
+	    ?org nora:countryCode ?countryCode .
+	    ?country <http://aims.fao.org/aos/geopolitical.owl#codeISO2> ?countryCode .
+	    ?country <http://aims.fao.org/aos/geopolitical.owl#isInGroup> ?continent .
+	    ?continent a vivo:Continent .
+	  } UNION {
+            ?uri nora:assigneeOriginal ?org .
+	    ?org a foaf:Organization .
+	    ?org nora:countryCode ?countryCode .
+	    ?country <http://aims.fao.org/aos/geopolitical.owl#codeISO2> ?countryCode .
+	    ?country <http://aims.fao.org/aos/geopolitical.owl#isInGroup> ?continent .
+	    ?continent a vivo:Continent .
+	  }
+        }
+    """ .
 
 :documentModifier_facet_organization
     a   <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.SelectQueryDocumentModifier> ,
@@ -352,32 +469,37 @@
 	PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 	PREFIX nora:    <http://vivo.deffopera.dk/ontology/osrap/>
 	PREFIX obo: <http://purl.obolibrary.org/obo/> 
-        SELECT DISTINCT ?org
+        SELECT DISTINCT ?regionAlias
         WHERE {
 	  {
 	    ?uri a obo:IAO_0000030 .
 	    ?uri nora:relatedToOrganization ?org .
 	    ?org a vivo:Hospital .
+	    ?org vivo:abbreviation ?regionAlias
 	  } UNION {
             ?authorship vivo:relates ?uri .
 	    ?authorship a vivo:Authorship .
 	    ?authorship nora:relatedToOrganization ?org .
 	    ?org a vivo:Hospital .
+	    ?org vivo:abbreviation ?regionAlias
 	  } UNION {
             ?uri a vivo:Grant .
 	    ?uri vivo:relates ?role .
 	    ?role a obo:BFO_0000023 .
 	    ?role nora:relatedToOrganization ?org .
 	    ?org a vivo:Hospital .
+	    ?org vivo:abbreviation ?regionAlias
 	  } UNION {
             ?uri a obo:ERO_0000016 . # ClinicalTrial
 	    ?uri obo:BFO_0000055 ?role .
 	    ?role a obo:BFO_0000023 .
 	    ?role nora:relatedToOrganization ?org .
 	    ?org a vivo:Hospital .
+	    ?org vivo:abbreviation ?regionAlias
 	  } UNION {
             ?uri nora:assigneeOriginal ?org .
 	    ?org a vivo:Hospital .
+	    ?org vivo:abbreviation ?regionAlias
 	  }
         }
     """ .

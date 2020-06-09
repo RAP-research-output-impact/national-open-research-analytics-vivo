@@ -315,6 +315,12 @@ footer {
 
 /***** pub-v-main ****/
 
+.pub-v-main h4 {
+        color: black;
+        margin-bottom: 0;
+        padding-bottom: 0;
+}
+
 /***** pub-v-type ****/
 .n-pub-type {
 	color: gray;

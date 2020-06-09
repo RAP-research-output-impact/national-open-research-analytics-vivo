@@ -4,6 +4,10 @@
 <freemarker:individual--bibo-document.ftl> 
         <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#hasDataGetter> 
                  <http://vitro.mannlib.cornell.edu/ns/default#vcardUrlDataGetter> .
+<freemarker:individual--bibo-document.ftl> 
+        <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#hasDataGetter> 
+                 <http://vitro.mannlib.cornell.edu/ns/default#countriesDataGetter> ,
+                 <http://vitro.mannlib.cornell.edu/ns/default#continentsDataGetter> .
 <freemarker:individual--vivo-dataset.ftl> 
         <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#hasDataGetter> 
                  <http://vitro.mannlib.cornell.edu/ns/default#authorAffiliationsDataGetter> .
@@ -13,6 +17,10 @@
 <freemarker:individual--vivo-dataset.ftl> 
         <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#hasDataGetter> 
                  <http://vitro.mannlib.cornell.edu/ns/default#supportedPublicationsDataGetter> .
+<freemarker:individual--vivo-dataset.ftl> 
+        <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#hasDataGetter> 
+                 <http://vitro.mannlib.cornell.edu/ns/default#countriesDataGetter> ,
+                 <http://vitro.mannlib.cornell.edu/ns/default#continentsDataGetter> .
 
 <http://vitro.mannlib.cornell.edu/ns/default#authorAffiliationsDataGetter>
         a       <java:edu.cornell.mannlib.vitro.webapp.utils.dataGetter.SparqlQueryDataGetter> ;
@@ -318,6 +326,10 @@ WHERE {
 <freemarker:individual--vivo-grant.ftl>
         <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#hasDataGetter> 
                  <http://vitro.mannlib.cornell.edu/ns/default#supportedPublicationsDataGetter> .
+<freemarker:individual--vivo-grant.ftl>
+        <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#hasDataGetter> 
+                 <http://vitro.mannlib.cornell.edu/ns/default#countriesDataGetter> ,
+                 <http://vitro.mannlib.cornell.edu/ns/default#continentsDataGetter> .
 
 <http://vitro.mannlib.cornell.edu/ns/default#grantMetaDataGetter>
         a       <java:edu.cornell.mannlib.vitro.webapp.utils.dataGetter.SparqlQueryDataGetter> ;
@@ -466,6 +478,10 @@ WHERE {
 <freemarker:individual--obo-ERO_0000016.ftl>                 
          <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#hasDataGetter> 
                  <http://vitro.mannlib.cornell.edu/ns/default#vcardUrlDataGetter> .
+<freemarker:individual--obo-ERO_0000016.ftl>                 
+        <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#hasDataGetter> 
+                 <http://vitro.mannlib.cornell.edu/ns/default#countriesDataGetter> ,
+                 <http://vitro.mannlib.cornell.edu/ns/default#continentsDataGetter> .
 
 <http://vitro.mannlib.cornell.edu/ns/default#clinicalTrialMetaDataGetter>
         a       <java:edu.cornell.mannlib.vitro.webapp.utils.dataGetter.SparqlQueryDataGetter> ;

@@ -782,4 +782,42 @@ WHERE {
     """ ;                
     <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#saveToVar>
                 "continents" .
-        
+       
+<freemarker:individual--bibo-document.ftl> 
+        <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#hasDataGetter> 
+                <http://vitro.mannlib.cornell.edu/ns/default#bfiOaiDataGetter> .
+<freemarker:individual--vivo-dataset.ftl> 
+        <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#hasDataGetter> 
+                <http://vitro.mannlib.cornell.edu/ns/default#bfiOaiDataGetter> .
+
+<http://vitro.mannlib.cornell.edu/ns/default#bfiOaiDataGetter>
+        a       <java:edu.cornell.mannlib.vitro.webapp.utils.dataGetter.SparqlQueryDataGetter> ;
+        <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#query> """ 
+    PREFIX rdfs:     <http://www.w3.org/2000/01/rdf-schema#>           
+    PREFIX vivo: <http://vivoweb.org/ontology/core#>
+    PREFIX wos: <http://webofscience.com/ontology/wos#> 
+    PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+    PREFIX bibo:     <http://purl.org/ontology/bibo/>
+    PREFIX nora:    <http://vivo.deffopera.dk/ontology/osrap/>
+    PREFIX obo: <http://purl.obolibrary.org/obo/> 
+    SELECT 
+      ?type ?bfiLevel ?bfiMra ?bfiPubYear ?bfiSubYear 
+            ?oaiClass ?oaiMra ?oaiPubYear ?oaiSubYear 
+    WHERE {
+      ?individualURI bibo:doi ?doi
+      ?x nora:DOI ?doi .
+      OPTIONAL { ?x nora:BFIOAItype ?type }
+      OPTIONAL { ?x nora:BFI-LEVEL ?bfiLevel }
+      OPTIONAL { ?x nora:BFI-MRA ?bfiMra }
+      OPTIONAL { ?x nora:BFI-pub-year ?bfiPubYear }
+      OPTIONAL { nora:BFI-sub-year ?bfiSubYear }
+      OPTIONAL { nora:OAI-Class ?oaiClass }
+      OPTIONAL { nora:OAI-MRA ?oaiMra }
+      OPTIONAL { nora:OAI-pub-year ?oaiPubYear }
+      OPTIONAL { nora:OAI-sub-year ?oaiSubYear }
+    }
+    """ ;                
+    <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#saveToVar>
+                "bfiOai" .
+       
+

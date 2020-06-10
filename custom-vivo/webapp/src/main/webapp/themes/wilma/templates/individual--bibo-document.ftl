@@ -304,6 +304,18 @@
       <#if pubMeta[0].relativeCitationRatio??>
         <p>Relative Citation ratio (RCR): <span>${pubMeta[0].relativeCitationRatio}</span></p>
       </#if>
+      <#if pubMeta?has_content && pubMeta[0].openAccessLabel?has_content>
+        <div class="pub_categories">
+          <h3>Open Access Info</h3>
+        <p>
+        <#if vcardUrl?has_content>
+          <a href="${vcardUrl[0].url}" title="link to ${pubMeta[0].openAccessLabel} open-access full text">${pubMeta[0].openAccessLabel}</a>
+        <#else>
+          ${pubMeta[0].openAccessLabel}
+        </#if>
+        </p>
+        </div>
+      </#if>
     </div>
     <!-- end pv-metrics -->
 

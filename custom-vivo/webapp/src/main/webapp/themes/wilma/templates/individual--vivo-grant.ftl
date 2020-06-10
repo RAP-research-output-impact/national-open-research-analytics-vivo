@@ -151,7 +151,7 @@
       <#if !grantAffiliation.type?has_content>
         <li>(${grantAffiliation?index + 1}) ${grantAffiliation.affiliationName}, ${grantAffiliation.grid}</li>
       <#else>
-          <li>(${grantAffiliation?index + 1}) <a href="${urls.base}/search?searchMode=grants&facet_${grantAffiliation.type!organization}_ss=${grantAffiliation.affiliation}">${grantAffiliation.affiliationName}, ${grantAffiliation.grid}</a></li>
+          <li>(${grantAffiliation?index + 1}) <a href="${urls.base}/search?searchMode=grants&facet_${grantAffiliation.type!organization}_ss=${grantAffiliation.affiliation}">${grantAffiliation.affiliationName}, ${grantAffiliation.grid}<#if authorAffiliation.affiliationAbbreviation??>, ${authorAffiliation.affiliationAbbreviation}</#if></a></li>
       </#if>
     <#else>
       <#if !grantAffiliation.type?has_content>

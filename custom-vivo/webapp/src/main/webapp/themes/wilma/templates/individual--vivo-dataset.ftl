@@ -177,7 +177,7 @@
       <#if !authorAffiliation.type?has_content>
         <li>(${authorAffiliation?index + 1}) ${authorAffiliation.affiliationName}, ${authorAffiliation.grid}</li>
       <#else>
-          <li>(${authorAffiliation?index + 1}) <a href="${urls.base}/search?searchMode=publications&facet_${authorAffiliation.type!organization}_ss=${authorAffiliation.affiliation}">${authorAffiliation.affiliationName}, ${authorAffiliation.grid}</a></li>
+          <li>(${authorAffiliation?index + 1}) <a href="${urls.base}/search?searchMode=publications&facet_${authorAffiliation.type!organization}_ss=${authorAffiliation.affiliation}">${authorAffiliation.affiliationName}, ${authorAffiliation.grid}<#if authorAffiliation.affiliationAbbreviation??>, ${authorAffiliation.affiliationAbbreviation}</#if></a></li>
       </#if>
     <#else>
       <#if !authorAffiliation.type?has_content>

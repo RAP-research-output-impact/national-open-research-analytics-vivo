@@ -146,7 +146,7 @@
       <#if !clinicalTrialAffiliation.type?has_content>
         <li>(${clinicalTrialAffiliation?index + 1}) ${clinicalTrialAffiliation.affiliationName}, ${clinicalTrialAffiliation.grid}</li>
       <#else>
-          <li>(${clinicalTrialAffiliation?index + 1}) <a href="${urls.base}/search?searchMode=clinical_trials&facet_${clinicalTrialAffiliation.type!organization}_ss=${clinicalTrialAffiliation.affiliation}">${clinicalTrialAffiliation.affiliationName}, ${clinicalTrialAffiliation.grid}</a></li>
+          <li>(${clinicalTrialAffiliation?index + 1}) <a href="${urls.base}/search?searchMode=clinical_trials&facet_${clinicalTrialAffiliation.type!organization}_ss=${clinicalTrialAffiliation.affiliation}">${clinicalTrialAffiliation.affiliationName}, ${clinicalTrialAffiliation.grid}<#if authorAffiliation.affiliationAbbreviation??>, ${authorAffiliation.affiliationAbbreviation}</#if></a></li>
       </#if>
     <#else>
       <#if !clinicalTrialAffiliation.type?has_content>

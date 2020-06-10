@@ -294,7 +294,7 @@
 	<#if bfiOai[0].bfiLevel??>Level ${bfiOai[0].bfiLevel}</#if>
       </#if>
       <#if doi?has_content>
-        <div id="altmetrics" display="none">
+        <div id="altmetrics" style="display:none;">
 	  <h3>Altmetric Social Media Indicators</h3>
           <p>Attention: <span id="altmetricScore"></span><p>
           <p>News: <span id="altmetricNews"></span><p>
@@ -309,7 +309,7 @@
 	       //if('score' in json) { $("#altmetricNews").text(json.news); }
 	       if('cited_by_tweeters_count' in json) { $("#altmetricTwitter").text(json.cited_by_tweeters_count); }
 	       if('readers' in json && 'mendeley' in json.readers) { $("#altmetricMendeley").text(json.readers.mendeley); }
-	       $("altmetrics").show();
+	       $("#altmetrics").show();
 	  }
 
           function fetchAltmetrics(fetchUrl) {

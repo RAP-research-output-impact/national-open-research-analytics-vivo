@@ -293,6 +293,40 @@
 	<#if bfiOai[0].bfiMra??>(${bfiOai[0].bfiMra}): </#if>
 	<#if bfiOai[0].bfiLevel??>Level ${bfiOai[0].bfiLevel}</#if>
       </#if>
+      <#if doi?has_content>
+        <div id="altmetrics" display="none">
+	  <h3>Altmetric Social Media Indicators</h3>
+          <p>Attention: <span id="altmetricScore"></span><p>
+          <p>News: <span id="altmetricNews"></span><p>
+          <p>Twitter: <span id="altmetricTwitter"></span><p>
+          <p>Mendeley: <span id="altmetricMendeley"></span><p>
+	</div>
+        <script type="text/javascript">
+          fetchAltmetrics("https://api.altmetric.com/v1/doi/${doi}");
+
+	  function updateSidebar(json) {
+	       if('score' in json) { $("#altmetricScore").text(json.score); }
+	       //if('score' in json) { $("#altmetricNews").text(json.news); }
+	       if('cited_by_tweeters_count' in json) { $("#altmetricTwitter").text(json.cited_by_tweeters_count); }
+	       if('readers' in json && 'mendeley' in json.readers) { $("#altmetricMendeley").text(json.readers.mendeley); }
+	       $("altmetrics").show();
+	  }
+
+          function fetchAltmetrics(fetchUrl) {
+	    return fetch(fetchUrl)
+	        .catch(err => console.error('request failed: ', err))
+		.then(rToJson)
+		.then(updateSidebar);
+           }
+
+	   function rToJson(r) {
+	     if (r.ok) return r.json()
+	       else throw new Error('Network response was not ok.');
+	   }
+
+        </script>
+      </#if>
+
       <#-- <p class='pv-metrics-src'><img src="https://38h6q83kpel22aipe0iux4i1-wpengine.netdna-ssl.com/wp-content/themes/dimensions-2019/dist/images/dimensions-logo-400x80.png" alt="Dimensions" width="150"/></p> -->
       <h3>Dimensions Citation Indicators</h3>
       <#if pubMeta[0].timesCited??>

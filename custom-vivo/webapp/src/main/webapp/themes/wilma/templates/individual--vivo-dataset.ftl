@@ -243,13 +243,13 @@
   
 <div class="pub-v-sidebar">
 
-  <#if bfiOai?has_content && (bfiOai[0].BFIOAItype == "Both" || bfiOai[0].BFIOAItype == "OA-Ind")>
+  <#if bfiOai?has_content && bfiOai[0].type?has_content && (bfiOai[0].type == "Both" || bfiOai[0].type == "OA-Ind")>
     <h3>Danish Open Access Indicator</h3>
     <#if bfiOai[0].oaiSubYear??>${bfiOai[0].oaiSubYear}</#if>
     <#if bfiOai[0].oaiClass??>(${bfiOai[0].oaiClass}): </#if>
     <#if bfiOai[0].oaiMra??>${bfiOai[0].oaiMra}</#if>
   </#if>
-  <#if bfiOai?has_content && (bfiOai[0].BFIOAItype == "Both" || bfiOai[0].BFIOAItype == "BFI")>
+  <#if bfiOai?has_content && bfiOai[0].type?has_content && (bfiOai[0].type == "Both" || bfiOai[0].type == "BFI")>
     <h3>Danish Bibliometrics Indicator</h3>
     <#if bfiOai[0].bfiSubYear??>${bfiOai[0].bfiSubYear}</#if>
     <#if bfiOai[0].bfiLevel??>(${bfiOai[0].bfiLevel}): </#if>

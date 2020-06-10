@@ -807,7 +807,7 @@ WHERE {
       ?individualURI bibo:doi ?doi .
       ?x nora:DOI ?doi .
       OPTIONAL { ?x nora:BFIOAItype ?type }
-      OPTIONAL { ?x nora:BFI-LEVEL ?bfiLevel }
+      OPTIONAL { ?x nora:BFI-Level ?bfiLevel }
       OPTIONAL { ?x nora:BFI-MRA ?bfiMra }
       OPTIONAL { ?x nora:BFI-pub-year ?bfiPubYear }
       OPTIONAL { ?x nora:BFI-sub-year ?bfiSubYear }

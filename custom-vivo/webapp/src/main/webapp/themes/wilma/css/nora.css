@@ -379,9 +379,12 @@ footer {
 	padding: 24px;
 }
 .pub-v-sidebar > h2 {
-	margin-bottom: 40px;
+	margin-bottom: 0px;
 }
-
+.pub-v-sidebar h3 {
+        margin-top:10px;
+	margin-bottom0;
+}
 
 .pv-metrics {
 	margin-bottom: 44px;

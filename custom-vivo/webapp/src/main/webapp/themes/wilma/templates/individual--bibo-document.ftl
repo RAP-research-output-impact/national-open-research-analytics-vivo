@@ -284,16 +284,16 @@
       <#if bfiOai?has_content && bfiOai[0].type?has_content && (bfiOai[0].type == "Both" || bfiOai[0].type == "OA-Ind")>
         <h3>Danish Open Access Indicator</h3>
 	<#if bfiOai[0].oaiSubYear??>${bfiOai[0].oaiSubYear}</#if>
-	<#if bfiOai[0].oaiClass??>(${bfiOai[0].oaiClass}): </#if>
-	<#if bfiOai[0].oaiMra??>${bfiOai[0].oaiMra}</#if>
+	<#if bfiOai[0].oaiMra??>(${bfiOai[0].oaiMra}): </#if>
+	<#if bfiOai[0].oaiClass??>${bfiOai[0].oaiClass}</#if>
       </#if>
       <#if bfiOai?has_content && bfiOai[0].type?has_content && (bfiOai[0].type == "Both" || bfiOai[0].type == "BFI")>
         <h3>Danish Bibliometrics Indicator</h3>
 	<#if bfiOai[0].bfiSubYear??>${bfiOai[0].bfiSubYear}</#if>
-	<#if bfiOai[0].bfiLevel??>(${bfiOai[0].bfiLevel}): </#if>
-	<#if bfiOai[0].bfiMra??>${bfiOai[0].bfiMra}</#if>
+	<#if bfiOai[0].bfiMra??>(${bfiOai[0].bfiMra}): </#if>
+	<#if bfiOai[0].bfiLevel??>Level ${bfiOai[0].bfiLevel}</#if>
       </#if>
-      <p class='pv-metrics-src'><img src="https://38h6q83kpel22aipe0iux4i1-wpengine.netdna-ssl.com/wp-content/themes/dimensions-2019/dist/images/dimensions-logo-400x80.png" alt="Dimensions" width="150"/></p>
+      <#-- <p class='pv-metrics-src'><img src="https://38h6q83kpel22aipe0iux4i1-wpengine.netdna-ssl.com/wp-content/themes/dimensions-2019/dist/images/dimensions-logo-400x80.png" alt="Dimensions" width="150"/></p> -->
       <h3>Dimensions Citation Indicators</h3>
       <#if pubMeta[0].timesCited??>
         <p>Times Cited: <span>${pubMeta[0].timesCited}</span></p>

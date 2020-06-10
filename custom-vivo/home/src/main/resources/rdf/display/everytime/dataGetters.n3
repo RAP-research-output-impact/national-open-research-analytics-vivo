@@ -67,7 +67,7 @@ SELECT ?rank (COALESCE(?affiliation_, owl:Nothing) AS ?affiliation)
   }
 } ORDER BY ?rank
 }
-  ?affiliation rdfs:label ?affiliationLabel_
+  ?affiliation rdfs:label ?affiliationName_
   OPTIONAL { ?affiliation vivo:abbreviation ?affiliationAbbreviation_ }
 } GROUP BY ?affiliation ?type ?grid ORDER BY ?minRank
     """ ;                
@@ -424,7 +424,7 @@ SELECT ?rank (COALESCE(?affiliation_, owl:Nothing) AS ?affiliation)
   }
 } ORDER BY ?rank
 }
-  ?affiliation rdfs:label ?affiliationLabel_
+  ?affiliation rdfs:label ?affiliationName_
   OPTIONAL { ?affiliation vivo:abbreviation ?affiliationAbbreviation_ }
 } GROUP BY ?affiliation ?type ?grid ORDER BY ?minRank
     """ ;                
@@ -576,7 +576,7 @@ SELECT ?rank (COALESCE(?affiliation_, owl:Nothing) AS ?affiliation)
   }
 } ORDER BY ?rank
 }
-  ?affiliation rdfs:label ?affiliationLabel_
+  ?affiliation rdfs:label ?affiliationName_
   OPTIONAL { ?affiliation vivo:abbreviation ?affiliationAbbreviation_ }
 } GROUP BY ?affiliation ?type ?grid ORDER BY ?minRank
     """ ;                

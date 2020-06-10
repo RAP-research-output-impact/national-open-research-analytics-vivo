@@ -318,7 +318,7 @@
 
 	  function updateSidebar(json) {
 	       if('score' in json) { $("#altmetricScore").text(json.score); }
-	       //if('score' in json) { $("#altmetricNews").text(json.news); }
+	       if('cited_by_msm_count' in json) { $("#altmetricNews").text(json.cited_by_msm_count); }
 	       if('cited_by_tweeters_count' in json) { $("#altmetricTwitter").text(json.cited_by_tweeters_count); }
 	       if('readers' in json && 'mendeley' in json.readers) { $("#altmetricMendeley").text(json.readers.mendeley); }
 	       $("#altmetrics").show();

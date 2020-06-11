@@ -78,7 +78,7 @@ public class PagedSearchController extends FreemarkerHttpServlet {
 
     protected static final int DEFAULT_HITS_PER_PAGE = 10;
     protected static final int DEFAULT_MAX_HIT_COUNT = 1000;
-    protected static final int FACET_LIMIT = 500;
+    protected static final int FACET_LIMIT = 100;
 
     private static final String PARAM_XML_REQUEST = "xml";
     private static final String PARAM_CSV_REQUEST = "csv";
@@ -209,10 +209,10 @@ public class PagedSearchController extends FreemarkerHttpServlet {
             
             // Do a search query with the union facets also excluded from the
             // filtering so that we can get all possible results
-//            SearchQuery allRecordTypesQuery = getQuery(queryText, Arrays.asList(
-//                    "facet_content-type_ss"), unionFacetNames, 
-//                    hitsPerPage, startIndex, vreq);
-//            SearchResponse allRecordTypesResponse = null;
+            SearchQuery allRecordTypesQuery = getQuery(queryText, Arrays.asList(
+                    "facet_content-type_ss"), unionFacetNames, 
+                    hitsPerPage, startIndex, vreq);
+            SearchResponse allRecordTypesResponse = null;
             
             // Do a search query with the union facets also excluded from the
             // filtering so that we can get all possible results
@@ -227,7 +227,7 @@ public class PagedSearchController extends FreemarkerHttpServlet {
             SearchResponse mainResponse = null;
 
             try {
-                //allRecordTypesResponse = search.query(allRecordTypesQuery);
+                allRecordTypesResponse = search.query(allRecordTypesQuery);
                 //allOrgsResponse = search.query(allOrgsQuery);
                 mainResponse = search.query(mainQuery);                
             } catch (Exception ex) {
@@ -257,7 +257,7 @@ public class PagedSearchController extends FreemarkerHttpServlet {
             Map<String, Object> body = new HashMap<String, Object>();
             
             // Nora
-            body.put("typeCounts", getTypeCounts(mainResponse, vreq, queryText));
+            body.put("typeCounts", getTypeCounts(allRecordTypesResponse, vreq, queryText));
             int totalEntities = getTotalEntities(vreq);
             body.put("totalEntities", totalEntities);
             if(totalEntities == hitCount) {

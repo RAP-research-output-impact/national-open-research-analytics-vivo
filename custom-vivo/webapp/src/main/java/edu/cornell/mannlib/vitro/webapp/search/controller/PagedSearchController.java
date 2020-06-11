@@ -78,7 +78,7 @@ public class PagedSearchController extends FreemarkerHttpServlet {
 
     protected static final int DEFAULT_HITS_PER_PAGE = 10;
     protected static final int DEFAULT_MAX_HIT_COUNT = 1000;
-    protected static final int FACET_LIMIT = 100;
+    protected static final int FACET_LIMIT = 50;
 
     private static final String PARAM_XML_REQUEST = "xml";
     private static final String PARAM_CSV_REQUEST = "csv";
@@ -260,9 +260,9 @@ public class PagedSearchController extends FreemarkerHttpServlet {
             body.put("typeCounts", getTypeCounts(allRecordTypesResponse, vreq, queryText));
             int totalEntities = getTotalEntities(vreq);
             body.put("totalEntities", totalEntities);
-            if(totalEntities == hitCount) {
-                body.put("allRecordsSelected", true);
-            }
+            //if(totalEntities == hitCount) {
+            //    body.put("allRecordsSelected", true);
+            //}
             String searchMode = getParamSearchMode(vreq);
             body.put(PARAM_SEARCHMODE, searchMode);
             List<SearchFacet> commonSearchFacets = getFacetLinks(
@@ -270,6 +270,8 @@ public class PagedSearchController extends FreemarkerHttpServlet {
             if(!"all".equals(searchMode)) {
                 body.put("additionalFacets", getFacetLinks(
                         NoraSearchFacets.getAdditionalSearchFacets(), vreq, mainResponse, queryText));
+            } else {
+                body.put("allRecordsSelected", true);
             }
             body.put("facetsAsText", NoraSearchFacets.getSearchFacetsAsText());
             body.put(PARAM_FACET_AS_TEXT, vreq.getParameter(PARAM_FACET_AS_TEXT));

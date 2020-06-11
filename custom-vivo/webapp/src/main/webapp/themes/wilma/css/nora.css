@@ -1,3 +1,74 @@
+.searchResultsTypeHeader {
+  float:left;
+  max-width: 10%;
+  padding-left: 0;
+  padding-right: 1em;
+  padding-top: 0.7em;
+  padding-bottom: 1.3em;
+}
+
+.searchResultsTypeHeader p {
+  font-weight: bold;
+  margin-top:0.2em;
+}
+
+.searchResultsTypeActive {
+  background: #e2e2e0;
+}
+
+.searchResultsTypeActive p {
+  font-weight: bold;
+}
+
+.searchResultsTypeName {
+  color: #2485AE;
+}
+
+.newsearch {
+  margin-top: 0.6em;
+}
+
+.searchResultsType {
+  min-height: 3em;
+  border: 1px solid #aaaaaa;
+  border-radius: 10px;
+  float:left;
+  max-width:10%;
+  padding-left: 1em;
+  padding-right: 1em;
+  padding-top: 0.2em;
+  padding-bottom: 0.2em;
+  /* margin-right:1em; */
+}
+
+.searchResultsType p {
+  margin-bottom:0;
+  text-align:center;
+}
+
+.searchResultsTypeNonzero:hover {
+  background: #e2e2e0;
+}
+
+.searchResultsTypeSpacer {
+  width: 2em;
+  min-height: 3em;
+  float:left;
+  padding: 0;
+  margin: 0;
+  border: none;
+}
+
+.searchResultsTypeSpacerLine {
+  margin-top: 1.7em;
+  height: 0;
+  width: 2em;
+  border-top: 1px solid #aaaaaa;
+  border-right: none;
+  border-left: none;
+  border-bottom: none;
+}
+
 /* temporary refugees from rap.css */
 .pub_author-name {
     display: inline-block;

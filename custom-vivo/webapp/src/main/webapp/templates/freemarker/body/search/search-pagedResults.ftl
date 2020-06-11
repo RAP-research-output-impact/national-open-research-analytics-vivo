@@ -16,9 +16,9 @@
   </#list>
 
   <#if allRecordsSelected?? && allRecordsSelected>
-    <a href="${urls.base}/search?searchMode=all"><div class="searchResultsType searchResultsTypeNonzero searchResultsTypeActive"><p class="searchResultsTypeName">All types</p><p>${total!0}</p></div></a>
+    <a href="${allTypesLink.url}"><div class="searchResultsType searchResultsTypeNonzero searchResultsTypeActive"><p class="searchResultsTypeName">All types</p><p>${total!0}</p></div></a>
   <#else>
-    <a href="${urls.base}/search?searchMode=all"><div class="searchResultsType searchResultsTypeNonzero"><p class="searchResultsTypeName">All types</p><p>${total!0}</p></div></a>
+    <a href="${allTypesLink.url}"><div class="searchResultsType searchResultsTypeNonzero"><p class="searchResultsTypeName">All types</p><p>${total!0}</p></div></a>
   </#if>
     <div class="searchResultsTypeSpacer"><div class="searchResultsTypeSpacerLine"></div></div>
  

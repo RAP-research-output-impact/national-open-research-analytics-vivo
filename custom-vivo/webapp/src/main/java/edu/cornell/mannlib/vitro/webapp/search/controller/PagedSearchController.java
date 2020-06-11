@@ -258,6 +258,7 @@ public class PagedSearchController extends FreemarkerHttpServlet {
             
             // Nora
             body.put("typeCounts", getTypeCounts(allRecordTypesResponse, vreq, queryText));
+            body.put("allTypesLink", getAllTypesLink(vreq, queryText));
             int totalEntities = getTotalEntities(vreq);
             body.put("totalEntities", totalEntities);
             //if(totalEntities == hitCount) {
@@ -418,6 +419,18 @@ public class PagedSearchController extends FreemarkerHttpServlet {
         } catch (Throwable e) {
             return doSearchError(e,format);
         }
+    }
+    
+    private LinkTemplateModel getAllTypesLink(VitroRequest vreq, String querytext) {
+        ParamMap params = NoraGetQueryParamMap(vreq);        
+        ParamMap paramsMinusType = new ParamMap();
+        for(String key : params.keySet()) {
+            if(!"facet_content-type_ss".equals(key)) {
+                paramsMinusType.put(key, params.get(key));
+            }
+        }
+        paramsMinusType.put(PagedSearchController.PARAM_QUERY_TEXT, querytext);
+        return new LinkTemplateModel("All types", vreq.getServletPath(), paramsMinusType);
     }
     
     private List<String> getUnionFacetNames() {

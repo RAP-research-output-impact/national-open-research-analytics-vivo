@@ -165,9 +165,11 @@ footer {
 #nora-search-text {
   width: 20em;
 }
+/*
 .searchResultTypes a, .searchResultTypes span {
   margin-right: 1em;
 }
+*/
 .searchhits p {
   margin-bottom: 0;
 }

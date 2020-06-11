@@ -813,7 +813,9 @@ WHERE {
                }
       OPTIONAL { ?x nora:BFI-pub-year ?bfiPubYear }
       OPTIONAL { ?x nora:BFI-sub-year ?bfiSubYear }
-      OPTIONAL { ?x nora:OAI-Class ?oaiClass }
+      OPTIONAL { ?x nora:OAI-Class ?oaiClass_ 
+                 BIND(REPLACE(STR(?oaiClass_), "[Uu]nclear", "Blocked") AS ?oaiClass)
+               }
       OPTIONAL { ?x nora:OAI-MRA ?oaiMra_ 
                  BIND(UCASE(STR(?oaiMra_)) AS ?oaiMra)
                }

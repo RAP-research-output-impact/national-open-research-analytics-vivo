@@ -33,7 +33,7 @@
     <div class="searchResultsTypeSpacer"><div class="searchResultsTypeSpacerLine"></div></div>
   </#list>
     
-  <a href="${urls.base}/search?searchMode=all"><div style="width:4em;" class="searchResultsType searchResultsTypeNonzero"><p style="margin-top:0;" lass="searchResultsTypeName newsearch">New Search</p></div></a>
+  <a href="${urls.base}/search?searchMode=all"><div style="width:4em;" class="searchResultsType searchResultsTypeNonzero"><p style="margin-top:0.1em;line-height:1.3em;color:#2485AE;" lass="searchResultsTypeName newsearch">New Search</p></div></a>
 
 </div> <!-- searchResultTypes -->
 

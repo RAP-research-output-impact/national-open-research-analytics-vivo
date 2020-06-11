@@ -18,13 +18,13 @@
   <#if allRecordsSelected?? && allRecordsSelected>
     <a href="${urls.base}/search?searchMode=all"><div class="searchResultsType searchResultsTypeNonzero searchResultsTypeActive"><p class="searchResultsTypeName">All types</p><p>${totalEntities!0}</p></div></a>
   <#else>
-    <a href="${urls.base}/search?searchMode=all"><div class="searchResultsTypeNonzero"><p class="searchResultsTypeName">All types</p><p>${totalEntities!0}</p></div></a>
+    <a href="${urls.base}/search?searchMode=all"><div class="searchResultsType searchResultsTypeNonzero"><p class="searchResultsTypeName">All types</p><p>${totalEntities!0}</p></div></a>
   </#if>
     <div class="searchResultsTypeSpacer"><div class="searchResultsTypeSpacerLine"></div></div>
  
   <#list typeCounts as typeCount>
     <#if (typeCount.count > 0) && typeCount.selected>
-      <a href="${typeCount.url}"/search?><div class="searchResultsTypeActive searchResultsTypeNonzero"><p class="searchResultsTypeName">${typeCount.text}</p><p>${typeCount.count}</p></div></a>
+      <a href="${typeCount.url}"/search?><div class="searchResultsType searchResultsTypeActive searchResultsTypeNonzero"><p class="searchResultsTypeName">${typeCount.text}</p><p>${typeCount.count}</p></div></a>
     <#elseif (typeCount.count > 0) && (!typeCount.selected)>
       <a href="${typeCount.url}"/search?><div class="searchResultsType searchResultsTypeNonzero"><p class="searchResultsTypeName">${typeCount.text}</p><p>${typeCount.count}</p></div></a>
     <#else>

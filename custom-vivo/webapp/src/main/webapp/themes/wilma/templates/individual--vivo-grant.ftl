@@ -151,7 +151,7 @@
       <#if !grantAffiliation.type?has_content>
         <li>(${grantAffiliation?index + 1}) ${grantAffiliation.affiliationName}, ${grantAffiliation.grid}</li>
       <#else>
-          <li>(${grantAffiliation?index + 1}) <a href="${urls.base}/search?searchMode=grants&facet_${grantAffiliation.type!organization}_ss=${grantAffiliation.affiliation}">${grantAffiliation.affiliationName}, ${grantAffiliation.grid}<#if authorAffiliation.affiliationAbbreviation??>, ${authorAffiliation.affiliationAbbreviation}</#if></a></li>
+          <li>(${grantAffiliation?index + 1}) <a href="${urls.base}/search?searchMode=grants&facet_${grantAffiliation.type!organization}_ss=${grantAffiliation.affiliation}">${grantAffiliation.affiliationName}, ${grantAffiliation.grid}<#if grantAffiliation.affiliationAbbreviation??>, ${grantAffiliation.affiliationAbbreviation}</#if></a></li>
       </#if>
     <#else>
       <#if !grantAffiliation.type?has_content>
@@ -217,6 +217,29 @@
   
 <div class="pub-v-sidebar">
 
+    <#if grantAffiliations?has_content>
+      <#list grantAffiliations as grantAffiliation>
+        <#if grantAffiliation.affiliation?has_content && grantAffiliation.affiliationName?has_content>
+          <#if grantAffiliation.grid?has_content>
+            <#if grantAffiliation.type == "university">
+              <#assign universityExists = true />
+            </#if>
+          </#if>
+        </#if>
+      </#list>
+
+      <#if universityExists??>
+      <h3>NORA University Profiles</h3>
+      <#list grantAffiliations as grantAffiliation>
+        <#if grantAffiliation.affiliation?has_content && grantAffiliation.affiliationName?has_content>
+          <#if grantAffiliation.grid?has_content>
+            <#if grantAffiliation.type == "university">
+              <p><a href="${profileUrl(grantAffiliation.affiliation)}">${grantAffiliation.affiliationName}</a></p>
+        </#if>
+          </#if>
+        </#if>
+      </#if>
+
     <div class="pv-metrics">
       <h3>Funding information</h3>
       <#if grantMeta[0].startYear??>
@@ -236,10 +259,20 @@
     </div>
     <!-- end pv-metrics -->
 
-<#if researchCategoriesFOR?has_content>
+<#if mainSubjectAreas?has_content || researchCategoriesFOR?has_content>
 <!-- categories/classification -->
 <div class="pub_categories">
   <h3>Research Categories</h3>
+
+<#if mainSubjectAreas?has_content>
+  <div class="pub_keywords-enumeration clearfix">
+    <p>Main Subject Area</p>
+    <ul class="one-line-list">
+      <#list mainSubjectAreas as mainSubjectArea>
+        <li role="list-item"><a href="${urls.base}/search?searchMode=all&facet_main-subject-area_ss=${mainSubjectArea.subjectArea}">${mainSubjectArea.name}</a></li>
+      </#list>
+    </ul>
+  </div>
 
  <#if researchCategoriesFOR?has_content>
   <div class="pub_keywords-enumeration clearfix">

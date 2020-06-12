@@ -294,6 +294,7 @@
 <h2>Links & Metrics</h2>
     <div class="pv-metrics">
 
+    <#if authorAffiliations?has_content>
       <#list authorAffiliations as authorAffiliation>
         <#if authorAffiliation.affiliation?has_content && authorAffiliation.affiliationName?has_content>
           <#if authorAffiliation.grid?has_content>
@@ -315,6 +316,7 @@
           </#if>
         </#if>
       </#list>
+    </#if>
 
       </#if>
 

@@ -146,7 +146,7 @@
       <#if !clinicalTrialAffiliation.type?has_content>
         <li>(${clinicalTrialAffiliation?index + 1}) ${clinicalTrialAffiliation.affiliationName}, ${clinicalTrialAffiliation.grid}</li>
       <#else>
-          <li>(${clinicalTrialAffiliation?index + 1}) <a href="${urls.base}/search?searchMode=clinical_trials&facet_${clinicalTrialAffiliation.type!organization}_ss=${clinicalTrialAffiliation.affiliation}">${clinicalTrialAffiliation.affiliationName}, ${clinicalTrialAffiliation.grid}<#if authorAffiliation.affiliationAbbreviation??>, ${authorAffiliation.affiliationAbbreviation}</#if></a></li>
+          <li>(${clinicalTrialAffiliation?index + 1}) <a href="${urls.base}/search?searchMode=clinical_trials&facet_${clinicalTrialAffiliation.type!organization}_ss=${clinicalTrialAffiliation.affiliation}">${clinicalTrialAffiliation.affiliationName}, ${clinicalTrialAffiliation.grid}<#if clinicalTrialAffiliation.affiliationAbbreviation??>, ${clinicalTrialAffiliation.affiliationAbbreviation}</#if></a></li>
       </#if>
     <#else>
       <#if !clinicalTrialAffiliation.type?has_content>
@@ -239,6 +239,29 @@
 <div class="pub-v-sidebar">
 
     <div class="pv-metrics">
+     
+    <#if clinicalTrialAffiliations?has_content>
+      <#list clinicalTrialAffiliations as clinicalTrialAffiliation>
+        <#if clinicalTrialAffiliation.affiliation?has_content && clinicalTrialAffiliation.affiliationName?has_content>
+          <#if clinicalTrialAffiliation.grid?has_content>
+            <#if clinicalTrialAffiliation.type == "university">
+              <#assign universityExists = true />
+            </#if>
+          </#if>
+        </#if>
+      </#list>
+
+      <#if universityExists??>
+      <h3>NORA University Profiles</h3>
+      <#list clinicalTrialAffiliations as clinicalTrialAffiliation>
+        <#if clinicalTrialAffiliation.affiliation?has_content && clinicalTrialAffiliation.affiliationName?has_content>
+          <#if clinicalTrialAffiliation.grid?has_content>
+            <#if clinicalTrialAffiliation.type == "university">
+              <p><a href="${profileUrl(clinicalTrialAffiliation.affiliation)}">${clinicalTrialAffiliation.affiliationName}</a></p>
+        </#if>
+          </#if>
+        </#if>
+      </#if>
       
       <#if clinicalTrialMeta[0].startYear??>
         <h3>Trial period</h3>
@@ -252,11 +275,21 @@
     </div>
     <!-- end pv-metrics -->
     
-    <#if researchCategoriesFOR?has_content>
+    <#if mainSubjectCategories?has_content || researchCategoriesFOR?has_content>
     <!-- categories/classification -->
     <div class="pub_categories">
       <h3>Research Categories</h3>
     
+    <#if mainSubjectAreas?has_content>
+  <div class="pub_keywords-enumeration clearfix">
+    <p>Main Subject Area</p>
+    <ul class="one-line-list">
+      <#list mainSubjectAreas as mainSubjectArea>
+        <li role="list-item"><a href="${urls.base}/search?searchMode=all&facet_main-subject-area_ss=${mainSubjectArea.subjectArea}">${mainSubjectArea.name}</a></li>
+      </#list>
+    </ul>
+  </div>
+  
      <#if researchCategoriesFOR?has_content>
       <div class="pub_keywords-enumeration clearfix">
         <p>Fields of Research</p>

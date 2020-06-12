@@ -242,6 +242,29 @@
 <!-- end .pub-v-main -->
   
 <div class="pub-v-sidebar">
+  
+  <#if authorAffiliations?has_content>
+    <#list authorAffiliations as authorAffiliation>
+        <#if authorAffiliation.affiliation?has_content && authorAffiliation.affiliationName?has_content>
+          <#if authorAffiliation.grid?has_content>
+            <#if authorAffiliation.type == "university">
+              <#assign universityExists = true />
+            </#if>
+          </#if>
+        </#if>
+      </#list>
+
+      <#if universityExists??>
+      <h3>NORA University Profiles</h3>
+      <#list authorAffiliations as authorAffiliation>
+        <#if authorAffiliation.affiliation?has_content && authorAffiliation.affiliationName?has_content>
+          <#if authorAffiliation.grid?has_content>
+            <#if authorAffiliation.type == "university">
+              <p><a href="${profileUrl(authorAffiliation.affiliation)}">${authorAffiliation.affiliationName}</a></p>
+        </#if>
+          </#if>
+        </#if>
+  </#if>
 
   <#if bfiOai?has_content && bfiOai[0].type?has_content && (bfiOai[0].type == "Both" || bfiOai[0].type == "OA-Ind")>
     <h3>Danish Open Access Indicator</h3>
@@ -289,10 +312,21 @@
 <!-- end other-details -->
 </#if>
 
-<#if researchCategoriesFOR?has_content>
+<#if mainSubjectAreas?has_content || researchCategoriesFOR?has_content>
 <!-- categories/classification -->
 <div class="pub_categories">
   <h3>Research Categories</h3>
+  
+  <#if mainSubjectAreas?has_content>
+  <div class="pub_keywords-enumeration clearfix">
+    <p>Main Subject Area</p>
+    <ul class="one-line-list">
+      <#list mainSubjectAreas as mainSubjectArea>
+        <li role="list-item"><a href="${urls.base}/search?searchMode=all&facet_main-subject-area_ss=${mainSubjectArea.subjectArea}">${mainSubjectArea.name}</a></li>
+      </#list>
+    </ul>
+  </div>
+  
  <#if researchCategoriesFOR?has_content>
   <div class="pub_keywords-enumeration clearfix">
     <p>Fields of Research</p>

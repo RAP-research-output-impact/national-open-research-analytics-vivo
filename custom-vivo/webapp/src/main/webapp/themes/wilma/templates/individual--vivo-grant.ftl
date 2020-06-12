@@ -235,10 +235,11 @@
           <#if grantAffiliation.grid?has_content>
             <#if grantAffiliation.type == "university">
               <p><a href="${profileUrl(grantAffiliation.affiliation)}">${grantAffiliation.affiliationName}</a></p>
-        </#if>
+            </#if>
           </#if>
         </#if>
-      </#if>
+      </#list>
+    </#if>
 
     <div class="pv-metrics">
       <h3>Funding information</h3>

@@ -243,8 +243,8 @@
   
 <div class="pub-v-sidebar">
   
-  <#if authorAffiliations?has_content>
-    <#list authorAffiliations as authorAffiliation>
+    <#if authorAffiliations?has_content>
+      <#list authorAffiliations as authorAffiliation>
         <#if authorAffiliation.affiliation?has_content && authorAffiliation.affiliationName?has_content>
           <#if authorAffiliation.grid?has_content>
             <#if authorAffiliation.type == "university">
@@ -261,10 +261,11 @@
           <#if authorAffiliation.grid?has_content>
             <#if authorAffiliation.type == "university">
               <p><a href="${profileUrl(authorAffiliation.affiliation)}">${authorAffiliation.affiliationName}</a></p>
-        </#if>
+            </#if>
           </#if>
         </#if>
-  </#if>
+      </#list>
+    </#if>
 
   <#if bfiOai?has_content && bfiOai[0].type?has_content && (bfiOai[0].type == "Both" || bfiOai[0].type == "OA-Ind")>
     <h3>Danish Open Access Indicator</h3>

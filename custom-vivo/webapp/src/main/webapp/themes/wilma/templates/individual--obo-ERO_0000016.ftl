@@ -258,10 +258,11 @@
           <#if clinicalTrialAffiliation.grid?has_content>
             <#if clinicalTrialAffiliation.type == "university">
               <p><a href="${profileUrl(clinicalTrialAffiliation.affiliation)}">${clinicalTrialAffiliation.affiliationName}</a></p>
-        </#if>
+            </#if>
           </#if>
         </#if>
-      </#if>
+      </#list>
+    </#if>
       
       <#if clinicalTrialMeta[0].startYear??>
         <h3>Trial period</h3>

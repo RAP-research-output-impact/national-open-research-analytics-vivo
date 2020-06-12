@@ -290,9 +290,9 @@
 
 <div class="pub_categories">
   <h3>Retrieval</h3>
-  <#if ${pubMeta[0].retrieval == "dim-ddf"><#assign retrievalLabel = "Dimensions and DDF"></#if>
-  <#if ${pubMeta[0].retrieval == "only-dim"><#assign retrievalLabel = "Dimensions only"></#if>
-  <#if ${pubMeta[0].retrieval == "only-ddf"><#assign retrievalLabel = "DDF only"></#if>
+  <#if pubMeta[0].retrieval == "dim-ddf"><#assign retrievalLabel = "Dimensions and DDF"></#if>
+  <#if pubMeta[0].retrieval == "only-dim"><#assign retrievalLabel = "Dimensions only"></#if>
+  <#if pubMeta[0].retrieval == "only-ddf"><#assign retrievalLabel = "DDF only"></#if>
   <#if retrievalLabel??>
     <p><a href="${urls.base}/search?searchMode=all&facet_retrieval_ss=${pubMeta[0].retrieval}">${retrievalLabel}</a></p>
   </#if>

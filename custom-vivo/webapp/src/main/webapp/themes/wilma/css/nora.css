@@ -1,3 +1,7 @@
+ul.one-line-list { /* TODO rename */ 
+  margin-bottom: 0.6em;
+}
+
 .searchHeading {
   color:black;
   font-weight:bold;

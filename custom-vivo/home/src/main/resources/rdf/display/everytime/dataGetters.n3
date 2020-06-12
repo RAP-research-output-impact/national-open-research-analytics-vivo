@@ -327,7 +327,7 @@ WHERE {
       PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
       SELECT DISTINCT ?subjectArea ?name
       WHERE {
-        ?uri vivo:hasSubjectArea ?for .
+        ?individualURI vivo:hasSubjectArea ?for .
         ?for skos:broader ?subjectArea .
         ?subjectArea a <http://vivo.deffopera.dk/ontology/osrap/NORASubjectArea> .
 	?subjectArea rdfs:label ?name

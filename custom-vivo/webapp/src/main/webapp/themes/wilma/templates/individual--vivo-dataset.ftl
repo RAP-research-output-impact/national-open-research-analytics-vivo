@@ -265,6 +265,7 @@
           </#if>
         </#if>
       </#list>
+      </#if>
     </#if>
 
   <#if bfiOai?has_content && bfiOai[0].type?has_content && (bfiOai[0].type == "Both" || bfiOai[0].type == "OA-Ind")>

@@ -262,6 +262,7 @@
           </#if>
         </#if>
       </#list>
+      </#if>
     </#if>
       
       <#if clinicalTrialMeta[0].startYear??>

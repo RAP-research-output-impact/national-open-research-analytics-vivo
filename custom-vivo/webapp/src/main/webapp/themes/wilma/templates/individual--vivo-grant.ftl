@@ -239,6 +239,7 @@
           </#if>
         </#if>
       </#list>
+      </#if>
     </#if>
 
     <div class="pv-metrics">

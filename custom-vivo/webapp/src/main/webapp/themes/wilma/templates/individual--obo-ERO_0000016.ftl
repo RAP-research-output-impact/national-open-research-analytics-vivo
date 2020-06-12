@@ -291,6 +291,7 @@
       </#list>
     </ul>
   </div>
+  </#if>
   
      <#if researchCategoriesFOR?has_content>
       <div class="pub_keywords-enumeration clearfix">

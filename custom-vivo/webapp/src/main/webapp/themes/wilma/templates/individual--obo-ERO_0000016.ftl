@@ -118,7 +118,7 @@
   <#list clinicalTrialInvestigators as clinicalTrialInvestigator>
     <#if clinicalTrialInvestigator.investigator?? && clinicalTrialInvestigator.investigatorName??>
       <div class="pub_author-name">
-        <a href="${urls.base}/search?searchMode=all&facet_contributor_ss=${clinicalTrialInvestigator.investigator}">${clinicalTrialInvestigator.investigatorName}</a>
+        <a href="${urls.base}/search?searchMode=all&facet_contributor_ss=${clinicalTrialInvestigator.investigator?url}">${clinicalTrialInvestigator.investigatorName}</a>
       <#if clinicalTrialInvestigator.rank?? && clinicalTrialAffiliations??>
         <#list clinicalTrialAffiliations as clinicalTrialAffiliation>
           <#if clinicalTrialAffiliation.ranks?has_content>
@@ -146,13 +146,13 @@
       <#if !clinicalTrialAffiliation.type?has_content>
         <li>(${clinicalTrialAffiliation?index + 1}) ${clinicalTrialAffiliation.affiliationName}, ${clinicalTrialAffiliation.grid}</li>
       <#else>
-          <li>(${clinicalTrialAffiliation?index + 1}) <a href="${urls.base}/search?searchMode=clinical_trials&facet_${clinicalTrialAffiliation.type!organization}_ss=${clinicalTrialAffiliation.affiliation}">${clinicalTrialAffiliation.affiliationName}, ${clinicalTrialAffiliation.grid}<#if clinicalTrialAffiliation.affiliationAbbreviation??>, ${clinicalTrialAffiliation.affiliationAbbreviation}</#if></a></li>
+          <li>(${clinicalTrialAffiliation?index + 1}) <a href="${urls.base}/search?searchMode=clinical_trials&facet_${clinicalTrialAffiliation.type!organization}_ss=${clinicalTrialAffiliation.affiliation?url}">${clinicalTrialAffiliation.affiliationName}, ${clinicalTrialAffiliation.grid}<#if clinicalTrialAffiliation.affiliationAbbreviation??>, ${clinicalTrialAffiliation.affiliationAbbreviation}</#if></a></li>
       </#if>
     <#else>
       <#if !clinicalTrialAffiliation.type?has_content>
         <li>(${clinicalTrialAffiliation?index + 1}) ${clinicalTrialAffiliation.affiliationName}</li>
       <#else>
-          <li>(${clinicalTrialAffiliation?index + 1}) <a href="${urls.base}/search?searchMode=clinical_trials&facet_${clinicalTrialAffiliation.type!organization}_ss=${clinicalTrialAffiliation.affiliation}">${clinicalTrialAffiliation.affiliationName}</a></li>
+          <li>(${clinicalTrialAffiliation?index + 1}) <a href="${urls.base}/search?searchMode=clinical_trials&facet_${clinicalTrialAffiliation.type!organization}_ss=${clinicalTrialAffiliation.affiliation?url}">${clinicalTrialAffiliation.affiliationName}</a></li>
       </#if>
     </#if>
   </#if>
@@ -217,7 +217,7 @@
   <#list supportingGrants as supportingGrant>
     <li>
       <#if supportingGrant.funder??>
-        <p style="margin-bottom:0.1em;"><a href="${urls.base}/search?searchMode=all&facet_funder_ss=${supportingGrant.funder}">${supportingGrant.funderLabel}</a></p>
+        <p style="margin-bottom:0.1em;"><a href="${urls.base}/search?searchMode=all&facet_funder_ss=${supportingGrant.funder?url}">${supportingGrant.funderLabel}</a></p>
       </#if>
         <p style="margin-bottom:0.1em;"><a href="${profileUrl(supportingGrant.grant)}">${supportingGrant.grantLabel}</a></p>
       <#if supportingGrant.grantNumber??>
@@ -276,7 +276,7 @@
       </#if>
       <#if clinicalTrialMeta[0].phase?? && clinicalTrialMeta[0].phaseInd??>
         <h3>Phase</h3>
-        <p><a href="${urls.base}/search?searchMode=clinical_trials&facet_phase_ss=${clinicalTrialMeta[0].phaseInd}">${clinicalTrialMeta[0].phase}</a></p>
+        <p><a href="${urls.base}/search?searchMode=clinical_trials&facet_phase_ss=${clinicalTrialMeta[0].phaseInd?url}">${clinicalTrialMeta[0].phase}</a></p>
       </#if>
  
     </div>
@@ -292,7 +292,7 @@
     <p>Main Subject Area</p>
     <ul class="one-line-list">
       <#list mainSubjectAreas as mainSubjectArea>
-        <li role="list-item"><a href="${urls.base}/search?searchMode=all&facet_main-subject-area_ss=${mainSubjectArea.subjectArea}">${mainSubjectArea.name}</a></li>
+        <li role="list-item"><a href="${urls.base}/search?searchMode=all&facet_main-subject-area_ss=${mainSubjectArea.subjectArea?url}">${mainSubjectArea.name}</a></li>
       </#list>
     </ul>
   </div>
@@ -303,7 +303,7 @@
         <p>Fields of Research</p>
         <ul class="one-line-list">
           <#list researchCategoriesFOR as researchCategory>
-            <li role="list-item"><a href="${urls.base}/search?searchMode=clinical_trials&facet_research-category_ss=${researchCategory.researchCategory}">${researchCategory.researchCategoryName}</a></li>
+            <li role="list-item"><a href="${urls.base}/search?searchMode=clinical_trials&facet_research-category_ss=${researchCategory.researchCategory?url}">${researchCategory.researchCategoryName}</a></li>
           </#list>
         </ul>
       </div>

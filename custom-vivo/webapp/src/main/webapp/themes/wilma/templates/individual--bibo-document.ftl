@@ -109,10 +109,10 @@
 <!-- journal -->
 <#assign publishedIn = pg.getProperty(vivo + "hasPublicationVenue")!>
 <#if publishedIn?? && publishedIn.statements?? && publishedIn.statements[0]??>
-  <span class="pub_meta"><a href="${urls.base}/search?searchMode=publications&facet_journal_ss=${publishedIn.statements[0].object}">${publishedIn.statements[0].label}</a>, </span>
+  <span class="pub_meta"><a href="${urls.base}/search?searchMode=publications&facet_journal_ss=${publishedIn.statements[0].object?url}">${publishedIn.statements[0].label}</a>, </span>
 </#if>
 <#if pubMeta[0].publisher??>
-  <span class="pub_meta"><a href="${urls.base}/search?searchMode=publications&facet_publisher_ss=${pubMeta[0].publisher}">${pubMeta[0].publisherName}</a>, </span>
+  <span class="pub_meta"><a href="${urls.base}/search?searchMode=publications&facet_publisher_ss=${pubMeta[0].publisher?url}">${pubMeta[0].publisherName}</a>, </span>
 </#if>
 <#if pubMeta[0].issn??>
   <span class="pub_meta">ISSN ${pubMeta[0].issn}</span>
@@ -178,13 +178,13 @@
       <#if !authorAffiliation.type?has_content>
         <li>(${authorAffiliation?index + 1}) ${authorAffiliation.affiliationName}, ${authorAffiliation.grid}</li>
       <#else>
-          <li>(${authorAffiliation?index + 1}) <a href="${urls.base}/search?searchMode=publications&facet_${authorAffiliation.type!organization}_ss=${authorAffiliation.affiliation}">${authorAffiliation.affiliationName}, ${authorAffiliation.grid}<#if authorAffiliation.affiliationAbbreviation??>, ${authorAffiliation.affiliationAbbreviation}</#if></a></li>
+          <li>(${authorAffiliation?index + 1}) <a href="${urls.base}/search?searchMode=publications&facet_${authorAffiliation.type!organization}_ss=${authorAffiliation.affiliation?url}">${authorAffiliation.affiliationName}, ${authorAffiliation.grid}<#if authorAffiliation.affiliationAbbreviation??>, ${authorAffiliation.affiliationAbbreviation}</#if></a></li>
       </#if>
     <#else>
       <#if !authorAffiliation.type?has_content>
         <li>(${authorAffiliation?index + 1}) ${authorAffiliation.affiliationName}</li>
       <#else>
-          <li>(${authorAffiliation?index + 1}) <a href="${urls.base}/search?searchMode=publications&facet_${authorAffiliation.type!organization}_ss=${authorAffiliation.affiliation}">${authorAffiliation.affiliationName}</a></li>
+          <li>(${authorAffiliation?index + 1}) <a href="${urls.base}/search?searchMode=publications&facet_${authorAffiliation.type!organization}_ss=${authorAffiliation.affiliation?url}">${authorAffiliation.affiliationName}</a></li>
       </#if>
     </#if>
   </#if>
@@ -225,7 +225,7 @@
   <#list supportingGrants as supportingGrant>
     <li>
       <#if supportingGrant.funder??>
-        <p style="margin-bottom:0.1em;"><a href="${urls.base}/search?searchMode=&facet_funder_ss=${supportingGrant.funder}">${supportingGrant.funderLabel}</a></p>
+        <p style="margin-bottom:0.1em;"><a href="${urls.base}/search?searchMode=&facet_funder_ss=${supportingGrant.funder?url}">${supportingGrant.funderLabel}</a></p>
       </#if>
         <p style="margin-bottom:0.1em;"><a href="${profileUrl(supportingGrant.grant)}">${supportingGrant.grantLabel}</a></p>
       <#if supportingGrant.grantNumber??>
@@ -264,7 +264,7 @@
     <p>Main Subject Area</p>
     <ul class="one-line-list">
       <#list mainSubjectAreas as mainSubjectArea>
-        <li role="list-item"><a href="${urls.base}/search?searchMode=all&facet_main-subject-area_ss=${mainSubjectArea.subjectArea}">${mainSubjectArea.name}</a></li>
+        <li role="list-item"><a href="${urls.base}/search?searchMode=all&facet_main-subject-area_ss=${mainSubjectArea.subjectArea?url}">${mainSubjectArea.name}</a></li>
       </#list>
     </ul>
   </div>
@@ -274,7 +274,7 @@
     <p>Fields of Research</p>
     <ul class="one-line-list">
       <#list researchCategoriesFOR as researchCategory>
-        <li role="list-item"><a href="${urls.base}/search?searchMode=all&facet_research-category_ss=${researchCategory.researchCategory}">${researchCategory.researchCategoryName}</a></li>
+        <li role="list-item"><a href="${urls.base}/search?searchMode=all&facet_research-category_ss=${researchCategory.researchCategory?url}">${researchCategory.researchCategoryName}</a></li>
       </#list>
     </ul>
   </div>

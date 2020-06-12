@@ -107,7 +107,7 @@
 
 <#if grantMeta[0].funder??>
 <p>
-  <span class="pub_meta-value">Funder: <a href="${urls.base}/search?searchMode=all&facet_funder_ss=${grantMeta[0].funderOrg}">${grantMeta[0].funder}</a></span>
+  <span class="pub_meta-value">Funder: <a href="${urls.base}/search?searchMode=all&facet_funder_ss=${grantMeta[0].funderOrg?url}">${grantMeta[0].funder}</a></span>
 </p>
 </#if>
 <p>
@@ -123,7 +123,7 @@
   <#list grantInvestigators as grantInvestigator>
     <#if grantInvestigator.investigator?? && grantInvestigator.investigatorName??>
       <div class="pub_author-name">
-        <a href="${urls.base}/search?searchMode=all&facet_contributor_ss=${grantInvestigator.investigator}">${grantInvestigator.investigatorName}</a>
+        <a href="${urls.base}/search?searchMode=all&facet_contributor_ss=${grantInvestigator.investigator?url}">${grantInvestigator.investigatorName}</a>
       <#if grantInvestigator.rank?? && grantAffiliations??>
         <#list grantAffiliations as grantAffiliation>
           <#if grantAffiliation.ranks?has_content>
@@ -151,13 +151,13 @@
       <#if !grantAffiliation.type?has_content>
         <li>(${grantAffiliation?index + 1}) ${grantAffiliation.affiliationName}, ${grantAffiliation.grid}</li>
       <#else>
-          <li>(${grantAffiliation?index + 1}) <a href="${urls.base}/search?searchMode=grants&facet_${grantAffiliation.type!organization}_ss=${grantAffiliation.affiliation}">${grantAffiliation.affiliationName}, ${grantAffiliation.grid}<#if grantAffiliation.affiliationAbbreviation??>, ${grantAffiliation.affiliationAbbreviation}</#if></a></li>
+          <li>(${grantAffiliation?index + 1}) <a href="${urls.base}/search?searchMode=grants&facet_${grantAffiliation.type!organization}_ss=${grantAffiliation.affiliation?url}">${grantAffiliation.affiliationName}, ${grantAffiliation.grid}<#if grantAffiliation.affiliationAbbreviation??>, ${grantAffiliation.affiliationAbbreviation}</#if></a></li>
       </#if>
     <#else>
       <#if !grantAffiliation.type?has_content>
         <li>(${grantAffiliation?index + 1}) ${grantAffiliation.affiliationName}</li>
       <#else>
-          <li>(${grantAffiliation?index + 1}) <a href="${urls.base}/search?searchMode=grants&facet_${grantAffiliation.type!organization}_ss=${grantAffiliation.affiliation}">${grantAffiliation.affiliationName}</a></li>
+          <li>(${grantAffiliation?index + 1}) <a href="${urls.base}/search?searchMode=grants&facet_${grantAffiliation.type!organization}_ss=${grantAffiliation.affiliation?url}">${grantAffiliation.affiliationName}</a></li>
       </#if>
     </#if>
   </#if>
@@ -201,8 +201,8 @@
 	<#if supportedPublication.year?? || supportedPublication.journal?? || supportedPublication.type??>
 	  <p style="margin-bottom:0.1em;">
              <#if supportedPublication.year??><a href="${urls.base}/search?searchModel=all&facet_year_ss=${supportedPublication.year}">${supportedPublication.year}</a>, </#if> 
-             <#if supportedPublication.journal??><a href="${urls.base}/search?searchModel=all&facet_journal_ss=${supportedPublication.journalObj}">${supportedPublication.journal}</a>, </#if> 
-             <#if supportedPublication.type??><a href="${urls.base}/search?searchModel=all&facet_document-type_ss=${supportedPublication.type}">${supportedPublication.typeLabel}</a></#if>
+             <#if supportedPublication.journal??><a href="${urls.base}/search?searchModel=all&facet_journal_ss=${supportedPublication.journalObj?url}">${supportedPublication.journal}</a>, </#if> 
+             <#if supportedPublication.type??><a href="${urls.base}/search?searchModel=all&facet_document-type_ss=${supportedPublication.type?url}">${supportedPublication.typeLabel}</a></#if>
 	  </p>
 	</#if>
     </li>
@@ -271,7 +271,7 @@
     <p>Main Subject Area</p>
     <ul class="one-line-list">
       <#list mainSubjectAreas as mainSubjectArea>
-        <li role="list-item"><a href="${urls.base}/search?searchMode=all&facet_main-subject-area_ss=${mainSubjectArea.subjectArea}">${mainSubjectArea.name}</a></li>
+        <li role="list-item"><a href="${urls.base}/search?searchMode=all&facet_main-subject-area_ss=${mainSubjectArea.subjectArea?url}">${mainSubjectArea.name}</a></li>
       </#list>
     </ul>
   </div>
@@ -282,7 +282,7 @@
     <p>Fields of Research</p>
     <ul class="one-line-list">
       <#list researchCategoriesFOR as researchCategory>
-        <li role="list-item"><a href="${urls.base}/search?searchMode=grants&facet_research-category_ss=${researchCategory.researchCategory}">${researchCategory.researchCategoryName}</a></li>
+        <li role="list-item"><a href="${urls.base}/search?searchMode=grants&facet_research-category_ss=${researchCategory.researchCategory?url}">${researchCategory.researchCategoryName}</a></li>
       </#list>
     </ul>
   </div>

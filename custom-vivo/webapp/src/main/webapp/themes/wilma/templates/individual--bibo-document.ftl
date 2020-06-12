@@ -254,11 +254,21 @@
 </div>
 </#if>
 
-<#if researchCategoriesFOR?has_content>
+<#if researchCategoriesFOR?has_content || mainSubjectAreas?has_content>
 <!-- categories/classification -->
 <div class="pub_categories">
   <h3>Research Categories</h3>
 
+  <#if mainSubjectAreas?has_content>
+  <div class="pub_keywords-enumeration clearfix">
+    <p>Main Subject Area</p>
+    <ul class="one-line-list">
+      <#list mainSubjectAreas as mainSubjectArea>
+        <li role="list-item"><a href="${urls.base}/search?searchMode=all&facet_main-subject-area_ss=${subjectArea.subjectArea}">${subjectArea.name}</a></li>
+      </#list>
+    </ul>
+  </div>
+  
  <#if researchCategoriesFOR?has_content>
   <div class="pub_keywords-enumeration clearfix">
     <p>Fields of Research</p>
@@ -268,6 +278,8 @@
       </#list>
     </ul>
   </div>
+ </#if>
+ 
  </#if>
 
 </div>

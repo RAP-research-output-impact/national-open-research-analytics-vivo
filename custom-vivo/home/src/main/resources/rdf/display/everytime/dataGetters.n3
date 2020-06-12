@@ -94,7 +94,7 @@ PREFIX vitro:    <http://vitro.mannlib.cornell.edu/ns/vitro/0.7#>
 PREFIX vivo:     <http://vivoweb.org/ontology/core#>
 
 SELECT ?publisher ?publisherName ?issn ?year ?timesCited ?fieldCitationRatio ?relativeCitationRatio ?license
-       ?typeLabel ?openAccess ?openAccessLabel ?correspondingAuthorExists 
+       ?typeLabel ?openAccess ?openAccessLabel ?correspondingAuthorExists ?retrieval
 WHERE {
   ?individualURI a bibo:Document .
   OPTIONAL {
@@ -147,6 +147,9 @@ WHERE {
     ?authorship a vivo:Authorship .
     ?authorship vivo:isCorrespondingAuthor true .
     BIND(true AS ?correspondingAuthorExists)
+  }
+  OPTIONAL {
+    ?individualURI <http://vivo.deffopera.dk/ontology/osrap/matchingstatus> ?retrieval 
   }
 }
     """ ;                
@@ -528,7 +531,7 @@ PREFIX vitro:    <http://vitro.mannlib.cornell.edu/ns/vitro/0.7#>
 PREFIX vivo:     <http://vivoweb.org/ontology/core#>
 PREFIX osrap:    <http://vivo.deffopera.dk/ontology/osrap/>
 
-SELECT ?typeLabel ?condition ?intervention ?gender ?startYear ?endYear 
+SELECT ?typeLabel ?condition ?intervention ?gender ?startYear ?endYear ?phaseInd ?phase
 WHERE {
   ?individualURI a obo:ERO_0000016 . # ClinicalTrial
   OPTIONAL {
@@ -555,6 +558,10 @@ WHERE {
   OPTIONAL { 
     ?individualURI vitro:mostSpecificType ?mst .
     ?mst rdfs:label ?typeLabel 
+  } 
+  OPTIONAL {
+    ?individualURI <http://purl.obolibrary.org/obo/ERO_0001518> ?phaseInd .
+    ?phaseInd rdfs:label ?phase
   }
 }
     """ ;                

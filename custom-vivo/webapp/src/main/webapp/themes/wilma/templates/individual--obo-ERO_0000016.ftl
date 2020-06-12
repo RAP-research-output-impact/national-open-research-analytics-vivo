@@ -274,6 +274,11 @@
 	    </span>
 	    </p>
       </#if>
+      <#if clinicalTrialMeta[0].phase?? && clinicalTrialMeta[0].phaseInd??>
+        <h3>Phase</h3>
+        <p><a href="${urls.base}/search?searchMode=clinical_trials&facet_phase_ss=${clinicalTrialMeta[0].phaseInd}">${clinicalTrialMeta[0].phase}</a></p>
+      </#if>
+ 
     </div>
     <!-- end pv-metrics -->
     

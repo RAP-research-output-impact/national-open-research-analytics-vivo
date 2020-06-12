@@ -1,3 +1,10 @@
+.searchHeading {
+  color:black;
+  font-weight:bold;
+  margin-top: 0;
+  padding-top: 0;
+}
+
 .searchResultsTypeHeader {
   float:left;
   max-width: 10%;

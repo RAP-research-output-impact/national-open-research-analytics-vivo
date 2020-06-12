@@ -281,6 +281,31 @@
 
 <h2>Links & Metrics</h2>
     <div class="pv-metrics">
+
+      <#list authorAffiliations as authorAffiliation>
+        <#if authorAffiliation.affiliation?has_content && authorAffiliation.affiliationName?has_content>
+          <#if authorAffiliation.grid?has_content>
+            <#if authorAffiliation.type == "university">
+              <#assign universityExists = true />
+            </#if>
+          </#if>
+        </#if>
+      </#list>
+
+      <#if universityExists??>
+      <h3>NORA University Profiles</h3>
+      <#list authorAffiliations as authorAffiliation>
+        <#if authorAffiliation.affiliation?has_content && authorAffiliation.affiliationName?has_content>
+          <#if authorAffiliation.grid?has_content>
+            <#if authorAffiliation.type == "university">
+              <p><a href="${profileUrl(authorAffiliation.affiliation)}">${authorAffiliation.affiliationName}</a></p>
+	    </#if>
+          </#if>
+        </#if>
+      </#list>
+
+      </#if>
+
       <#if bfiOai?has_content && bfiOai[0].type?has_content && (bfiOai[0].type == "Both" || bfiOai[0].type == "OA-Ind")>
         <h3>Danish Open Access Indicator</h3>
 	<#if bfiOai[0].oaiSubYear??>${bfiOai[0].oaiSubYear}</#if>
@@ -294,7 +319,9 @@
 	<#if bfiOai[0].bfiLevel??>Level ${bfiOai[0].bfiLevel}</#if>
       </#if>
       <#-- <p class='pv-metrics-src'><img src="https://38h6q83kpel22aipe0iux4i1-wpengine.netdna-ssl.com/wp-content/themes/dimensions-2019/dist/images/dimensions-logo-400x80.png" alt="Dimensions" width="150"/></p> -->
-      <h3>Dimensions Citation Indicators</h3>
+      <#if pubMeta[0].timesCited?? || pubMeta[0].fieldCitationRatio?? || pubMeta[0].relativeCitationRatio??>
+        <h3>Dimensions Citation Indicators</h3>
+      </#if>
       <#if pubMeta[0].timesCited??>
         <p>Times Cited: <span>${pubMeta[0].timesCited}</span></p>
       </#if>

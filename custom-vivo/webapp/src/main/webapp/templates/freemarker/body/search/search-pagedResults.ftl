@@ -4,6 +4,8 @@
 
 <script src="${urls.theme}/js/jquery.corner.js"></script>
 
+<h2 class="searchHeading">NORA Search</h2>
+
 <#if typeCounts??>
 
 <div class="searchResultTypes">

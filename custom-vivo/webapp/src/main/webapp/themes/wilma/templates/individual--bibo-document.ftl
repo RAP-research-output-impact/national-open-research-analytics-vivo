@@ -264,7 +264,7 @@
     <p>Main Subject Area</p>
     <ul class="one-line-list">
       <#list mainSubjectAreas as mainSubjectArea>
-        <li role="list-item"><a href="${urls.base}/search?searchMode=all&facet_main-subject-area_ss=${subjectArea.subjectArea}">${subjectArea.name}</a></li>
+        <li role="list-item"><a href="${urls.base}/search?searchMode=all&facet_main-subject-area_ss=${mainSubjectArea.subjectArea}">${subjectArea.name}</a></li>
       </#list>
     </ul>
   </div>

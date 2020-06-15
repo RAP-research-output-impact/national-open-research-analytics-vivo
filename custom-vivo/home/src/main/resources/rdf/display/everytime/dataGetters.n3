@@ -925,7 +925,7 @@ WHERE {
   }
   OPTIONAL {
     ?individualURI osrap:filingStatus ?filingStatus .
-    ?filinsStatus rdfs:label ?filingStatusName .
+    ?filingStatus rdfs:label ?filingStatusName .
   }
   OPTIONAL {
     ?individualURI osrap:legalStatus ?legalStatus .

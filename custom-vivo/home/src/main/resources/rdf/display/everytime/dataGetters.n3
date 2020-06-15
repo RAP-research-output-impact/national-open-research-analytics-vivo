@@ -864,4 +864,80 @@ WHERE {
     <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#saveToVar>
                 "bfiOai" .
        
+# Patent data getters
+
+<freemarker:individual--bibo-patent.ftl> 
+        <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#hasDataGetter> 
+                 <http://vitro.mannlib.cornell.edu/ns/default#patentMetaDataGetter> .
+<freemarker:individual--bibo-patent.ftl> 
+        <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#hasDataGetter> 
+                 <http://vitro.mannlib.cornell.edu/ns/default#pubMetaDataGetter> .
+<freemarker:individual--bibo-patent.ftl> 
+        <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#hasDataGetter> 
+                 <http://vitro.mannlib.cornell.edu/ns/default#vcardUrlDataGetter> .
+<freemarker:individual--bibo-patent.ftl> 
+        <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#hasDataGetter> 
+                 <http://vitro.mannlib.cornell.edu/ns/default#researchCategoryFORDataGetter> .
+<freemarker:individual--bibo-patent.ftl> 
+        <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#hasDataGetter> 
+                 <http://vitro.mannlib.cornell.edu/ns/default#mainSubjectAreasDataGetter> .
+<freemarker:individual--vivo-patent.ftl> 
+        <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#hasDataGetter> 
+                 <http://vitro.mannlib.cornell.edu/ns/default#fundersDataGetter> .
+
+<http://vitro.mannlib.cornell.edu/ns/default#patentMetaDataGetter>
+        a       <java:edu.cornell.mannlib.vitro.webapp.utils.dataGetter.SparqlQueryDataGetter> ;
+        <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#query> """
+PREFIX rdfs:     <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX xsd:      <http://www.w3.org/2001/XMLSchema#>
+PREFIX owl:      <http://www.w3.org/2002/07/owl#>
+PREFIX obo:      <http://purl.obolibrary.org/obo/>
+PREFIX bibo:     <http://purl.org/ontology/bibo/>
+PREFIX foaf:     <http://xmlns.com/foaf/0.1/>
+PREFIX vitro:    <http://vitro.mannlib.cornell.edu/ns/vitro/0.7#>
+PREFIX vivo:     <http://vivoweb.org/ontology/core#>
+PREFIX osrap:    <http://vivo.deffopera.dk/ontology/osrap/>
+
+SELECT ?assignee ?assigneeName ?assigneeAbbreviation ?assigneeOriginal ?assigneeOriginalName ?assigneeOriginalAbbreviation 
+?yearIssued ?filingStatus ?filingStatusName ?legalStatus ?legalStatusName ?jurisdiction
+WHERE {
+  ?individualURI a bibo:Patent .
+  OPTIONAL {
+    ?individualURI vivo:assignee ?assignee .
+    ?assignee rdfs:label ?assigneeName
+  }
+  OPTIONAL {
+    ?individualURI vivo:assignee ?assignee .
+    ?assignee vivo:abbreviation ?assigneeAbbreviation 
+  }
+  OPTIONAL {
+    ?individualURI osrap:assigneeOriginal ?assigneeOriginal .
+    ?assigneeOriginal rdfs:label ?assigneeOriginalName
+  }
+  OPTIONAL {
+    ?individualURI vivo:assigneeOriginal ?assigneeOriginal .
+    ?assigneeOriginal vivo:abbreviation ?assigneeOriginalAbbreviation 
+  }
+  OPTIONAL {
+    ?individualURI vivo:dateIssued ?dateIssued .
+    ?dateIssued vivo:dateTime ?dateTimeIssued .
+    BIND(STRBEFORE(STR(?dateTimeIssued), "-") AS ?yearIssued)
+  }
+  OPTIONAL {
+    ?individualURI vivo:filingStatus ?filingStatus .
+    ?filinsStatus rdfs:label ?filingStatusName .
+  }
+  OPTIONAL {
+    ?individualURI vivo:legalStatus ?legalStatus .
+    ?legalStatus rdfs:label ?legalStatusName 
+  }
+  OPTIONAL {
+    ?individualURI vivo:jurisdiction ?jurisdiction
+  }
+}
+    """ ;                
+    <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#saveToVar>
+                "patentMeta" .
+
+
 

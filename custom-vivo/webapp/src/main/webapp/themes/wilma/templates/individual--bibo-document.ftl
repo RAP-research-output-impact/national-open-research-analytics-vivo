@@ -173,7 +173,7 @@
 <#if authorAffiliations?has_content>
 <h3>Affiliations</h3>
 <p>Organisations</p>
-<ol style="margin-top:2ex;">
+<ol>
 <#list authorAffiliations as authorAffiliation>
   <#if authorAffiliation.affiliation?has_content && authorAffiliation.affiliationName?has_content>
     <#if authorAffiliation.grid?has_content>

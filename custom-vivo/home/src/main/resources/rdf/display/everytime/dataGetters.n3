@@ -915,7 +915,7 @@ WHERE {
     ?assigneeOriginal rdfs:label ?assigneeOriginalName
   }
   OPTIONAL {
-    ?individualURI vivo:assigneeOriginal ?assigneeOriginal .
+    ?individualURI osrap:assigneeOriginal ?assigneeOriginal .
     ?assigneeOriginal vivo:abbreviation ?assigneeOriginalAbbreviation 
   }
   OPTIONAL {
@@ -924,15 +924,15 @@ WHERE {
     BIND(STRBEFORE(STR(?dateTimeIssued), "-") AS ?yearIssued)
   }
   OPTIONAL {
-    ?individualURI vivo:filingStatus ?filingStatus .
+    ?individualURI osrap:filingStatus ?filingStatus .
     ?filinsStatus rdfs:label ?filingStatusName .
   }
   OPTIONAL {
-    ?individualURI vivo:legalStatus ?legalStatus .
+    ?individualURI osrap:legalStatus ?legalStatus .
     ?legalStatus rdfs:label ?legalStatusName 
   }
   OPTIONAL {
-    ?individualURI vivo:jurisdiction ?jurisdiction
+    ?individualURI osrap:jurisdiction ?jurisdiction
   }
 }
     """ ;                

@@ -123,7 +123,7 @@
 </p>
 
 <#if (patentMeta?has_content && patentMeta[0].assignee??) || (patentMeta?has_content && patentMeta[0].assigneeOriginal??) >
-<div class="pub_authors-box>
+<div class="pub_authors-box">
   <h3>Assignee</h3>
   <#if patentMeta[0].assigneeOriginal??>
    <p>Original: <a href="${urls.base}/search?searchMode=patents&facet_original-assignee_ss=${patentMeta[0].assigneeOriginal?url}">${patentMeta[0].assigneeOriginalName}<#if patentMeta[0].assigneeOriginalAbbreviation??>, ${patentMeta[0].assigneeOriginalAbbreviation}</#if></a></p>

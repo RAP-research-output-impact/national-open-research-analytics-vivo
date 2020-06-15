@@ -171,6 +171,8 @@
 
 <!-- author affiliations -->
 <#if authorAffiliations?has_content>
+<h3>Affiliations</h3>
+<p>Organisations</p>
 <ol style="margin-top:2ex;">
 <#list authorAffiliations as authorAffiliation>
   <#if authorAffiliation.affiliation?has_content && authorAffiliation.affiliationName?has_content>
@@ -239,19 +241,6 @@
   </ul>
 </div>
 <!-- end other-details -->
-</#if>
-
-<#if pubMeta?has_content && pubMeta[0].openAccessLabel?has_content>
-<div class="pub_categories">
-  <h3>Open access</h3>
-  <p>
-    <#if vcardUrl?has_content>
-      <a href="${vcardUrl[0].url}" title="link to ${pubMeta[0].openAccessLabel} open-access full text">${pubMeta[0].openAccessLabel}</a>
-    <#else>
-      ${pubMeta[0].openAccessLabel}
-    </#if>
-  </p>
-</div>
 </#if>
 
 <#if researchCategoriesFOR?has_content || mainSubjectAreas?has_content>
@@ -393,7 +382,6 @@
 
         </script>
       </#if>
-
 
       <#if pubMeta?has_content && pubMeta[0].openAccessLabel?has_content>
         <div class="pub_categories">

@@ -143,7 +143,7 @@
 </#if>
 
 <!-- grant affiliations -->
-<#if grantAffiliations?has_content>
+<#if grantAffiliations?has_content && grantAffiliations[0].affiliation?has_content>
 <h3>Affiliations</h3>
 <p>Organisations</p>
 <ol>

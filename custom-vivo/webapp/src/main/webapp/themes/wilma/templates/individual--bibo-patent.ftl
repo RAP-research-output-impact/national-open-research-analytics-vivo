@@ -146,7 +146,9 @@
 
 <!-- author affiliations -->
 <#if authorAffiliations?has_content>
-<ol style="margin-top:2ex;">
+<h3>Affiliations</h3>
+<p>Organisations</p>
+<ol>
 <#list authorAffiliations as authorAffiliation>
   <#if authorAffiliation.affiliation?has_content && authorAffiliation.affiliationName?has_content>
     <#if authorAffiliation.grid?has_content>

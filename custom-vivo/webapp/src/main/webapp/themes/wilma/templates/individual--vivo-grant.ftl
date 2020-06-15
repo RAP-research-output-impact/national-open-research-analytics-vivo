@@ -144,7 +144,9 @@
 
 <!-- grant affiliations -->
 <#if grantAffiliations?has_content>
-<ol style="margin-top:2ex;">
+<h3>Affiliations</h3>
+<p>Organisations</p>
+<ol>
 <#list grantAffiliations as grantAffiliation>
   <#if grantAffiliation.affiliation?has_content && grantAffiliation.affiliationName?has_content>
     <#if grantAffiliation.grid?has_content>

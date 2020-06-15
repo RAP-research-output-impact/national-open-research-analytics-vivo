@@ -139,7 +139,9 @@
 
 <!-- clinical trial affiliations -->
 <#if clinicalTrialAffiliations??>
-<ol style="margin-top:2ex;">
+<h3>Affiliations</h3>
+<p>Organisations</p>
+<ol>
 <#list clinicalTrialAffiliations as clinicalTrialAffiliation>
   <#if clinicalTrialAffiliation.affiliation?has_content && clinicalTrialAffiliation.affiliationName?has_content>
     <#if clinicalTrialAffiliation.grid?has_content>

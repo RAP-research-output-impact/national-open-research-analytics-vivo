@@ -72,9 +72,6 @@
 
         <p>
 	${pubMeta[0].typeLabel!}
-        <#if pubMeta[0].openAccess??>
-          <img src="${urls.theme}/images/open-access.svg" width="20" alt="open access publication"/>
-	</#if>
 	</p>
         <header>
             <#if relatedSubject??>
@@ -114,29 +111,7 @@
 <#if pubMeta[0].publisher??>
   <span class="pub_meta"><a href="${urls.base}/search?searchMode=publications&facet_publisher_ss=${pubMeta[0].publisher?url}">${pubMeta[0].publisherName}</a>, </span>
 </#if>
-<#if pubMeta[0].issn??>
-  <span class="pub_meta">ISSN ${pubMeta[0].issn}</span>
-</#if>
-</p>
 
-<p>
-<#if volume?has_content>
-    <span class="pub_meta-value">Volume ${volume}, </span>
-</#if>
-<#if issue?has_content>
-    <span class="pub_meta-value">${issue}, </span>
-</#if>
-<#if pageStart?has_content && pageEnd?has_content>
-  <#if pageStart == pageEnd>
-    <span class="pub_meta-value">Page ${pageStart}, </span>
-  <#else>
-    <span class="pub_meta-value">Pages ${pageStart}-${pageEnd}, </span>
-  </#if>
-</#if> 
-<#if pubMeta[0].year??>
-    <span class="pub_meta-value"><a href="${urls.base}/search?facet_publication-year_ss=${pubMeta[0].year}">${pubMeta[0].year}</a></span>
-</#if>
-</p>
 
 <p>
   <#if doi?has_content>
@@ -301,7 +276,15 @@
 
       </#if>
 
+      <#if (patentMeta?has_content && patentMeta[0].filingStatus??) || (patentMeta?has_content && patentMeta[0].legalStatus??) || (pubMeta?has_content && pubMeta[0].year??) || (patentMeta?has_content && patentMeta.yearIssued??)>
       <h3>Status</h3>
+      <#if patentMeta[0]?has_content && patentMeta[0].yearIssued??>
+        <p><span class="pub_meta-value">Granted year: <a href="${urls.base}/search?facet_publication-year_ss=${patentMeta[0].yearIssued}">${patentMeta[0].yearIssued}</a></span></p>
+      </#if>
+      <#if pubMeta?has_content && pubMeta[0].year??>
+        <p><span class="pub_meta-value">Publication year: <a href="${urls.base}/search?facet_publication-year_ss=${pubMeta[0].year}">${pubMeta[0].year}</a></span></p>
+      </#if>
+      <p></p>
       <#if patentMeta?has_content && patentMeta[0].filingStatus??>
         <p>Filing status: ${patentMeta[0].filingStatusName}</p>
       </#if>

@@ -346,10 +346,8 @@
 <!-- end .pub_categories -->
 </#if>
 
-
-      </#if>
-    </div>
-    <!-- end pv-metrics -->
+</div>
+<!-- end pv-metrics -->
 
 </div>
   <!-- end .pub-v-sidebar -->

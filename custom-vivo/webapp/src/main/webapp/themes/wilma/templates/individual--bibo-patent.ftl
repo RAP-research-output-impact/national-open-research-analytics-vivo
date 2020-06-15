@@ -118,13 +118,7 @@
     <span class="pub_meta-value">DOI:<a href="http://doi.org/${doi}" title="Full Text via DOI" target="external">${doi}</a>, </span>
   </#if>
   <#if dimensionsid?has_content>
-    <#if dimensionsid?contains("pub.")>
-      <span class="pub_meta-value">Dimensions: <a href="https://app.dimensions.ai/details/publication/${dimensionsid}" title="Publication details from Dimensions" target="external">${dimensionsid}</a> </span>
-    <#elseif dimensionsid?contains("-")>
       <span class="pub_meta-value">Dimensions: <a href="https://app.dimensions.ai/details/patent/${dimensionsid}" title="Patent details from Dimensions" target="external">${dimensionsid}</a> </span>
-    <#else>
-      <span class="pub_meta-value">Dimensions: <a href="https://app.dimensions.ai/details/data_set/${dimensionsid}" title="Dataset details from Dimensions" target="external">${dimensionsid}</a> </span>
-    </#if>
   </#if>
 </p>
 
@@ -270,7 +264,7 @@
 
       </#if>
 
-      <#if (patentMeta?has_content && patentMeta[0].filingStatus??) || (patentMeta?has_content && patentMeta[0].legalStatus??) || (pubMeta?has_content && pubMeta[0].year??) || (patentMeta?has_content && patentMeta.yearIssued??)>
+     <#if (patentMeta?has_content && patentMeta[0].filingStatus??) || (patentMeta?has_content && patentMeta[0].legalStatus??) || (pubMeta?has_content && pubMeta[0].year??) || (patentMeta?has_content && patentMeta.yearIssued??)>
       <h3>Status</h3>
       <#if patentMeta[0]?has_content && patentMeta[0].yearIssued??>
         <p><span class="pub_meta-value">Granted year: <a href="${urls.base}/search?facet_publication-year_ss=${patentMeta[0].yearIssued}">${patentMeta[0].yearIssued}</a></span></p>
@@ -285,6 +279,7 @@
       <#if patentMeta?has_content && patentMeta[0].legalStatus??>
         <p>Legal status: ${patentMeta[0].legalStatusName}</p>
       </#if>
+     </#if>
         
 	<#if vcardUrl?has_content>
 	  <h3>External Sources</h3>

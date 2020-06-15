@@ -116,7 +116,7 @@
   </#if>
 </p>
 
-<#if grantInvestigators?has_content>
+<#if grantInvestigators?has_content && grantInvestigators[0].investigator?has_content>
 <!-- investigators -->
 <div class="pub_authors-box">
   <h3>Investigators</h3>

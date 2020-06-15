@@ -122,6 +122,18 @@
   </#if>
 </p>
 
+<#if (patentMeta?has_content && patentMeta[0].assignee??) || (patentMeta?has_content && patentMeta[0].assigneeOriginal??) >
+<div class="pub_authors-box>
+  <h3>Assignee</h3>
+  <#if patentMeta[0].assigneeOriginal??>
+   <p>Original: <a href="${urls.base}/search?searchMode=patents&facet_original-assignee_ss=${patentMeta[0].assigneeOriginal?url}">${patentMeta[0].assigneeOriginalName}<#if patentMeta[0].assigneeOriginalAbbreviation??>, ${patentMeta[0].assigneeOriginalAbbreviation}</#if></a></p>
+  </#if>
+  <#if patentMeta[0].assignee??>
+   <p>Current: ${patentMeta[0].assigneeName}<#if patentMeta[0].assigneeAbbreviation??>, ${patentMeta[0].assigneeAbbreviation}</#if></p>
+  </#if>
+</div>
+</#if>
+
 <!-- authors -->
 <div class="pub_authors-box">
   <h3>Authors</h3>
@@ -174,7 +186,7 @@
 
 <#if abstract?has_content>
 <!-- abstract -->
-<h3>Description</h3>
+<h3>Abstract</h3>
 <div class="pub_abstract">
   <p>${abstract}</p>
 </div>

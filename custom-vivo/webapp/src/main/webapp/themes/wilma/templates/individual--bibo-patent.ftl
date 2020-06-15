@@ -265,14 +265,14 @@
       </#if>
 
      <#if (patentMeta?has_content && patentMeta[0].filingStatus??) || (patentMeta?has_content && patentMeta[0].legalStatus??) || (pubMeta?has_content && pubMeta[0].year??) || (patentMeta?has_content && patentMeta.yearIssued??)>
-      <h3>Status</h3>
+      <h2>Status</h2>
       <#if patentMeta[0]?has_content && patentMeta[0].yearIssued??>
         <p><span class="pub_meta-value">Granted year: <a href="${urls.base}/search?facet_publication-year_ss=${patentMeta[0].yearIssued}">${patentMeta[0].yearIssued}</a></span></p>
       </#if>
       <#if pubMeta?has_content && pubMeta[0].year??>
         <p><span class="pub_meta-value">Publication year: <a href="${urls.base}/search?facet_publication-year_ss=${pubMeta[0].year}">${pubMeta[0].year}</a></span></p>
       </#if>
-      <p></p>
+      <p>&nbsp;</p> <#-- TODO: style extra space between sections -->
       <#if patentMeta?has_content && patentMeta[0].filingStatus??>
         <p>Filing status: ${patentMeta[0].filingStatusName}</p>
       </#if>

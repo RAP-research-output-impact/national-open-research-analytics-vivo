@@ -236,8 +236,6 @@
   
 <div class="pub-v-sidebar">
 
-    <div class="pv-metrics">
-
     <#if authorAffiliations?has_content>
       <#list authorAffiliations as authorAffiliation>
         <#if authorAffiliation.affiliation?has_content && authorAffiliation.affiliationName?has_content>
@@ -317,9 +315,6 @@
 </div>
 <!-- end .pub_categories -->
 </#if>
-
-</div>
-<!-- end pv-metrics -->
 
 </div>
   <!-- end .pub-v-sidebar -->

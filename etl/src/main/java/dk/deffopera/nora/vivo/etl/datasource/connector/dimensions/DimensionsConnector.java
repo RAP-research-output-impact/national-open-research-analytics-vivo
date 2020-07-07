@@ -1,6 +1,7 @@
 package dk.deffopera.nora.vivo.etl.datasource.connector.dimensions;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -107,6 +108,7 @@ public class DimensionsConnector extends ConnectorDataSource
     
     private MongoClient mongoClient;
     protected MongoCollection<Document> mongoCollection;
+    protected MongoCollection<Document> ddfDoiCollection;
         
     public DimensionsConnector(String username, String password, 
             String mongoServer, String mongoPort, String mongoCollection, 
@@ -128,19 +130,19 @@ public class DimensionsConnector extends ConnectorDataSource
         for(String collName : collNames) {
             log.info("Collection name: " + collName);
         }
-        MongoCollection<Document> gridCollection = database.getCollection("uni-org-type");
-        MongoCursor<Document> gridCursor = gridCollection.find().cursor();
-        while(gridCursor.hasNext()) {
-           Document gridDoc = gridCursor.next();
-           log.info(gridDoc.toJson());
-        }
-        MongoCollection<Document> collection = database.getCollection(mongoCollection);        
-        this.mongoCollection = collection;
+        //MongoCollection<Document> gridCollection = database.getCollection("uni-org-type");
+        //MongoCursor<Document> gridCursor = gridCollection.find().cursor();
+        //while(gridCursor.hasNext()) {
+        //   Document gridDoc = gridCursor.next();
+        //   log.info(gridDoc.toJson());
+        //}
+        this.ddfDoiCollection = database.getCollection("ddf-doi");
+        this.mongoCollection = database.getCollection(mongoCollection);                
     }
     
     @Override
     public int getBatchSize() {
-        return 1000;
+        return 100;
     }
     
     protected String getToken(String username, String password) {
@@ -171,7 +173,7 @@ public class DimensionsConnector extends ConnectorDataSource
         protected MongoCollection<Document> collection;
         protected MongoCursor<Document> cursor;
         protected int toRdfIteration = 0;
-        protected int MONGO_DOCS_PER_ITERATION = 1;
+        protected int MONGO_DOCS_PER_ITERATION = 10;
                
         protected MongoIterator() {}
         
@@ -184,8 +186,9 @@ public class DimensionsConnector extends ConnectorDataSource
             //}
             cursor = collection.find(
                     Filters.and(
-                            Filters.eq("meta.raw.dbname", "publications"),
-                            Filters.eq("meta.raw.type", "book")
+                            Filters.eq("meta.raw.dbname", "publications")
+                            //Filters.eq("meta.raw.type", "article"),  // TODO remove
+                            //Filters.exists("meta.raw.category_sdg")  // TODO remove
                             //Filters.exists("meta.raw.author_affiliations", false)
                             //Filters.eq("meta.raw.id", "pub.1100249993")
                     )
@@ -211,14 +214,14 @@ public class DimensionsConnector extends ConnectorDataSource
                 String jsonStr = d.toJson();   
                 JSONObject jsonObj = new JSONObject(jsonStr);
                 JSONObject fullJsonObj = jsonObj;
-                JSONArray organisations = jsonObj.getJSONObject("who").getJSONArray("organisations");
-                List<String> whoGrids = new ArrayList<String>();
-                for(int orgi = 0; orgi < organisations.length(); orgi++) {
-                    String grid = organisations.getJSONObject(orgi).getString("gridid");
-                    if(grid != null) {
-                        whoGrids.add(grid);
-                    }
-                }
+//                JSONArray organisations = jsonObj.getJSONObject("who").getJSONArray("organisations");
+//                List<String> whoGrids = new ArrayList<String>();
+//                for(int orgi = 0; orgi < organisations.length(); orgi++) {
+//                    String grid = organisations.getJSONObject(orgi).getString("gridid");
+//                    if(grid != null) {
+//                        whoGrids.add(grid);
+//                    }
+//                }
                 //log.info(whoGrids.size() + " grids in who " + whoGrids);
                 JSONObject meta = jsonObj.getJSONObject("meta");                
                 jsonObj = meta.getJSONObject("raw");
@@ -265,15 +268,42 @@ public class DimensionsConnector extends ConnectorDataSource
                     log.info(jsonObj.toString(2));
                     throw (e);
                 }
+                addDDFGrids(jsonObj);
                 if(log.isDebugEnabled()) {
                     log.debug(jsonObj.toString(2));
-                }
-                if(toRdfIteration == 0) {
+                }                
+                if(toRdfIteration < MONGO_DOCS_PER_ITERATION) {
                   log.info(fullJsonObj.toString(2));
                 }
-                results.add(toRdf(fullJsonObj.toString()));
+                Model rdf = toRdf(fullJsonObj.toString());
+                if(toRdfIteration < MONGO_DOCS_PER_ITERATION) {
+                    StringWriter out = new StringWriter();
+                    rdf.write(out, "TTL");
+                    log.info(out.toString());
+                }
+                results.add(rdf);
             }
             return results;
+        }
+        
+        private void addDDFGrids(JSONObject json) {
+            if(json.has("doi")) {
+                MongoCursor<Document> cursor = ddfDoiCollection.find(Filters.eq(
+                        "doi", json.getString("doi"))).iterator();
+                List<String> grids = new ArrayList<String>();
+                while(cursor.hasNext()) {
+                    String ddfJson = cursor.next().toJson();
+                    JSONObject ddf = new JSONObject(ddfJson);
+                    if(ddf.has("grid")) {
+                        grids.add(ddf.getString("grid"));
+                    }                    
+                }
+                if(!grids.isEmpty()) {
+                    json.put("ddfGrids", grids);
+                }
+            }
+            
+            
         }
         
         protected Model toRdf(String data) {                
@@ -364,8 +394,10 @@ public class DimensionsConnector extends ConnectorDataSource
                 "190-for.rq",
                 "200-rcdc.rq",
                 "210-hrcs.rq",
+                "215-sdg.rq",
                 "220-openAccess.rq",
-                "230-funding.rq"
+                "230-funding.rq",
+                "240-references.rq"
                 );
         for(String query : queries) {
             construct(SPARQL_RESOURCE_DIR + query, model, ABOX + getPrefixName() + "-");            

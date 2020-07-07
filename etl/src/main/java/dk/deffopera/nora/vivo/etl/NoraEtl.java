@@ -12,12 +12,15 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.jena.rdf.model.Model;
 
 import dk.deffopera.nora.vivo.etl.datasource.DataSource;
+import dk.deffopera.nora.vivo.etl.datasource.connector.BFIOAIConnector;
 import dk.deffopera.nora.vivo.etl.datasource.connector.GraphClearer;
+import dk.deffopera.nora.vivo.etl.datasource.connector.dimensions.DimensionsAddressesConnector;
 import dk.deffopera.nora.vivo.etl.datasource.connector.dimensions.DimensionsByDoiConnector;
 import dk.deffopera.nora.vivo.etl.datasource.connector.dimensions.DimensionsClinicalTrialsConnector;
 import dk.deffopera.nora.vivo.etl.datasource.connector.dimensions.DimensionsConnector;
 import dk.deffopera.nora.vivo.etl.datasource.connector.dimensions.DimensionsDatasetsConnector;
 import dk.deffopera.nora.vivo.etl.datasource.connector.dimensions.DimensionsGrantsConnector;
+import dk.deffopera.nora.vivo.etl.datasource.connector.dimensions.DimensionsHealthcareOrgsConnector;
 import dk.deffopera.nora.vivo.etl.datasource.connector.dimensions.DimensionsPatentsConnector;
 import dk.deffopera.nora.vivo.etl.util.SparqlEndpoint;
 import dk.deffopera.nora.vivo.etl.util.SparqlEndpointParams;
@@ -29,7 +32,7 @@ public class NoraEtl {
     public static void main(String[] args) {
         if(args.length < 3) {
             System.out.println("Usage: " 
-                    + "dimensions|dimensionsByDoi|clearGraph|grants|datasets|patents "
+                    + "dimensions|dimensionsByDoi|clearGraph|grants|datasets|patents|clinical_trials|addresses|healthcare_orgs|bfioai "
                     + "outputfile dimensionsUsername=<username> dimensionsPassword=<password> " 
                     + "[sourceEndpointURI= sourceEndpointUsername= sourceEndpointPassword=] "
                     + "[dataDir=] [endpointURI= endpointUpdateURI= username= password=] [authUsername= authPassword=] [graphURI=] "
@@ -125,6 +128,33 @@ public class NoraEtl {
                     getParameter(queryTerms, "mongoPassword"));
         } else if ("clinical_trials".equals(connectorName)) {
             connector = new DimensionsClinicalTrialsConnector(
+                    getParameter(queryTerms, "dimensionsUsername"), 
+                    getParameter(queryTerms, "dimensionsPassword"),
+                    getParameter(queryTerms, "mongoServer"),
+                    getParameter(queryTerms, "mongoPort"),
+                    getParameter(queryTerms, "mongoCollection"),
+                    getParameter(queryTerms, "mongoUsername"),
+                    getParameter(queryTerms, "mongoPassword"));
+        } else if ("addresses".equals(connectorName)) {
+            connector = new DimensionsAddressesConnector(
+                    getParameter(queryTerms, "dimensionsUsername"), 
+                    getParameter(queryTerms, "dimensionsPassword"),
+                    getParameter(queryTerms, "mongoServer"),
+                    getParameter(queryTerms, "mongoPort"),
+                    getParameter(queryTerms, "mongoCollection"),
+                    getParameter(queryTerms, "mongoUsername"),
+                    getParameter(queryTerms, "mongoPassword"));
+        } else if ("healthcare_orgs".equals(connectorName)) {
+            connector = new DimensionsHealthcareOrgsConnector(
+                    getParameter(queryTerms, "dimensionsUsername"), 
+                    getParameter(queryTerms, "dimensionsPassword"),
+                    getParameter(queryTerms, "mongoServer"),
+                    getParameter(queryTerms, "mongoPort"),
+                    getParameter(queryTerms, "mongoCollection"),
+                    getParameter(queryTerms, "mongoUsername"),
+                    getParameter(queryTerms, "mongoPassword"));
+        } else if ("bfioai".equals(connectorName)) {
+            connector = new BFIOAIConnector(
                     getParameter(queryTerms, "dimensionsUsername"), 
                     getParameter(queryTerms, "dimensionsPassword"),
                     getParameter(queryTerms, "mongoServer"),

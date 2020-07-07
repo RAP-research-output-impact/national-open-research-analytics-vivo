@@ -72,14 +72,24 @@ CONSTRUCT {
     }
     OPTIONAL {
       ?meta g:raw ?x .
-      ?meta g:matchingstatus ?matchingstatus .
+      ?root g:meta ?meta .
+      ?root g:only-via-grid "true" .
+      BIND("Only via GRID" AS ?matchingstatus)
     }
     OPTIONAL {
       ?meta g:raw ?x .
-      ?record g:meta ?meta .
-      ?record g:who ?who .
-      ?who g:organisation ?organisation .
-      ?organisation g:gridid ?grid .
+      ?root g:meta ?meta .
+      ?root g:dimension-via-grid "true" .
+      BIND("Dimensions via GRID" AS ?matchingstatus)
+    }
+    OPTIONAL {
+      ?meta g:raw ?x .
+      ?root g:meta ?meta .
+      ?root g:dimension-via-ddf-doi "true" .
+      BIND("Dimensions via DDF DOI" AS ?matchingstatus)
+    }
+    OPTIONAL {
+      ?x g:ddfGrids ?grid .
       BIND(IRI(CONCAT(STR(abox:), ?grid)) AS ?org)
     }
     OPTIONAL {

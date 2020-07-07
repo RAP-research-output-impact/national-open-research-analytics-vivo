@@ -22,32 +22,16 @@ PREFIX vivo:     <http://vivoweb.org/ontology/core#>
 PREFIX scires:   <http://vivoweb.org/ontology/scientific-research#>
 PREFIX g:        <http://ingest.mannlib.cornell.edu/generalizedXMLtoRDF/0.1/> 
 PREFIX osrap:    <http://vivo.deffopera.dk/ontology/osrap/>
+PREFIX abox:     <http://vivo.deffopera.dk/individual/>
 
 CONSTRUCT {
-    ?x a ?type .
-    ?b a vivo:ConferencePaper .
-    ?c a bibo:Chapter .
-    ?d a bibo:Book .
-    ?e a osrap:Monograph .
-    ?f a osrap:Preprint .
+    ?x vivo:hasSubjectArea ?sdgConcept .
+    ?sdgConcept a skos:Concept .
+    ?sdgConcept a osrap:CategorySDG .
+    ?sdgConcept rdfs:label ?name .
 } WHERE {
-    { 
-      ?x g:type "article" 
-      BIND(bibo:AcademicArticle AS ?type)
-    } UNION { 
-      ?b g:type "proceeding"
-      BIND(vivo:ConferencePaper AS ?type)
-    } UNION {
-      ?c g:type "chapter" 
-      BIND(bibo:Chapter AS ?type)
-    }  UNION { 
-      ?d g:type "book" 
-      BIND(bibo:Book AS ?type)
-    } UNION { 
-      ?e g:type "monograph" 
-      BIND(osrap:Monograph AS ?type)
-    }  UNION { 
-      ?f g:type "preprint" 
-      BIND(osrap:Preprint AS ?type)
-    } 
+    ?x g:category_sdg ?categorySdg .
+    ?categorySdg g:id ?id .
+    ?categorySdg g:name ?name .
+    BIND(IRI(CONCAT(STR(abox:), "category-sdg-", STR(?id))) AS ?sdgConcept) .
 }

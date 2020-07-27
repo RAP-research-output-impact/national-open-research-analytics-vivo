@@ -77,18 +77,18 @@ public class RDFServiceTDB extends RDFServiceJena {
 			dataset.begin(ReadWrite.WRITE);
 			try {
 			    try {
-				applyChangeSetToModel(changeSet, dataset);
-				dataset.commit();
-                            } catch (Exception e) {
+			        applyChangeSetToModel(changeSet, dataset);
+			        dataset.commit();
+			    } catch (Throwable t) {
 			        // NORA modification: call abort() when an exception is thrown
-				// so as not to confuse the log with exceptions about the fact
-				// that end() was called before abort()
-			        log.error("Exception applying ChangeSet to model ", e);
-                                dataset.abort();
-				throw new RDFServiceException(e);
+			        // so as not to confuse the log with exceptions about the fact
+			        // that end() was called before abort()
+			        log.error("Exception applying ChangeSet to model ", t);
+			        dataset.abort();
+			        throw new RDFServiceException(t);
 			    }
 			} finally {
-                            dataset.end();
+			    dataset.end();
 			}
 
 			notifyListenersOfChanges(changeSet);

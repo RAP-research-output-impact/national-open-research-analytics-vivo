@@ -2,7 +2,6 @@ package dk.deffopera.nora.vivo.etl.util;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -10,12 +9,14 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.params.ClientPNames;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.LaxRedirectStrategy;
+import org.apache.http.params.CoreConnectionPNames;
+import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
-
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 
@@ -28,6 +29,15 @@ public class HttpUtils {
         DefaultHttpClient defaultHttpClient = new DefaultHttpClient();
         defaultHttpClient.setRedirectStrategy(new LaxRedirectStrategy());
         this.httpClient = defaultHttpClient;
+        // TODO refactor and modernize HttpClient creation
+        int timeout = 60; // seconds
+        HttpParams httpParams = this.httpClient.getParams();
+        httpParams.setParameter(
+          CoreConnectionPNames.CONNECTION_TIMEOUT, timeout * 1000);
+        httpParams.setParameter(
+          CoreConnectionPNames.SO_TIMEOUT, timeout * 1000);
+        httpParams.setParameter(
+          ClientPNames.CONN_MANAGER_TIMEOUT, new Long(timeout * 1000));
     }
     
     public HttpClient getHttpClient() {

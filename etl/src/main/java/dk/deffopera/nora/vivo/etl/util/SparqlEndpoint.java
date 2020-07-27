@@ -21,10 +21,13 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.params.ClientPNames;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.PoolingClientConnectionManager;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.params.CoreConnectionPNames;
+import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
 
 import org.apache.jena.query.QueryParseException;
@@ -54,6 +57,15 @@ public class SparqlEndpoint {
         cm.setDefaultMaxPerRoute(50);
         cm.setMaxTotal(300);
         httpClient = new DefaultHttpClient(cm);
+        // TODO refactor and modernize HttpClient creation
+        int timeout = 60; // seconds
+        HttpParams httpParams = httpClient.getParams();
+        httpParams.setParameter(
+          CoreConnectionPNames.CONNECTION_TIMEOUT, timeout * 1000);
+        httpParams.setParameter(
+          CoreConnectionPNames.SO_TIMEOUT, timeout * 1000);
+        httpParams.setParameter(
+          ClientPNames.CONN_MANAGER_TIMEOUT, new Long(timeout * 1000));
     }
     
     public SparqlEndpoint(SparqlEndpointParams params) {

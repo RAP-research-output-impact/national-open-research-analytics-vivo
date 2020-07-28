@@ -58,7 +58,7 @@ public class SparqlEndpoint {
         cm.setMaxTotal(300);
         httpClient = new DefaultHttpClient(cm);
         // TODO refactor and modernize HttpClient creation
-        int timeout = 60; // seconds
+        int timeout = 900; // seconds
         HttpParams httpParams = httpClient.getParams();
         httpParams.setParameter(
           CoreConnectionPNames.CONNECTION_TIMEOUT, timeout * 1000);

@@ -30,7 +30,7 @@ public class HttpUtils {
         defaultHttpClient.setRedirectStrategy(new LaxRedirectStrategy());
         this.httpClient = defaultHttpClient;
         // TODO refactor and modernize HttpClient creation
-        int timeout = 60; // seconds
+        int timeout = 600; // seconds
         HttpParams httpParams = this.httpClient.getParams();
         httpParams.setParameter(
           CoreConnectionPNames.CONNECTION_TIMEOUT, timeout * 1000);

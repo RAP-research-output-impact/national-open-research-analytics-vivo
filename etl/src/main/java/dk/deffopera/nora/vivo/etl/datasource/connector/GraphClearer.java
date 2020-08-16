@@ -1,57 +1,20 @@
 package dk.deffopera.nora.vivo.etl.datasource.connector;
 
 import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
 
 import dk.deffopera.nora.vivo.etl.datasource.DataSource;
-import dk.deffopera.nora.vivo.etl.datasource.IteratorWithSize;
+import dk.deffopera.nora.vivo.etl.datasource.DataSourceBase;
 
-public class GraphClearer extends ConnectorDataSource implements DataSource {
+public class GraphClearer extends DataSourceBase implements DataSource {
 
     @Override
-    protected IteratorWithSize<Model> getSourceModelIterator() {
-        return new EmptyModelIterator();
+    protected void runIngest() throws InterruptedException {
+        getSparqlEndpoint().clearGraph(getConfiguration().getResultsGraphURI());
+    }
+
+    @Override
+    public Model getResult() {
+        return null;
     }
     
-    private class EmptyModelIterator implements IteratorWithSize<Model> {
-
-        boolean done = false;
-        @Override
-        public boolean hasNext() {
-            return !done;
-        }
-
-        @Override
-        public Model next() {
-            done = true;
-            return ModelFactory.createDefaultModel();
-        }
-
-        @Override
-        public Integer size() {
-            return 1;
-        }
-
-        @Override
-        public void close() {
-            // nada
-        }
-        
-    }
-
-    @Override
-    protected Model filter(Model model) {
-        return model;
-    }
-
-    @Override
-    protected Model mapToVIVO(Model model) {
-        return model;
-    }
-
-    @Override
-    protected String getPrefixName() {
-        return "";
-    }
-
 }

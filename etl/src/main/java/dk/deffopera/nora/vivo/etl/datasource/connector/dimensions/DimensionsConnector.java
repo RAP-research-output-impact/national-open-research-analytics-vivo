@@ -142,7 +142,7 @@ public class DimensionsConnector extends ConnectorDataSource
     
     @Override
     public int getBatchSize() {
-        return 100;
+        return 20;
     }
     
     protected String getToken(String username, String password) {

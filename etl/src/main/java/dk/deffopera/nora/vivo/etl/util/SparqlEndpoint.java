@@ -43,7 +43,7 @@ import org.apache.jena.sparql.resultset.ResultSetException;
 public class SparqlEndpoint {
 
     // writing too many triples at once to VIVO seems to result in 403 errors
-    private static final int CHUNK_SIZE = 10000;
+    private static final int CHUNK_SIZE = 25000;
     
     private static final Log log = LogFactory.getLog(SparqlEndpoint.class);
     
@@ -349,7 +349,7 @@ public class SparqlEndpoint {
      * @param graphURI
      */
     public void clearGraph(String graphURI) {
-        int batchSize = 50000;
+        int batchSize = 25000;
         log.info("Clearing graph " + graphURI + " in batches of " + batchSize + 
                 " triples");
         // Get triple count

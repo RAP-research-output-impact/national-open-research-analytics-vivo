@@ -26,7 +26,7 @@ PREFIX abox:     <http://vivo.deffopera.dk/individual/>
 
 CONSTRUCT {
     ?clinicalTrial obo:BFO_0000055 ?role .
-    ?role a obo:ERO_0000224 .
+    ?role a obo:ERO_0000224 . # funding role
     ?role obo:RO_0000052 ?funderOrg .
     ?role obo:BFO_0000054 ?clinicalTrial .
     ?funderOrg a foaf:Organization .
@@ -35,8 +35,9 @@ CONSTRUCT {
     ?clinicalTrial g:dbname "clinical_trials" .
     ?clinicalTrial g:funders ?funder .
     ?funder g:id ?grid .
-    ?funderWho g:gridid ?grid .
-    ?funderWho g:title ?funderName
+    ?organizations g:id ?grid .
+    ?clinicalTrial g:organizations ?organization .
+    ?organization g:name ?funderName
     BIND(IRI(CONCAT(STR(abox:), STR(?grid))) AS ?funderOrg)
     BIND(IRI(CONCAT(STR(?clinicalTrial), "-funder-", ?grid)) AS ?role)
 }

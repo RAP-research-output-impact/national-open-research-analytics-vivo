@@ -50,8 +50,9 @@ CONSTRUCT {
     BIND(xsd:integer(?authorRank) AS ?rank)
     OPTIONAL {
         ?investigator g:grid ?grid .
-	?affiliationWho g:gridid ?grid .
-	?affiliationWho g:title ?affiliationName
+        ?organization g:id ?grid .
+	?clinicalTrial g:organizations ?organization .
+	?organization g:name ?affiliationName
         BIND(IRI(CONCAT(STR(abox:), STR(?grid))) AS ?affiliationOrg)
     }
     OPTIONAL {

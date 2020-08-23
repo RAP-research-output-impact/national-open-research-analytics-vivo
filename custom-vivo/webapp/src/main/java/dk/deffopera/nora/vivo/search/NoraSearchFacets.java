@@ -59,7 +59,8 @@ public class NoraSearchFacets {
         additionalSearchFacets.add(new SearchFacet("facet_filing-status_ss", "Filing Status"));
         additionalSearchFacets.add(new SearchFacet("facet_legal-status_ss", "Legal Status"));
         additionalSearchFacets.add(new SearchFacet("facet_sponsor-collaborator_ss", "Sponsor/collaborator"));
-        additionalSearchFacets.add(new SearchFacet("facet_phase_ss", "Phase"));                
+        additionalSearchFacets.add(new SearchFacet("facet_phase_ss", "Phase"));         
+        additionalSearchFacets.add(new SearchFacet("facet_sdg_ss", "Sustainable Development Goals"));
         additionalSearchFacets.add(new SearchFacet("facet_retrieval_ss", "Retrieval"));
         
         allFacets.addAll(commonSearchFacets);

@@ -31,6 +31,8 @@ CONSTRUCT {
     ?clinicalTrial bibo:abstract ?abstract .
     ?clinicalTrial vivo:identifier ?id .
     ?clinicalTrial obo:ERO_0001518 ?phaseInd .
+    ?clinicalTrial obo:ERO_0001518 ?phaseInd1 .
+    ?clinicalTrial obo:ERO_0001518 ?phaseInd2 .
     ?clinicalTrial osrap:condition ?condition .
     ?clinicalTrial osrap:intervention ?interventionDescription .
     ?clinicalTrial osrap:gender ?gender .
@@ -62,7 +64,22 @@ CONSTRUCT {
     }
     OPTIONAL {
         ?clinicalTrial g:phase ?phase .
+	FILTER(!REGEX(?phase, "N\\/A"))
+	FILTER(!REGEX(?phase, "\\/"))
 	BIND(IRI(CONCAT("http://purl.org/net/OCRe/study_design.owl#", REPLACE(STR(?phase), "\\W", "_"))) AS ?phaseInd)
+    }
+    OPTIONAL {
+        ?clinicalTrial g:phase ?phase .
+	FILTER(!REGEX(?phase, "N\\/A"))
+	FILTER(REGEX(?phase, "\\/"))
+	BIND(IRI(CONCAT("http://purl.org/net/OCRe/study_design.owl#", REPLACE(STRBEFORE(STR(?phase), "/"), "\\W", "_"))) AS ?phaseInd1)
+    }
+    # TODO there may be more than two slashes, e.g. 1/3/4 : not sure if this is expected.
+    OPTIONAL {
+        ?clinicalTrial g:phase ?phase .
+	FILTER(!REGEX(?phase, "N\\/A"))
+	FILTER(REGEX(?phase, "\\/"))
+	BIND(IRI(CONCAT("http://purl.org/net/OCRe/study_design.owl#Phase_", REPLACE(STRAFTER(STR(?phase), "/"), "\\W", "_"))) AS ?phaseInd2)
     }
     OPTIONAL {
         ?clinicalTrial g:conditions ?condition .

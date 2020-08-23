@@ -35,7 +35,7 @@ CONSTRUCT {
     ?clinicalTrial g:dbname "clinical_trials" .
     ?clinicalTrial g:funders ?funder .
     ?funder g:id ?grid .
-    ?organizations g:id ?grid .
+    ?organization g:id ?grid .
     ?clinicalTrial g:organizations ?organization .
     ?organization g:name ?funderName
     BIND(IRI(CONCAT(STR(abox:), STR(?grid))) AS ?funderOrg)

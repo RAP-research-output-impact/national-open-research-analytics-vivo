@@ -64,8 +64,9 @@ CONSTRUCT {
     OPTIONAL {
       ?details g:affiliations ?affiliation .
       ?affiliation g:id ?grid .
-      ?affiliationWho g:gridid ?grid .
-      ?affiliationWho g:title ?affiliationName .
+      ?organization g:id ?grid .
+      ?grant g:research_orgs ?organization .
+      ?organization g:name ?affiliationName
       BIND(IRI(CONCAT(STR(abox:), STR(?grid))) AS ?affiliationOrg)
     }
     # If there is no explicit affiliation, but there a research_org listed

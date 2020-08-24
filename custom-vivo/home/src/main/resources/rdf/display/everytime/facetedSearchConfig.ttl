@@ -711,7 +711,7 @@
         SELECT DISTINCT ?sponsorCollaborator
         WHERE {
 	    ?uri <http://purl.obolibrary.org/obo/BFO_0000055> ?fundingRole .
-	    ?fundingRole a obo:ERO_0000224 .
+	    ?fundingRole a <http://purl.obolibrary.org/obo/ERO_0000224> .
 	    ?fundingRole <http://purl.obolibrary.org/obo/RO_0000052> ?sponsorCollaborator .
         }
     """ .

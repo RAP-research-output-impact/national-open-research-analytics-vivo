@@ -1,3 +1,5 @@
+<#-- TODO: figure out why the test for grantDetails is necessary here .  Suggests that this template is being applied to something that is not a grant .-->
+<#if grantDetails?has_content>
 <#assign grant = grantDetails[0]>
 <div class="publication-short-view" style="margin-bottom:2ex;"> 
     <div class="publication-short-view-details" style="margin-left:32px;">
@@ -31,3 +33,4 @@
     </p>
     </div>
 </div>
+</#if>

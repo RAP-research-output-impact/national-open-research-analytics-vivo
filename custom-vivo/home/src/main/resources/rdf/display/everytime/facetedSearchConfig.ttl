@@ -746,8 +746,8 @@
         SELECT DISTINCT ?sdg
         WHERE {
             ?uri vivo:hasSubjectArea ?sdg .
-	    ?for a <http://vivo.deffopera.dk/ontology/osrap/CategorySDG> .
-	    ?for rdfs:label ?label .
+	    ?sdg a <http://vivo.deffopera.dk/ontology/osrap/CategorySDG> .
+	    ?sdg rdfs:label ?label .
         }
     """ .
 

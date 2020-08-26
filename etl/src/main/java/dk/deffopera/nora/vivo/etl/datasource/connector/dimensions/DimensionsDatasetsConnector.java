@@ -89,7 +89,8 @@ public class DimensionsDatasetsConnector extends DimensionsConnector {
         queries = Arrays.asList(
                 "100-dataset.rq",
                 "140-datasetAuthorship.rq",
-                "190-for.rq"
+                "190-for.rq",
+                "500-researchOrgs.rq"                
                 );
         for(String query : queries) {
             construct(SPARQL_RESOURCE_DIR + "datasets/" + query, model, ABOX + getPrefixName() + "-");

@@ -146,7 +146,8 @@ public class DimensionsClinicalTrialsConnector extends DimensionsConnector {
                 "100-clinicalTrial.rq",                
                 "190-for.rq",
                 "200-investigator.rq",
-                "210-funder.rq"
+                "210-funder.rq",
+                "500-researchOrgs.rq"
                 );
         for(String query : queries) {
             construct(SPARQL_RESOURCE_DIR + "clinical_trials/" + query, model, ABOX + getPrefixName() + "-");

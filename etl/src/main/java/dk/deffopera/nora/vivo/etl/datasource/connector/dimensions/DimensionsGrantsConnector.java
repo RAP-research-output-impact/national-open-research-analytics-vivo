@@ -117,7 +117,8 @@ public class DimensionsGrantsConnector extends DimensionsConnector {
         queries = Arrays.asList(
                 "100-grant.rq",
                 "190-for.rq",
-                "200-investigator.rq"
+                "200-investigator.rq",
+                "500-researchOrgs.rq"
                 );
         for(String query : queries) {
             construct(SPARQL_RESOURCE_DIR + "grants/" + query, model, ABOX + getPrefixName() + "-");

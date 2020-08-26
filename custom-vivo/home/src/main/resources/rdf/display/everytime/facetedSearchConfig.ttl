@@ -372,7 +372,6 @@
         WHERE {
 	  FILTER(REGEX(STR(?org), "grid"))
 	  {
-	    ?uri a obo:IAO_0000030 .
 	    ?uri nora:relatedToOrganization ?org .
 	    FILTER NOT EXISTS { ?org a vivo:University }
 	    FILTER NOT EXISTS { ?org a vivo:Hospital }
@@ -425,7 +424,6 @@
         SELECT DISTINCT ?org
         WHERE {
 	  {
-	    ?uri a obo:IAO_0000030 .
 	    ?uri nora:relatedToOrganization ?org .
 	    ?org a vivo:University .
 	  } UNION {
@@ -472,7 +470,6 @@
         SELECT DISTINCT ?regionAlias
         WHERE {
 	  {
-	    ?uri a obo:IAO_0000030 .
 	    ?uri nora:relatedToOrganization ?org .
 	    ?org a vivo:Hospital .
 	    ?org vivo:abbreviation ?regionAlias

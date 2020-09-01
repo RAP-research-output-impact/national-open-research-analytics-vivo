@@ -796,7 +796,7 @@
 	    ?flagSet <http://vivo.deffopera.dk/ontology/osrap/dim_ddf> "true" .
 	    ?flagSet <http://vivo.deffopera.dk/ontology/osrap/dim_grid> "false" .
 	    BIND("DDF only" AS ?retrieval)
-	  }
+	  } UNION {
             ?uri bibo:doi ?doi .
 	    ?flagSet <http://vivo.deffopera.dk/ontology/osrap/doi> ?doi .
 	    ?flagSet <http://vivo.deffopera.dk/ontology/osrap/dim_ddf> "false" .

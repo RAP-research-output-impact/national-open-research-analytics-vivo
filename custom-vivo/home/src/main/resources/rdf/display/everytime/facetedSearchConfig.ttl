@@ -209,7 +209,14 @@
         SELECT DISTINCT ?org
         WHERE {
 	  FILTER(REGEX(STR(?org), "grid"))
-	  {
+	  { 
+	    ?uri a obo:IAO_0000030 .
+            ?uri bibo:doi ?doi .
+	    ?ddf nora:doi ?doi .
+	    ?ddf a nora:DDF .
+	    ?ddf nora:grid ?grid .
+	    BIND(IRI(CONCAT(STR(abox:), ?grid)) AS ?org)
+	  } UNION {
 	    ?uri a obo:IAO_0000030 .
 	    ?uri nora:relatedToOrganization ?org .
 	  } UNION {
@@ -249,11 +256,20 @@
 	PREFIX wos: <http://webofscience.com/ontology/wos#> 
 	PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 	PREFIX nora:    <http://vivo.deffopera.dk/ontology/osrap/>
-	PREFIX obo: <http://purl.obolibrary.org/obo/> 
+	PREFIX obo: <http://purl.obolibrary.org/obo/>
+	PREFIX abox:     <http://vivo.deffopera.dk/individual/>
         SELECT DISTINCT ?country
         WHERE {
 	  FILTER(REGEX(STR(?org), "grid"))
-	  {
+	  { 
+            ?uri bibo:doi ?doi .
+	    ?ddf nora:doi ?doi .
+	    ?ddf a nora:DDF .
+	    ?ddf nora:grid ?grid .
+	    BIND(IRI(CONCAT(STR(abox:), ?grid)) AS ?org)
+	    ?org nora:countryCode ?countryCode .
+	    ?country <http://aims.fao.org/aos/geopolitical.owl#codeISO2> ?countryCode .
+	  } UNION {
 	    ?uri a obo:IAO_0000030 .
 	    ?uri nora:relatedToOrganization ?org .
 	    ?org nora:countryCode ?countryCode .
@@ -307,7 +323,17 @@
         SELECT DISTINCT ?continent
         WHERE {
 	  FILTER(REGEX(STR(?org), "grid"))
-	  {
+	  { 
+            ?uri bibo:doi ?doi .
+	    ?ddf nora:doi ?doi .
+	    ?ddf a nora:DDF .
+	    ?ddf nora:grid ?grid .
+	    BIND(IRI(CONCAT(STR(abox:), ?grid)) AS ?org)
+	    ?org nora:countryCode ?countryCode .
+	    ?country <http://aims.fao.org/aos/geopolitical.owl#codeISO2> ?countryCode .
+	    ?country <http://aims.fao.org/aos/geopolitical.owl#isInGroup> ?continent .
+	    ?continent a vivo:Continent .
+	  } UNION {
 	    ?uri a obo:IAO_0000030 .
 	    ?uri nora:relatedToOrganization ?org .
 	    ?org nora:countryCode ?countryCode .
@@ -371,7 +397,15 @@
         SELECT DISTINCT ?org
         WHERE {
 	  FILTER(REGEX(STR(?org), "grid"))
-	  {
+	  { 
+            ?uri bibo:doi ?doi .
+	    ?ddf nora:doi ?doi .
+	    ?ddf a nora:DDF .
+	    ?ddf nora:grid ?grid .
+	    BIND(IRI(CONCAT(STR(abox:), ?grid)) AS ?org)
+	    FILTER NOT EXISTS { ?org a vivo:University }
+	    FILTER NOT EXISTS { ?org a vivo:Hospital }
+	  } UNION {
 	    ?uri nora:relatedToOrganization ?org .
 	    FILTER NOT EXISTS { ?org a vivo:University }
 	    FILTER NOT EXISTS { ?org a vivo:Hospital }
@@ -424,6 +458,13 @@
         SELECT DISTINCT ?org
         WHERE {
 	  {
+            ?uri bibo:doi ?doi .
+	    ?ddf nora:doi ?doi .
+	    ?ddf a nora:DDF .
+	    ?ddf nora:grid ?grid .
+	    BIND(IRI(CONCAT(STR(abox:), ?grid)) AS ?org)
+	    ?org a vivo:University .
+	  } UNION {
 	    ?uri nora:relatedToOrganization ?org .
 	    ?org a vivo:University .
 	  } UNION {
@@ -470,6 +511,14 @@
         SELECT DISTINCT ?regionAlias
         WHERE {
 	  {
+            ?uri bibo:doi ?doi .
+	    ?ddf nora:doi ?doi .
+	    ?ddf a nora:DDF .
+	    ?ddf nora:grid ?grid .
+	    BIND(IRI(CONCAT(STR(abox:), ?grid)) AS ?org)
+	    ?org a vivo:Hospital .
+	    ?org vivo:abbreviation ?regionAlias
+	  } UNION {
 	    ?uri nora:relatedToOrganization ?org .
 	    ?org a vivo:Hospital .
 	    ?org vivo:abbreviation ?regionAlias
@@ -724,7 +773,25 @@
 	PREFIX bibo: <http://purl.org/ontology/bibo/> 
         SELECT DISTINCT ?retrieval
         WHERE {
-            ?uri <http://vivo.deffopera.dk/ontology/osrap/matchingstatus> ?retrieval .
+	  {
+            ?uri bibo:doi ?doi .
+	    ?flagSet <http://vivo.deffopera.dk/ontology/osrap/doi> ?doi .
+	    ?flagSet <http://vivo.deffopera.dk/ontology/osrap/dim_ddf> "true" .
+	    ?flagSet <http://vivo.deffopera.dk/ontology/osrap/dim_grid> "true" .
+	    BIND("GRID and DDF" as ?retrieval)
+	  } UNION {
+            ?uri bibo:doi ?doi .
+	    ?flagSet <http://vivo.deffopera.dk/ontology/osrap/doi> ?doi .
+	    ?flagSet <http://vivo.deffopera.dk/ontology/osrap/dim_ddf> "true" .
+	    ?flagSet <http://vivo.deffopera.dk/ontology/osrap/dim_grid> "false" .
+	    BIND("DDF only" AS ?retrieval)
+	  }
+            ?uri bibo:doi ?doi .
+	    ?flagSet <http://vivo.deffopera.dk/ontology/osrap/doi> ?doi .
+	    ?flagSet <http://vivo.deffopera.dk/ontology/osrap/dim_ddf> "false" .
+	    ?flagSet <http://vivo.deffopera.dk/ontology/osrap/dim_grid> "true" .
+	    BIND("GRID only" AS ?retrieval)
+	  }
         }
     """ .
 

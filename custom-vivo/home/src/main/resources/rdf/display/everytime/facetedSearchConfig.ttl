@@ -207,6 +207,7 @@
 	PREFIX bibo:   <http://purl.org/ontology/bibo/>
 	PREFIX nora:    <http://vivo.deffopera.dk/ontology/osrap/>
 	PREFIX obo: <http://purl.obolibrary.org/obo/> 
+	PREFIX abox:     <http://vivo.deffopera.dk/individual/>
         SELECT DISTINCT ?org
         WHERE {
 	  FILTER(REGEX(STR(?org), "grid"))
@@ -323,6 +324,7 @@
 	PREFIX bibo:   <http://purl.org/ontology/bibo/>
 	PREFIX nora:    <http://vivo.deffopera.dk/ontology/osrap/>
 	PREFIX obo: <http://purl.obolibrary.org/obo/> 
+	PREFIX abox:     <http://vivo.deffopera.dk/individual/>
         SELECT DISTINCT ?continent
         WHERE {
 	  FILTER(REGEX(STR(?org), "grid"))
@@ -398,6 +400,7 @@
 	PREFIX bibo:   <http://purl.org/ontology/bibo/>
 	PREFIX nora:    <http://vivo.deffopera.dk/ontology/osrap/>
 	PREFIX obo: <http://purl.obolibrary.org/obo/> 
+	PREFIX abox:     <http://vivo.deffopera.dk/individual/>
         SELECT DISTINCT ?org
         WHERE {
 	  FILTER(REGEX(STR(?org), "grid"))
@@ -460,6 +463,7 @@
 	PREFIX bibo:   <http://purl.org/ontology/bibo/>
 	PREFIX nora:    <http://vivo.deffopera.dk/ontology/osrap/>
 	PREFIX obo: <http://purl.obolibrary.org/obo/> 
+	PREFIX abox:     <http://vivo.deffopera.dk/individual/>
         SELECT DISTINCT ?org
         WHERE {
 	  {
@@ -514,6 +518,7 @@
 	PREFIX bibo:   <http://purl.org/ontology/bibo/>
 	PREFIX nora:    <http://vivo.deffopera.dk/ontology/osrap/>
 	PREFIX obo: <http://purl.obolibrary.org/obo/> 
+	PREFIX abox:     <http://vivo.deffopera.dk/individual/>
         SELECT DISTINCT ?regionAlias
         WHERE {
 	  {

@@ -241,6 +241,9 @@
 	  } UNION {
             ?uri nora:assigneeOriginal ?org .
 	    ?org a foaf:Organization .
+	  } UNION {
+            ?uri vivo:assignee ?org .
+	    ?org a foaf:Organization .
 	  }
         }
     """ .
@@ -273,7 +276,6 @@
 	    ?org nora:countryCode ?countryCode .
 	    ?country <http://aims.fao.org/aos/geopolitical.owl#codeISO2> ?countryCode .
 	  } UNION {
-	    ?uri a obo:IAO_0000030 .
 	    ?uri nora:relatedToOrganization ?org .
 	    ?org nora:countryCode ?countryCode .
 	    ?country <http://aims.fao.org/aos/geopolitical.owl#codeISO2> ?countryCode .
@@ -302,6 +304,11 @@
 	    ?country <http://aims.fao.org/aos/geopolitical.owl#codeISO2> ?countryCode .
 	  } UNION {
             ?uri nora:assigneeOriginal ?org .
+	    ?org a foaf:Organization .
+	    ?org nora:countryCode ?countryCode .
+	    ?country <http://aims.fao.org/aos/geopolitical.owl#codeISO2> ?countryCode .
+	  } UNION {
+            ?uri vivo:assignee ?org .
 	    ?org a foaf:Organization .
 	    ?org nora:countryCode ?countryCode .
 	    ?country <http://aims.fao.org/aos/geopolitical.owl#codeISO2> ?countryCode .
@@ -339,7 +346,6 @@
 	    ?country <http://aims.fao.org/aos/geopolitical.owl#isInGroup> ?continent .
 	    ?continent a vivo:Continent .
 	  } UNION {
-	    ?uri a obo:IAO_0000030 .
 	    ?uri nora:relatedToOrganization ?org .
 	    ?org nora:countryCode ?countryCode .
 	    ?country <http://aims.fao.org/aos/geopolitical.owl#codeISO2> ?countryCode .
@@ -376,6 +382,13 @@
 	    ?continent a vivo:Continent .
 	  } UNION {
             ?uri nora:assigneeOriginal ?org .
+	    ?org a foaf:Organization .
+	    ?org nora:countryCode ?countryCode .
+	    ?country <http://aims.fao.org/aos/geopolitical.owl#codeISO2> ?countryCode .
+	    ?country <http://aims.fao.org/aos/geopolitical.owl#isInGroup> ?continent .
+	    ?continent a vivo:Continent .
+	  } UNION {
+            ?uri vivo:assignee ?org .
 	    ?org a foaf:Organization .
 	    ?org nora:countryCode ?countryCode .
 	    ?country <http://aims.fao.org/aos/geopolitical.owl#codeISO2> ?countryCode .
@@ -444,6 +457,11 @@
 	    ?org a foaf:Organization .
 	    FILTER NOT EXISTS { ?org a vivo:University }
 	    FILTER NOT EXISTS { ?org a vivo:Hospital }
+	  } UNION {
+            ?uri vivo:assignee ?org .
+	    ?org a foaf:Organization .
+	    FILTER NOT EXISTS { ?org a vivo:University }
+	    FILTER NOT EXISTS { ?org a vivo:Hospital }
 	  }
         }
     """ .
@@ -498,6 +516,9 @@
 	    ?org a vivo:University .
 	  } UNION {
             ?uri nora:assigneeOriginal ?org .
+	    ?org a vivo:University .
+	  } UNION {
+            ?uri bibo:assignee ?org .
 	    ?org a vivo:University .
 	  }
         }
@@ -555,6 +576,10 @@
 	    ?org vivo:abbreviation ?regionAlias
 	  } UNION {
             ?uri nora:assigneeOriginal ?org .
+	    ?org a vivo:Hospital .
+	    ?org vivo:abbreviation ?regionAlias
+	  } UNION {
+            ?uri vivo:assignee ?org .
 	    ?org a vivo:Hospital .
 	    ?org vivo:abbreviation ?regionAlias
 	  }

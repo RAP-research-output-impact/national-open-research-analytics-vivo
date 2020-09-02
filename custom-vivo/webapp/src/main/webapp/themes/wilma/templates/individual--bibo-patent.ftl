@@ -192,6 +192,10 @@
 <div class="pub_abstract">
   <p>${abstract}</p>
 </div>
+
+<script type="text/javascript">
+  $('.pub_abstract').truncate({max_length: 750});
+</script>
 </#if>
 
 <#if supportingGrants?? && supportingGrants[0]??>
@@ -367,6 +371,8 @@ ${stylesheets.add('<link rel="stylesheet" href="${urls.base}/css/individual/indi
 
 ${headScripts.add('<script type="text/javascript" src="${urls.base}/js/jquery_plugins/qtip/jquery.qtip-1.0.0-rc3.min.js"></script>',
                   '<script type="text/javascript" src="${urls.base}/js/tiny_mce/tiny_mce.js"></script>')}
+
+${headScripts.add('<script type="text/javascript" src="${urls.base}/js/jquery_plugins/jquery.truncator.js"></script>')}
 
 ${scripts.add('<script type="text/javascript" src="${urls.base}/js/individual/moreLessController.js"></script>')}
 

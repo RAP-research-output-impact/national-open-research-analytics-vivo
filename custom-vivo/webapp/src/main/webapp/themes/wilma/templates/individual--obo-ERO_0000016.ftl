@@ -315,6 +315,18 @@
       </div>
      </#if>
     
+     <#if researchCategoriesSDG?has_content>
+      <div class="pub_keywords-enumeration clearfix">
+        <p>Sustainable Development Goals</p>
+        <ul class="one-line-list">
+          <#list researchCategoriesSDG as researchCategory>
+            <li role="list-item"><a href="${urls.base}/search?searchMode=clinical_trials&facet_sdg_ss=${researchCategory.researchCategory?url}">${researchCategory.researchCategoryName}</a></li>
+          </#list>
+        </ul>
+      </div>
+     </#if>
+    
+
     </div>
     <!-- end .pub_categories -->
     </#if>

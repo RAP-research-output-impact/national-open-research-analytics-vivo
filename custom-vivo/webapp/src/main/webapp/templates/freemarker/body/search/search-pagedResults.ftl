@@ -230,9 +230,17 @@
     </#if>
 </div> <!-- end contentsBrowseGroup -->
 
+<script>
+  
+  function nextFacetCheckboxes(fieldName) {
+    $("#" + fieldName).append("<input name=\"\" value=\"1\">");
+  }
+
+</script>
+
 <#macro facetCategories facet>
   <#if facet.unionFacet>
-    <form action="${urls.base}/search" method="GET">
+    <form id="${facet.fieldName}" action="${urls.base}/search" method="GET">
       <p style="margin-bottom:0;text-align:left;"><em>
       Check one or more and </em>
       <input style="align: left;" type="submit" name="submit" value="SEARCH"/>
@@ -244,6 +252,7 @@
 	</#list>
       <#else>
         <@facetCategoriesCheckboxes facet />
+	<a href="#" onClick="nextFacetCheckboxes('${facet.fieldName}');">next</a>
       </#if>
       <#list sortFormHiddenFields as field>
         <#if field.name?? && (field.name != "sortField") && (field.name != "startIndex") && field.value??>

@@ -267,7 +267,7 @@
     </div>
     <!-- end pv-metrics -->
 
-<#if mainSubjectAreas?has_content || researchCategoriesFOR?has_content>
+<#if mainSubjectAreas?has_content || researchCategoriesFOR?has_content || researchCategoriesSDG?has_content>
 <!-- categories/classification -->
 <div class="pub_categories">
   <h3>Research Categories</h3>
@@ -289,6 +289,17 @@
     <ul class="one-line-list">
       <#list researchCategoriesFOR as researchCategory>
         <li role="list-item"><a href="${urls.base}/search?searchMode=grants&facet_research-category_ss=${researchCategory.researchCategory?url}">${researchCategory.researchCategoryName}</a></li>
+      </#list>
+    </ul>
+  </div>
+ </#if>
+
+ <#if researchCategoriesSDG?has_content>
+  <div class="pub_keywords-enumeration clearfix">
+    <p>Sustainable Development Goals</p>
+    <ul class="one-line-list">
+      <#list researchCategoriesSDG as researchCategory>
+        <li role="list-item"><a href="${urls.base}/search?searchMode=grants&facet_sdg_ss=${researchCategory.researchCategory?url}">${researchCategory.researchCategoryName}</a></li>
       </#list>
     </ul>
   </div>

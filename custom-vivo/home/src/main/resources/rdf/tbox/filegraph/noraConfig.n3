@@ -17,3 +17,4 @@ vivo:Dataset vitro:customDisplayViewAnnot "individual--vivo-dataset.ftl"^^xsd:st
 vivo:Grant vitro:customDisplayViewAnnot "individual--vivo-grant.ftl"^^xsd:string .
 bibo:Patent vitro:customDisplayViewAnnot "individual--bibo-patent.ftl"^^xsd:string .
 obo:ERO_0000016 vitro:customDisplayViewAnnot "individual--obo-ERO_0000016.ftl"^^xsd:string .
+vivo:University vitro:customDisplayViewAnnot "individual--vivo-university.ftl"^^xsd:string .

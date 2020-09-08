@@ -977,5 +977,62 @@ WHERE {
     <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#saveToVar>
                 "patentMeta" .
 
+<freemarker:individual--vivo-university.ftl> 
+        <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#hasDataGetter> 
+                 <http://vitro.mannlib.cornell.edu/ns/default#universityMetaDataGetter> .
 
+<http://vitro.mannlib.cornell.edu/ns/default#universityMetaDataGetter>
+        a       <java:edu.cornell.mannlib.vitro.webapp.utils.dataGetter.SparqlQueryDataGetter> ;
+        <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#query> """
+PREFIX vivo: <http://vivoweb.org/ontology/core#>
+PREFIX wos: <http://webofscience.com/ontology/wos#> 
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX bibo:   <http://purl.org/ontology/bibo/>
+PREFIX nora:    <http://vivo.deffopera.dk/ontology/osrap/>
+PREFIX obo: <http://purl.obolibrary.org/obo/> 
+PREFIX abox:     <http://vivo.deffopera.dk/individual/>
+PREFIX vitro: <http://vitro.mannlib.cornell.edu/ns/vitro/public#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?country ?continent ?web ?grid ?ror ?isni ?noraOrganisationType
+WHERE {
+  ?individualURI a vivo:University 
+  OPTIONAL {
+    ?individualURI nora:countryCode ?countryCode .
+    ?countryInd <http://aims.fao.org/aos/geopolitical.owl#codeISO2> ?countryCode . 
+    ?countryInd rdfs:label ?country
+  }
+  OPTIONAL {
+    ?individualURI nora:countryCode ?countryCode .
+    ?countryInd <http://aims.fao.org/aos/geopolitical.owl#codeISO2> ?countryCode .
+    ?countryInd <http://aims.fao.org/aos/geopolitical.owl#isInGroup> ?continentInd .
+    ?continentInd a vivo:Continent .
+    ?continentInd rdfs:label ?continent 
+  }
+  OPTIONAL {
+    ?individualURI nora:links ?web 
+  }
+  OPTIONAL {
+    ?individualURI nora:id ?grid 
+  }
+  OPTIONAL {
+    ?individualURI nora:external_ids ?ext .
+    ?ext nora:ROR ?ror1 .
+    ?ror1 nora:all ?ror .
+  }
+  OPTIONAL {
+    ?individualURI nora:external_ids ?ext .
+    ?ext nora:ISNI ?isni1 .
+    ?isni1 nora:all ?isniStr .
+    BIND(CONCAT("http://isni.org/isni/", REPLACE(STR(?isniStr), "\\\\W", "")) AS ?isni)
+  }
+  OPTIONAL {
+    ?individualURI nora:types ?types .
+    ?alias nora:PREVIOUS ?types .
+    ?alias nora:NEW ?noraOrganisationType 
+  }
+}
+    """ ;                
+    <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#saveToVar>
+                "universityMeta" .
 

@@ -120,7 +120,7 @@
      <#include "individual-property-group-menus.ftl">
 -->
 
-<#include "individual-property-group-tabs.ftl">
+<#-- include "individual-property-group-tabs.ftl" -->
 
 <#assign rdfUrl = individual.rdfUrl>
 

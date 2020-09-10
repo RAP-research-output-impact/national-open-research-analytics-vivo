@@ -355,7 +355,7 @@
         <h3>Dimensions Citation Indicators</h3>
       </#if>
       <#if pubMeta[0].timesCited??>
-        <p>Times Cited: <span>${pubMeta[0].timesCited}</span></p>
+        <p>Times Cited: <span><a href="https://app.dimensions.ai/discover/publication?and_subset_publication_citations=${dimensionsid}">${pubMeta[0].timesCited}</a></span></p>
       </#if>
       <#if pubMeta[0].fieldCitationRatio??>
         <p>Field Citation Ratio (FCR): <span>${pubMeta[0].fieldCitationRatio}</span></p>

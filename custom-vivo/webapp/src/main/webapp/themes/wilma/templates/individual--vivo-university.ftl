@@ -103,13 +103,6 @@
 
 <#assign nameForOtherGroup = "${i18n().other}">
 
-<#-- Ontology properties -->
-<#if !editable>
-	<#-- We don't want to see the first name and last name unless we might edit them. -->
-	<#assign skipThis = propertyGroups.pullProperty("http://xmlns.com/foaf/0.1/firstName")!>
-	<#assign skipThis = propertyGroups.pullProperty("http://xmlns.com/foaf/0.1/lastName")!>
-</#if>
-
 <!-- Property group menu or tabs -->
 <#--
      With release 1.6 there are now two types of property group displays: the original property group

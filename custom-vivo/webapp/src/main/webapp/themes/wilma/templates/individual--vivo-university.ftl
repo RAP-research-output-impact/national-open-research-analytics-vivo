@@ -5,7 +5,19 @@
     in the Wilma theme and should reside in the themes/wilma/templates directory.
 -->
 
-<#include "individual-setup.ftl">
+<#--
+NORA: Don't call individual-setup as it retrieves the whole grouped property list, which is very
+slow for universities and will not be used.  Instead, copy the relevant lines from
+individual-setup below. 
+include "individual-setup.ftl" -->
+
+<#import "lib-list.ftl" as l>
+<#import "lib-properties.ftl" as p>
+
+<#assign editable = individual.editable>
+
+<#assign core = "http://vivoweb.org/ontology/core#">
+
 <#import "lib-vivo-properties.ftl" as vp>
 <#--Number of labels present-->
  <#if !labelCount??>
@@ -25,11 +37,13 @@
     <section id="share-contact" role="region">
         <!-- Image -->
         <#assign individualImage>
+	  <#--
             <@p.image individual=individual
                       propertyGroups=propertyGroups
                       namespaces=namespaces
                       editable=editable
                       showPlaceholder="always" />
+          -->
         </#assign>
 
         <#if ( individualImage?contains('<img class="individual-photo"') )>

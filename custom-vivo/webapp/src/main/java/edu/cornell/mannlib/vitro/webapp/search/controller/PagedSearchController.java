@@ -3,6 +3,7 @@
 package edu.cornell.mannlib.vitro.webapp.search.controller;
 
 import java.io.IOException;
+import java.io.StringWriter;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -78,10 +79,11 @@ public class PagedSearchController extends FreemarkerHttpServlet {
 
     protected static final int DEFAULT_HITS_PER_PAGE = 10;
     protected static final int DEFAULT_MAX_HIT_COUNT = 1000;
-    protected static final int FACET_LIMIT = 50;
+    protected static final int FACET_LIMIT = 15;
 
     private static final String PARAM_XML_REQUEST = "xml";
     private static final String PARAM_CSV_REQUEST = "csv";
+    private static final String PARAM_JSON_REQUEST = "json";
     private static final String PARAM_START_INDEX = "startIndex";
     private static final String PARAM_HITS_PER_PAGE = "hitsPerPage";
     private static final String PARAM_CLASSGROUP = "classgroup";
@@ -126,10 +128,13 @@ public class PagedSearchController extends FreemarkerHttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
         VitroRequest vreq = new VitroRequest(request);
-        boolean wasXmlRequested = isRequestedFormatXml(vreq);
-        boolean wasCSVRequested = isRequestedFormatCSV(vreq);
-        if( !wasXmlRequested && !wasCSVRequested){
+        boolean wasXmlRequested = isRequestedFormat(PARAM_XML_REQUEST, vreq);
+        boolean wasCSVRequested = isRequestedFormat(PARAM_CSV_REQUEST, vreq);
+        boolean wasJsonRequested = isRequestedFormat(PARAM_JSON_REQUEST, vreq);
+        if( !wasXmlRequested && !wasCSVRequested && !wasJsonRequested){
             super.doGet(vreq,response);
+        }else if(wasJsonRequested) {
+            writeJson(vreq, response);          
         }else if (wasXmlRequested){
             try {
                 ResponseValues rvalues = processRequest(vreq);
@@ -144,7 +149,6 @@ public class PagedSearchController extends FreemarkerHttpServlet {
         }else if (wasCSVRequested){
         	try {
                 ResponseValues rvalues = processRequest(vreq);
-
                 response.setCharacterEncoding("UTF-8");
                 response.setContentType("text/csv;charset=UTF-8");
                 response.setHeader("Content-Disposition", "attachment; filename=search.csv");
@@ -153,6 +157,41 @@ public class PagedSearchController extends FreemarkerHttpServlet {
                 log.error(e, e);
             }
         }
+    }
+    
+    private void writeJson(VitroRequest vreq, HttpServletResponse response) {
+        try {
+            ResponseValues rvalues = processRequest(vreq);
+            response.setCharacterEncoding("UTF-8");
+            response.setContentType("application/json;charset=UTF-8");
+            StringWriter sw = new StringWriter();
+            sw.write("{\n");
+            Object facetListObj = rvalues.getMap().get("commonFacets");
+            if(facetListObj instanceof List) {
+                List facetList = (List) facetListObj;
+                for(Object facetObj : facetList) {
+                    if(facetObj instanceof SearchFacet) {
+                       SearchFacet facet = (SearchFacet) facetObj;
+                       if("facet_content-type_ss".equals(facet.getFieldName())) {
+                           boolean firstLineWritten = false;
+                           for(SearchFacetCategory cat : facet.getCategories()) {
+                               if(firstLineWritten) {
+                                   sw.write(",\n");
+                               }
+                               sw.write("  \"" + cat.getValue() + "\": \"" + cat.getCount() + "\"");
+                               firstLineWritten = true;
+                           }
+                           sw.write("\n");
+                       }
+                    }
+                }
+            }
+            sw.write("}");
+            write(sw, response, 200);
+        } catch (Exception e) {
+            log.error(e, e);
+            throw new RuntimeException(e);
+        }  
     }
 
     @Override
@@ -1388,22 +1427,9 @@ public class PagedSearchController extends FreemarkerHttpServlet {
 
     public static final int MAX_QUERY_LENGTH = 500;
 
-    protected boolean isRequestedFormatXml(VitroRequest req){
+    protected boolean isRequestedFormat(String paramName, VitroRequest req){
         if( req != null ){
-            String param = req.getParameter(PARAM_XML_REQUEST);
-            if( param != null && "1".equals(param)){
-                return true;
-            }else{
-                return false;
-            }
-        }else{
-            return false;
-        }
-    }
-
-    protected boolean isRequestedFormatCSV(VitroRequest req){
-        if( req != null ){
-            String param = req.getParameter(PARAM_CSV_REQUEST);
+            String param = req.getParameter(paramName);
             if( param != null && "1".equals(param)){
                 return true;
             }else{

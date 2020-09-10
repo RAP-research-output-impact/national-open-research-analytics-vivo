@@ -88,13 +88,14 @@ include "individual-setup.ftl" -->
     
         <p>Street N/A</p>
         <#if universityMeta?has_content && universityMeta[0]?has_content>
-	  <#if universityMeta[0].country??><p>Country: ${universityMeta[0].country}</p></#if>
+	  <#if universityMeta[0].country??><p>Country:  ${universityMeta[0].country}</p></#if>
 	  <#if universityMeta[0].continent??><p>Continent: ${universityMeta[0].continent}</p></#if>
 	  <#if universityMeta[0].web??><p style="margin-top:1em;">Web: <a href="${universityMeta[0].web}" target="external">${universityMeta[0].web}</a></p></#if>
 	  <#if universityMeta[0].grid??><p>GRID: <a href="https://www.grid.ac/institutes/${universityMeta[0].grid}" target="external">https://www.grid.ac/institutes/${universityMeta[0].grid}</a></p></#if> 
 	  <#if universityMeta[0].ror??><p>ROR: <a href="${universityMeta[0].ror}" target="external">${universityMeta[0].ror}</a></p></#if>
 	  <#if universityMeta[0].isni??><p>ISNI: <a href="${universityMeta[0].isni}" target="external">${universityMeta[0].isni}</a><p></#if>
 	  <#if universityMeta[0].noraOrganisationType??><p style="margin-top:1em;">NORA organisation type: ${universityMeta[0].noraOrganisationType}</p></#if>
+		  
         </#if>
 
     </section>
@@ -106,12 +107,39 @@ include "individual-setup.ftl" -->
 <strong>Records linked to this university for the years 2104 to 2017</p>
 
 <ul style="width:30%;list-style-type:disc;">
-  <li style="width:100%;margin-left:5em;">Publications <span style="float:right;">9999</span</li>
-  <li style="width:100%;margin-left:5em;">Datasets <span style="float:right;">999</li>
-  <li style="width:100%;margin-left:5em;">Grants <span style="float:right;">99</li>
-  <li style="width:100%;margin-left:5em">Patents <span style="float:right;">9</li>
-  <li style="width:100%;margin-left:5em;">Clinical trials <span style="float:right;">9</li>
+  <li style="width:100%;margin-left:5em;">Publications <span id="publications_count" style="float:right;">0</span</li>
+  <li style="width:100%;margin-left:5em;">Datasets <span id="datasets_count" style="float:right;">0</li>
+  <li style="width:100%;margin-left:5em;">Grants <span id="grants_count" style="float:right;">0</li>
+  <li style="width:100%;margin-left:5em">Patents <span id="patents_count" style="float:right;">0</li>
+  <li style="width:100%;margin-left:5em;">Clinical trials <span id="clinical_trials_count" style="float:right;">0</li>
 </ul>
+
+<script type="text/javascript">
+
+  fetchFacetJson("${urls.base}/search?json=1&&facet_organization-all_ss=${individual.uri?url}");
+
+  function updateSidebar(json) {
+    if('publications' in json) { $("#publications_count").text(json.publications); }
+    if('datasets' in json) { $("#datasets_count").text(json.datasets); }
+    if('grants' in json) { $("#grants_count").text(json.grants); }
+    if('patents' in json) { $("#patents_count").text(json.patents); }
+    if('clinical_trials' in json) { $("#clinical_trials_count").text(json.clinical_trials); }    
+   }
+
+   function fetchFacetJson(fetchUrl) {
+     return fetch(fetchUrl)
+        .catch(err => console.error('request failed: ', err))
+     .then(rToJson)
+     .then(updateSidebar);
+   }
+
+   function rToJson(r) {
+     if (r.ok) return r.json()
+       else throw new Error('Network response was not ok.');
+   }
+
+</script>
+
 
 </section>
 

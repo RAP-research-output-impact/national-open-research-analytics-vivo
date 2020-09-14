@@ -14,6 +14,7 @@ import org.apache.jena.rdf.model.Model;
 import dk.deffopera.nora.vivo.etl.datasource.DataSource;
 import dk.deffopera.nora.vivo.etl.datasource.connector.BFIOAIConnector;
 import dk.deffopera.nora.vivo.etl.datasource.connector.GraphClearer;
+import dk.deffopera.nora.vivo.etl.datasource.connector.GridJsonConnector;
 import dk.deffopera.nora.vivo.etl.datasource.connector.dimensions.DimensionsAddressesConnector;
 import dk.deffopera.nora.vivo.etl.datasource.connector.dimensions.DimensionsByDoiConnector;
 import dk.deffopera.nora.vivo.etl.datasource.connector.dimensions.DimensionsClinicalTrialsConnector;
@@ -32,7 +33,7 @@ public class NoraEtl {
     public static void main(String[] args) {
         if(args.length < 3) {
             System.out.println("Usage: " 
-                    + "dimensions|dimensionsByDoi|clearGraph|grants|datasets|patents|clinical_trials|addresses|healthcare_orgs|bfioai "
+                    + "dimensions|dimensionsByDoi|clearGraph|grants|datasets|patents|clinical_trials|addresses|healthcare_orgs|bfioai|grid_json "
                     + "outputfile dimensionsUsername=<username> dimensionsPassword=<password> " 
                     + "[sourceEndpointURI= sourceEndpointUsername= sourceEndpointPassword=] "
                     + "[dataDir=] [endpointURI= endpointUpdateURI= username= password=] [authUsername= authPassword=] [graphURI=] "
@@ -155,6 +156,15 @@ public class NoraEtl {
                     getParameter(queryTerms, "mongoPassword"));
         } else if ("bfioai".equals(connectorName)) {
             connector = new BFIOAIConnector(
+                    getParameter(queryTerms, "dimensionsUsername"), 
+                    getParameter(queryTerms, "dimensionsPassword"),
+                    getParameter(queryTerms, "mongoServer"),
+                    getParameter(queryTerms, "mongoPort"),
+                    getParameter(queryTerms, "mongoCollection"),
+                    getParameter(queryTerms, "mongoUsername"),
+                    getParameter(queryTerms, "mongoPassword"));
+        } else if ("grid_json".equals(connectorName)) {
+            connector = new GridJsonConnector(
                     getParameter(queryTerms, "dimensionsUsername"), 
                     getParameter(queryTerms, "dimensionsPassword"),
                     getParameter(queryTerms, "mongoServer"),

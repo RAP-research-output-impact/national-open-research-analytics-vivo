@@ -27,9 +27,10 @@ PREFIX abox:     <http://vivo.deffopera.dk/individual/>
 CONSTRUCT {
   ?x ?q ?o .
 } WHERE {
-  ?x g:DOI ?doi .
+  { ?x g:DOI ?doi } UNION { ?x g:doi ?doi } UNION { ?x g:_id ?gid }
   ?x ?p ?o
   FILTER(?p != rdf:type)
+  FILTER(isLiteral(?o))
   FILTER(!REGEX(STR(?p), "_id$"))
   BIND(IRI(REPLACE(REPLACE(STR(?p), STR(g:), STR(osrap:)), "Type", "BFIOAItype")) AS ?q)
 }

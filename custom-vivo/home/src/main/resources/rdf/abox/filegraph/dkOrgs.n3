@@ -1,0 +1,164 @@
+@prefix ocrer: <http://purl.org/net/OCRe/research.owl#> .
+@prefix scires: <http://vivoweb.org/ontology/scientific-research#> .
+@prefix fabio: <http://purl.org/spar/fabio/> .
+@prefix skos:  <http://www.w3.org/2004/02/skos/core#> .
+@prefix swo:   <http://www.ebi.ac.uk/efo/swo/> .
+@prefix ocresd: <http://purl.org/net/OCRe/study_design.owl#> .
+@prefix vcard: <http://www.w3.org/2006/vcard/ns#> .
+@prefix vitro: <http://vitro.mannlib.cornell.edu/ns/vitro/0.7#> .
+@prefix osrap: <http://vivo.deffopera.dk/ontology/osrap/> .
+@prefix cito:  <http://purl.org/spar/cito/> .
+@prefix vitro-public: <http://vitro.mannlib.cornell.edu/ns/vitro/public#> .
+@prefix geo:   <http://aims.fao.org/aos/geopolitical.owl#> .
+@prefix ocresst: <http://purl.org/net/OCRe/statistics.owl#> .
+@prefix ocresp: <http://purl.org/net/OCRe/study_protocol.owl#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix bibo:  <http://purl.org/ontology/bibo/> .
+@prefix vivo:  <http://vivoweb.org/ontology/core#> .
+@prefix vann:  <http://purl.org/vocab/vann/> .
+@prefix event: <http://purl.org/NET/c4dm/event.owl#> .
+@prefix ro:    <http://purl.obolibrary.org/obo/ro.owl#> .
+@prefix obo:   <http://purl.obolibrary.org/obo/> .
+@prefix foaf:  <http://xmlns.com/foaf/0.1/> .
+@prefix c4o:   <http://purl.org/spar/c4o/> .
+
+<http://vivo.deffopera.dk/individual/grid.415046.2>
+        a       vivo:Hospital .
+
+<http://vivo.deffopera.dk/individual/grid.32190.39>
+        a       vivo:University .
+
+<http://vivo.deffopera.dk/individual/grid.411646.0>
+        a       vivo:Hospital .
+
+<http://vivo.deffopera.dk/individual/grid.7143.1>
+        a       vivo:Hospital .
+
+<http://vivo.deffopera.dk/individual/grid.4973.9>
+        a       vivo:Hospital .
+
+<http://vivo.deffopera.dk/individual/grid.414274.0>
+        a       vivo:Hospital .
+
+<http://vivo.deffopera.dk/individual/grid.413717.7>
+        a       vivo:Hospital .
+
+<http://vivo.deffopera.dk/individual/grid.411905.8>
+        a       vivo:Hospital .
+
+<http://vivo.deffopera.dk/individual/grid.414576.5>
+        a       vivo:Hospital .
+
+<http://vivo.deffopera.dk/individual/grid.476266.7>
+        a       vivo:Hospital .
+
+<http://vivo.deffopera.dk/individual/grid.413660.6>
+        a       vivo:Hospital .
+
+<http://vivo.deffopera.dk/individual/grid.414092.a>
+        a       vivo:Hospital .
+
+<http://vivo.deffopera.dk/individual/grid.7048.b>
+        a       vivo:University .
+
+<http://vivo.deffopera.dk/individual/grid.416811.b>
+        a       vivo:Hospital .
+
+<http://vivo.deffopera.dk/individual/grid.417271.6>
+        a       vivo:Hospital .
+
+<http://vivo.deffopera.dk/individual/grid.411702.1>
+        a       vivo:Hospital .
+
+<http://vivo.deffopera.dk/individual/grid.411719.b>
+        a       vivo:Hospital .
+
+<http://vivo.deffopera.dk/individual/grid.5170.3>
+        a       vivo:University .
+
+<http://vivo.deffopera.dk/individual/grid.452905.f>
+        a       vivo:Hospital .
+
+<http://vivo.deffopera.dk/individual/grid.452681.c>
+        a       vivo:Hospital .
+
+<http://vivo.deffopera.dk/individual/grid.414289.2>
+        a       vivo:Hospital .
+
+<http://vivo.deffopera.dk/individual/grid.414334.5>
+        a       vivo:Hospital .
+
+<http://vivo.deffopera.dk/individual/grid.4655.2>
+        a       vivo:University .
+
+<http://vivo.deffopera.dk/individual/grid.477812.f>
+        a       vivo:Hospital .
+
+<http://vivo.deffopera.dk/individual/grid.416768.a>
+        a       vivo:Hospital .
+
+<http://vivo.deffopera.dk/individual/grid.416369.f>
+        a       vivo:Hospital .
+
+<http://vivo.deffopera.dk/individual/grid.416838.0>
+        a       vivo:Hospital .
+
+<http://vivo.deffopera.dk/individual/grid.411900.d>
+        a       vivo:Hospital .
+
+<http://vivo.deffopera.dk/individual/grid.477756.0>
+        a       vivo:Hospital .
+
+<http://vivo.deffopera.dk/individual/grid.416035.5>
+        a       vivo:Hospital .
+
+<http://vivo.deffopera.dk/individual/grid.154185.c>
+        a       vivo:Hospital .
+
+<http://vivo.deffopera.dk/individual/grid.416059.f>
+        a       vivo:Hospital .
+
+<http://vivo.deffopera.dk/individual/grid.414304.6>
+        a       vivo:Hospital .
+
+<http://vivo.deffopera.dk/individual/grid.416055.3>
+        a       vivo:Hospital .
+
+<http://vivo.deffopera.dk/individual/grid.477140.1>
+        a       vivo:Hospital .
+
+<http://vivo.deffopera.dk/individual/grid.487445.e>
+        a       vivo:Hospital .
+
+<http://vivo.deffopera.dk/individual/grid.415434.3>
+        a       vivo:Hospital .
+
+<http://vivo.deffopera.dk/individual/grid.459623.f>
+        a       vivo:Hospital .
+
+<http://vivo.deffopera.dk/individual/grid.415040.4>
+        a       vivo:Hospital .
+
+<http://vivo.deffopera.dk/individual/grid.5117.2>
+        a       vivo:University .
+
+<http://vivo.deffopera.dk/individual/grid.415677.6>
+        a       vivo:Hospital .
+
+<http://vivo.deffopera.dk/individual/grid.5254.6>
+        a       vivo:University .
+
+<http://vivo.deffopera.dk/individual/grid.27530.33>
+        a       vivo:Hospital .
+
+<http://vivo.deffopera.dk/individual/grid.475435.4>
+        a       vivo:Hospital .
+
+<http://vivo.deffopera.dk/individual/grid.10825.3e>
+        a       vivo:University .
+
+<http://vivo.deffopera.dk/individual/grid.11702.35>
+        a       vivo:University .
+
+<http://vivo.deffopera.dk/individual/grid.414058.c>
+        a       vivo:Hospital .

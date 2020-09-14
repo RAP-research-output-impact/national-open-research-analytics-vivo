@@ -69,7 +69,7 @@ public class DimensionsAddressesConnector extends DimensionsConnector {
     
     @Override
     protected Model mapToVIVO(Model model) {
-        model = renameByIdentifier(model, model.getProperty(XmlToRdf.GENERIC_NS + "grid_id"), ABOX, "");
+        model = renameByIdentifier(model, model.getProperty(XmlToRdf.GENERIC_NS + "id"), ABOX, "");
         List<String> queries = Arrays.asList(
                 "100-address.rq"
                 );

@@ -25,19 +25,20 @@ PREFIX osrap:    <http://vivo.deffopera.dk/ontology/osrap/>
 PREFIX abox:     <http://vivo.deffopera.dk/individual/>
 
 CONSTRUCT {
-    ?address osrap:city ?city .
-    ?address osrap:country ?country .
-    ?address osrap:countryCode ?countryCode .
-    ?address osrap:geonamesCityId ?geonamesCityId .
-    ?address osrap:lat ?lat .
-    ?address osrap:lng ?lng .
-    ?address osrap:primary ?primary
+    ?org osrap:city ?city .
+    ?org osrap:country ?country .
+    ?org osrap:countryCode ?countryCode .
+    ?org osrap:geonamesCityId ?geonamesCityId .
+    ?org osrap:lat ?lat .
+    ?org osrap:lng ?lng .
+    ?org osrap:primary ?primary
 } WHERE {
-    { ?address g:city ?city } UNION
-    { ?address g:country ?country } UNION
-    { ?address g:country_code ?countryCode } UNION
-    { ?address g:geonames_city_id ?geonamesCityId } UNION
-    { ?address g:lat ?lat } UNION
-    { ?address g:lng ?lng } UNION
-    { ?address g:primary ?primary }
+    ?org g:addresses ?address .
+    OPTIONAL { ?address g:city ?city }
+    OPTIONAL { ?address g:country ?country } 
+    OPTIONAL { ?address g:country_code ?countryCode } 
+    OPTIONAL { ?address g:geonames_city_id ?geonamesCityId } 
+    OPTIONAL { ?address g:lat ?lat } 
+    OPTIONAL { ?address g:lng ?lng } 
+    OPTIONAL { ?address g:primary ?primary }
 }

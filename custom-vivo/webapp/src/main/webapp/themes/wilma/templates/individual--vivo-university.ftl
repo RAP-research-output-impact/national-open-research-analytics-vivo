@@ -34,7 +34,7 @@ include "individual-setup.ftl" -->
 
 <section id="individual-intro" class="vcard person" role="region">
 
-    <section id="share-contact" role="region">
+    <section id="share-contact" role="region" style="width:fit-content;">
         <!-- Image -->
         <#assign individualImage>
 	  <#--
@@ -44,6 +44,22 @@ include "individual-setup.ftl" -->
                       editable=editable
                       showPlaceholder="always" />
           -->
+	  <#if universityMeta?? && universityMeta[0].abbreviation??>
+	    <#assign abbr = universityMeta[0].abbreviation>
+	    <#if "CBS" == abbr || "SDU" == abbr || "DTU" == abbr>
+	      <#assign logoFilename = abbr + ".png">
+	    <#else>
+	      <#assign logoFilename = abbr + ".jpg">
+	    </#if>
+	    <#if "ITU" == abbr>
+              <#assign logoHeight = 150>
+	    <#elseif "CBS" == abbr>
+              <#assign logoHeight = 48>
+	    <#else>
+              <#assign logoHeight = 200>
+	    </#if>
+            <img height="${logoHeight}" src="${urls.theme}/images/${logoFilename}" alt="${abbr} logo" />
+	  </#if>
         </#assign>
 
         <#if ( individualImage?contains('<img class="individual-photo"') )>
@@ -66,7 +82,7 @@ include "individual-setup.ftl" -->
     
     </section>
 
-    <section id="individual-info" ${infoClass!} role="region">
+    <section id="individual-info" ${infoClass!} role="region" style="width:fit-content;">
     <section id="right-hand-column" role="region">
         <#if editable>
         
@@ -102,7 +118,7 @@ include "individual-setup.ftl" -->
 
 </span></section>
 
-<section>
+<section style="margin-bottom:2em;">
 
 <strong>Records linked to this university for the years 2104 to 2017</p>
 
@@ -140,7 +156,12 @@ include "individual-setup.ftl" -->
 
 </script>
 
+</section>
 
+<section>
+  <#if universityMeta?? && universityMeta[0].abbreviation??>
+    <#include "${universityMeta[0].abbreviation}.ftl">
+  </#if>
 </section>
 
 <#assign nameForOtherGroup = "${i18n().other}">

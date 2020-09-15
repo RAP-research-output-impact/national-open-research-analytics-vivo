@@ -32,9 +32,9 @@ include "individual-setup.ftl" -->
   <#assign languageCount = 1>
 </#if>
 
-<section id="individual-intro" class="vcard person" role="region">
+<section style="width: fit-content; float: left;" id="individual-intro" class="vcard person" role="region">
 
-    <section id="share-contact" role="region" style="width:fit-content;">
+    <section id="share-contact" role="region" style="width:fit-content;padding-bottom:2em;">
         <!-- Image -->
         <#assign individualImage>
 	  <#--
@@ -62,42 +62,20 @@ include "individual-setup.ftl" -->
 	  </#if>
         </#assign>
 
-        <#if ( individualImage?contains('<img class="individual-photo"') )>
-            <#assign infoClass = 'class="withThumb"'/>
-        </#if>
-
-        <div id="photo-wrapper">${individualImage}</div>
-        <!-- Contact Info -->
-        <div id="individual-tools-people">
-            <span id="iconControlsLeftSide">
-                <img id="uriIcon" title="${individual.uri}" src="${urls.images}/individual/uriIcon.gif" alt="${i18n().uri_icon}"/>
-  				<#if checkNamesResult?has_content >
-					<img id="qrIcon"  src="${urls.images}/individual/qr_icon.png" alt="${i18n().qr_icon}" />
-                	<span id="qrCodeImage" class="hidden">${qrCodeLinkedImage!}
-						<a class="qrCloseLink" href="#"  title="${i18n().qr_code}">${i18n().close_capitalized}</a>
-					</span>
-				</#if>
-            </span>
-        </div>
-    
+        ${individualImage}
+        
     </section>
 
-    <section id="individual-info" ${infoClass!} role="region" style="width:fit-content;">
-    <section id="right-hand-column" role="region">
-        <#if editable>
+    <section id="individual-info" ${infoClass!} role="region" style="width:fit-content;margin-right:4em;">
         
-	</#if>
-        </section>
-        <#-- include "individual-adminPanel.ftl" -->
-
-        <header>
+	<header>
             <#if relatedSubject??>
                 <h2>${relatedSubject.relatingPredicateDomainPublic} ${i18n().indiv_foafperson_for} ${relatedSubject.name}</h2>
                 <p><a href="${relatedSubject.url}" title="${i18n().indiv_foafperson_return}">&larr; ${i18n().indiv_foafperson_return} ${relatedSubject.name}</a></p>
             <#else>
                 <h1 class="foaf-person">
                     <#-- Label -->
-                    <span itemprop="name" class="fn"><@p.label individual editable labelCount localesCount/></span>
+                    <span itemprop="name" class="fn"><@p.label individual false labelCount localesCount/></span>
                 </h1>
             </#if>
 	</header>
@@ -116,18 +94,16 @@ include "individual-setup.ftl" -->
 
     </section>
 
-</span></section>
+<section style="float:left;">
 
-<section style="margin-bottom:2em;">
+<p style="width:15em;"><strong>Records linked to this university for the years 2104 to 2017</strong></p>
 
-<strong>Records linked to this university for the years 2104 to 2017</p>
-
-<ul style="width:30%;list-style-type:disc;">
-  <li style="width:100%;margin-left:5em;">Publications <span id="publications_count" style="float:right;">0</span</li>
-  <li style="width:100%;margin-left:5em;">Datasets <span id="datasets_count" style="float:right;">0</li>
-  <li style="width:100%;margin-left:5em;">Grants <span id="grants_count" style="float:right;">0</li>
-  <li style="width:100%;margin-left:5em">Patents <span id="patents_count" style="float:right;">0</li>
-  <li style="width:100%;margin-left:5em;">Clinical trials <span id="clinical_trials_count" style="float:right;">0</li>
+<ul style="list-style-type:none;">
+  <li>Publications <span id="publications_count" style="float:right;">0</span</li>
+  <li>Datasets <span id="datasets_count" style="float:right;">0</li>
+  <li>Grants <span id="grants_count" style="float:right;">0</li>
+  <li>Patents <span id="patents_count" style="float:right;">0</li>
+  <li>Clinical trials <span id="clinical_trials_count" style="float:right;">0</li>
 </ul>
 
 <script type="text/javascript">
@@ -158,7 +134,7 @@ include "individual-setup.ftl" -->
 
 </section>
 
-<section>
+<section style="clear:both;padding-top:1em;">
   <#if universityMeta?? && universityMeta[0].abbreviation??>
     <#include "${universityMeta[0].abbreviation}.ftl">
   </#if>

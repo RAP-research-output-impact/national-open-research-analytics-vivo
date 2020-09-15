@@ -56,11 +56,11 @@ include "individual-setup.ftl" -->
 	    <#elseif "CBS" == abbr>
               <#assign logoHeight = 48>
 	    <#elseif "RUC" == abbr || "AU" == abbr>
-              <#assign logoHeight = 140>
+              <#assign logoHeight = 120>
 	    <#elseif "KU" == abbr>
               <#assign logoHeight = 275>
 	    <#elseif "SDU" == abbr>
-              <#assign logoHeight = 90>
+              <#assign logoHeight = 75>
 	    <#else>
               <#assign logoHeight = 200>
 	    </#if>

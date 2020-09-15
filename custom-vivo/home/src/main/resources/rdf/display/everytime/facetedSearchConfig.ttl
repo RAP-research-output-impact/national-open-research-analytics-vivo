@@ -87,18 +87,20 @@
             ?uri vivo:dateTimeValue ?dtv .
 	    ?dtv vivo:dateTime ?dateTime .
 	    BIND(substr(str(?dateTime), 1, 4) AS ?year)
-	    FILTER NOT EXISTS { ?uri a <http://purl.org/ontology/bibo/Patent> }
+	    # FILTER NOT EXISTS { ?uri a <http://purl.org/ontology/bibo/Patent> }
 	  }
 	  UNION
 	  {
             ?uri <http://vivo.deffopera.dk/ontology/osrap/activeYear> ?year
-	  } 
-	  UNION
-	  {
-            ?uri vivo:dateIssued ?dtv .
-	    ?dtv vivo:dateTime ?dateTime .
-	    BIND(substr(str(?dateTime), 1, 4) AS ?year)
 	  }
+	  # 2020-09: Relatively few patents seem to have issued dates at this point.
+	  # They all seem to have regular dateTimeValues (above) .
+	  #UNION
+	  #{
+          #  ?uri vivo:dateIssued ?dtv .
+	  #  ?dtv vivo:dateTime ?dateTime .
+	  #  BIND(substr(str(?dateTime), 1, 4) AS ?year)
+	  #}
 	  FILTER( (xsd:integer(?year) >= 2014) && (xsd:integer(?year) <= 2017) )
         }
     """ .

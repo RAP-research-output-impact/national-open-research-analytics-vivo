@@ -96,7 +96,7 @@ include "individual-setup.ftl" -->
 
 <section style="float:left;">
 
-<p style="width:15em;"><strong>Records linked to this university for the years 2104 to 2017</strong></p>
+<p style="width:15em;"><strong>Records linked to this university for the years 2014 to 2017</strong></p>
 
 <ul style="list-style-type:none;">
   <li>Publications <span id="publications_count" style="float:right;">0</span</li>

@@ -36,7 +36,7 @@
   <div class="n_cards">
     <article class="n_card">
       <a href="${urls.base}/search?searchMode=all" class="n_c-link-img">
-        <img class="n_c-img" height="250" width="600" src="https://www.biosustain.dtu.dk/-/media/Andre_Universitetsenheder/Bibliotek/foto/Boeger2.ashx?mw=700&hash=1F7FE26E4903121CD49458449F8AD2BD686444F2" alt="search">
+        <img class="n_c-img" height="280" width="600" src="https://www.biosustain.dtu.dk/-/media/Andre_Universitetsenheder/Bibliotek/foto/Boeger2.ashx?mw=700&hash=1F7FE26E4903121CD49458449F8AD2BD686444F2" alt="search"> 
       </a>
       <div class="n_c-content">
         <a class="n_c-linkTitle" href="${urls.base}/search?searchMode=all"><h3>Search</h3></a>
@@ -46,67 +46,45 @@
     <!-- end .n_card -->
 
     <article class="n_card">
-      <a href="#" class="n_c-link-img">
-        <img class="n_c-img" src="http://via.placeholder.com/600x400" alt="">
+      <a href="${urls.base}/SDGdash" class="n_c-link-img">
+        <img class="n_c-img" src="${urls.theme}/images/SDGs.png" alt="">
       </a>
       <div class="n_c-content">
-        <a class="n_c-linkTitle" href="#"><h3>Module Title</h3></a>
-        <p>Some description here Some description here Some description here</p>
+        <a class="n_c-linkTitle" href="${urls.base}/SDGdash"><h3>Sustainable Development Goals Dashboard</h3></a>
+        <p>An exploration of the connections between Danish scientific publications and the Sustainable Development Goals (SDGs)</p>
       </div>
     </article>
     <!-- end .n_card -->
 
     <article class="n_card">
-      <a href="#" class="n_c-link-img">
-        <img class="n_c-img" src="http://via.placeholder.com/600x400" alt="">
+      <a href="${urls.base}/intlcollabs" class="n_c-link-img">
+        <img class="n_c-img" src="${urls.theme}/images/international_collabs.png" alt="">
       </a>
       <div class="n_c-content">
-        <a class="n_c-linkTitle" href="#"><h3>Module Title</h3></a>
-        <p>Some description here Some description here Some description here</p>
+        <a class="n_c-linkTitle" href="{urls.base}/intlcollabs"><h3>International Collaborations Dashboard</h3></a>
+        <p>An overview of the top international co-authorship collaborations between Danish universities and their partners abroad.</p>
       </div>
     </article>
     <!-- end .n_card -->
 
     <article class="n_card">
-      <a href="#" class="n_c-link-img">
-        <img class="n_c-img" src="http://via.placeholder.com/600x400" alt="">
+      <a href="${urls.base}/dkcollabsash" class="n_c-link-img">
+        <img class="n_c-img" src="${urls.theme}/images/national_collabs.png" alt="">
       </a>
       <div class="n_c-content">
-        <a class="n_c-linkTitle" href="#"><h3>Module Title</h3></a>
-        <p>Some description here Some description here Some description here</p>
+        <a class="n_c-linkTitle" href="${urls.base}/dkcollabsash"><h3>National Collaboration Dashboard</h3></a>
+        <p>An overview of the top national co-authorship collaborations between Danish universities and their national partners.</p>
       </div>
     </article>
     <!-- end .n_card -->
 
     <article class="n_card">
-      <a href="#" class="n_c-link-img">
-        <img class="n_c-img" src="http://via.placeholder.com/600x400" alt="">
+      <a href="${urls.base}/individuallist?vclassId=http%3A%2F%2Fvivoweb.org%2Fontology%2Fcore%23University" class="n_c-link-img">
+        <img class="n_c-img" src="${urls.theme}/images/univ_profiles.png" alt="">
       </a>
       <div class="n_c-content">
-        <a class="n_c-linkTitle" href="#"><h3>Module Title</h3></a>
-        <p>Some description here Some description here Some description here</p>
-      </div>
-    </article>
-    <!-- end .n_card -->
-
-    <article class="n_card">
-      <a href="#" class="n_c-link-img">
-        <img class="n_c-img" src="http://via.placeholder.com/600x400" alt="">
-      </a>
-      <div class="n_c-content">
-        <a class="n_c-linkTitle" href="#"><h3>Module Title</h3></a>
-        <p>Some description here Some description here Some description here</p>
-      </div>
-    </article>
-    <!-- end .n_card -->
-
-    <article class="n_card">
-      <a href="#" class="n_c-link-img">
-        <img class="n_c-img" src="http://via.placeholder.com/600x400" alt="">
-      </a>
-      <div class="n_c-content">
-        <a class="n_c-linkTitle" href="#"><h3>Module Title</h3></a>
-        <p>Some description here Some description here Some description here</p>
+        <a class="n_c-linkTitle" href="${urls.base}/individuallist?vclassId=http%3A%2F%2Fvivoweb.org%2Fontology%2Fcore%23University"><h3>University Profiles</h3></a>
+        <p>Summary of key information to characterise the scientific production of Danish universities.</p>
       </div>
     </article>
     <!-- end .n_card -->

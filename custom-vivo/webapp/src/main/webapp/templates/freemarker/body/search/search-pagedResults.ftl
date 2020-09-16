@@ -231,16 +231,84 @@
 </div> <!-- end contentsBrowseGroup -->
 
 <script>
-  
-  function nextFacetCheckboxes(fieldName) {
-    $("#" + fieldName).append("<input name=\"\" value=\"1\">");
+
+  let baseServiceURL = window.location.href.replace('#', '');
+  let firstFacetCategory = new Map();
+
+  function nextFacet(fieldName, markupType, nextPrev) {
+    currentFirstCategory = firstFacetCategory[fieldName];
+    if(currentFirstCategory === undefined) {
+      currentFirstCategory = 0;
+    }
+    if("next" === nextPrev) {
+      currentFirstCategory += 15;
+    } else {
+      if(currentFirstCategory < 15) {
+        currentFirstCategory = 0;
+      } else {
+        currentFirstCategory -= 15;
+      }
+    }
+    firstFacetCategory[fieldName] = currentFirstCategory;
+    if("checkboxes" === markupType) {
+      fetchFacetJson(fieldName, currentFirstCategory, function(json) { updateFacetCheckboxes(json, fieldName, markupType)});
+    } else {
+      fetchFacetJson(fieldName, currentFirstCategory, function(json) { updateFacetLinks(json, fieldName, markupType)});
+    }
+    if(currentFirstCategory > 0) {
+      $("#" + fieldName + "-prev").show();
+    } else {
+      $("#" + fieldName + "-prev").hide();
+    }
+    return false;
   }
+
+  function updateFacetCheckboxes(json, fieldName) {
+    $("#" + fieldName + "-categories").children('li').each(function(i, input) {
+       $(input).remove();
+    });
+    for(var i = 0; i < json.length; i++) {
+        var cat = json[i];
+        $("#" + fieldName + "-categories").append("<li><input type=\"checkbox\" name=\"" + fieldName +  "\" value=\"" + cat.value + "\"/><a href=\"" + cat.url + "\">" + cat.text + "</a> <span>(" + cat.count + ")</span></li>");
+    }
+    if(json.length < 15) {
+      $("#" + fieldName + "-next").hide();
+    }
+  }
+
+  function updateFacetLinks(json, fieldName) {
+    $("#" + fieldName + "-categories").children('li').each(function(i, input) {
+       $(input).remove();
+    });
+    for(var i = 0; i < json.length; i++) {
+        var cat = json[i];
+        $("#" + fieldName + "-categories").append("<li><a href=\"" + cat.url + "\">" + cat.text + "</a> <span>(" + cat.count + ")</span></li>");
+    }
+    if(json.length < 15) {
+      $("#" + fieldName + "-next").hide();
+    }
+  }
+
+  function fetchFacetJson(fieldName, currentFirstCategory, callback) {
+    var serviceURL = baseServiceURL + "&json=1&jsonFacet=" + fieldName + "&facetOffset=" + currentFirstCategory;
+    //alert(serviceURL);
+    return fetch(serviceURL)
+        .catch(err => console.error('request failed: ', err))
+	.then(rToJson)
+	.then(callback);
+  }
+
+  function rToJson(r) {
+    if (r.ok) return r.json()
+        else throw new Error('Network response was not ok.');
+  }
+
 
 </script>
 
 <#macro facetCategories facet>
   <#if facet.unionFacet>
-    <form id="${facet.fieldName}" action="${urls.base}/search" method="GET">
+    <form action="${urls.base}/search" method="GET">
       <p style="margin-bottom:0;text-align:left;"><em>
       Check one or more and </em>
       <input style="align: left;" type="submit" name="submit" value="SEARCH"/>
@@ -252,7 +320,6 @@
 	</#list>
       <#else>
         <@facetCategoriesCheckboxes facet />
-	<a href="#" onClick="nextFacetCheckboxes('${facet.fieldName}');">next</a>
       </#if>
       <#list sortFormHiddenFields as field>
         <#if field.name?? && (field.name != "sortField") && (field.name != "startIndex") && field.value??>
@@ -272,9 +339,13 @@
 </#macro>
 
 <#macro facetCategoriesCheckboxes facet>
-  <ul>
+  <#assign showNextLink = false>
+  <ul id="${facet.fieldName}-categories">
     <#list facet.categories as category>
       <#if category.text?has_content>
+        <#if category?index == 14>
+          <#assign showNextLink = true>
+	</#if>
         <#if facet.parentFacet??>
           <#assign facetFieldName = facet.parentFacet.fieldName>
         <#else>
@@ -286,16 +357,34 @@
       </#if>
     </#list>
   </ul>
+  <#if showNextLink>
+    <a id="${facet.fieldName}-prev" href="#" onClick="return nextFacet('${facet.fieldName}', 'checkboxes', 'prev');">previous</a>
+    <script> 
+      $('#${facet.fieldName}-prev').hide();
+    </script>
+    <a style="margin-left:2em;" id="${facet.fieldName}-next" href="#" onClick="return nextFacet('${facet.fieldName}', 'checkboxes', 'next');">next</a>
+  </#if>
 </#macro>
 
 <#macro facetCategoriesLinks facet>
-  <ul>
+  <#assign showNextLink = false>
+  <ul id="${facet.fieldName}-categories">
     <#list facet.categories as category>
       <#if category.text?has_content>
+        <#if category?index == 14>
+          <#assign showNextLink = true>
+	</#if>
         <li><a href="${category.url}" title="${category.text}">${category.text}</a><span>(${category.count})</span></li>
       </#if>
     </#list>
   </ul>	
+  <#if showNextLink>
+    <a id="${facet.fieldName}-prev" href="#" onClick="return nextFacet('${facet.fieldName}', 'links', 'prev');">previous</a>
+    <script> 
+      $('#${facet.fieldName}-prev').hide();
+    </script>
+    <a style="margin-left:2em;" id="${facet.fieldName}-next" href="#" onClick="return nextFacet('${facet.fieldName}', 'links', 'next');">next</a>
+  </#if>
 </#macro>
 
 ${stylesheets.add('<link rel="stylesheet" href="//code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />',

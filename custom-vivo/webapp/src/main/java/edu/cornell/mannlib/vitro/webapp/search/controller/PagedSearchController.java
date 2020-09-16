@@ -25,10 +25,13 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.jena.atlas.json.JsonObject;
 import org.apache.jena.query.ParameterizedSparqlString;
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.vocabulary.OWL;
 import org.apache.jena.vocabulary.RDFS;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import dk.deffopera.nora.vivo.search.NoraSearchFacets;
 import dk.deffopera.nora.vivo.search.Param;
@@ -133,7 +136,7 @@ public class PagedSearchController extends FreemarkerHttpServlet {
         boolean wasJsonRequested = isRequestedFormat(PARAM_JSON_REQUEST, vreq);
         if( !wasXmlRequested && !wasCSVRequested && !wasJsonRequested){
             super.doGet(vreq,response);
-        }else if(wasJsonRequested) {
+        }else if(wasJsonRequested) {            
             writeJson(vreq, response);          
         }else if (wasXmlRequested){
             try {
@@ -159,34 +162,81 @@ public class PagedSearchController extends FreemarkerHttpServlet {
         }
     }
     
-    private void writeJson(VitroRequest vreq, HttpServletResponse response) {
+    private String getJsonFacet(VitroRequest vreq) {
+        return vreq.getParameter("jsonFacet");    
+    }
+    
+    private int getFacetLimit(VitroRequest vreq) {
+        String facetLimitStr = vreq.getParameter("facetLimit");
+        if(facetLimitStr != null) {
+            try {
+                return Integer.parseInt(facetLimitStr, 10);
+            } catch (NumberFormatException e) {
+                log.error("Ignoring invalid facetLimit integer " + facetLimitStr);
+            }
+        }
+        return FACET_LIMIT;
+    }
+    
+    private int getFacetOffset(VitroRequest vreq) {
+        String facetOffsetStr = vreq.getParameter("facetOffset");
+        if(facetOffsetStr != null) {
+            try {
+                return Integer.parseInt(facetOffsetStr, 10);
+            } catch (NumberFormatException e) {
+                log.error("Ignoring invalid facetOffset integer " + facetOffsetStr);
+            }
+        }
+        return 0;
+    }
+            
+    
+    private void writeJson(VitroRequest vreq, 
+            HttpServletResponse response) {
         try {
+            String facetFieldName = getJsonFacet(vreq);
+            if(facetFieldName == null) {
+                facetFieldName = "facet_content-type_ss";
+            }
             ResponseValues rvalues = processRequest(vreq);
             response.setCharacterEncoding("UTF-8");
             response.setContentType("application/json;charset=UTF-8");
             StringWriter sw = new StringWriter();
-            sw.write("{\n");
-            Object facetListObj = rvalues.getMap().get("commonFacets");
-            if(facetListObj instanceof List) {
-                List facetList = (List) facetListObj;
-                for(Object facetObj : facetList) {
-                    if(facetObj instanceof SearchFacet) {
-                       SearchFacet facet = (SearchFacet) facetObj;
-                       if("facet_content-type_ss".equals(facet.getFieldName())) {
-                           boolean firstLineWritten = false;
-                           for(SearchFacetCategory cat : facet.getCategories()) {
-                               if(firstLineWritten) {
-                                   sw.write(",\n");
-                               }
-                               sw.write("  \"" + cat.getValue() + "\": \"" + cat.getCount() + "\"");
-                               firstLineWritten = true;
-                           }
-                           sw.write("\n");
-                       }
+            JSONArray json = new JSONArray();
+            SearchFacet facet = null;
+            for(String facetListName : Arrays.asList("commonFacets", 
+                    "additionalFacets")) {
+                Object facetListObj = rvalues.getMap().get(facetListName);
+                if(facetListObj instanceof List) {
+                    List facetList = (List) facetListObj;
+                    for(Object facetObj : facetList) {
+                        if(facetObj instanceof SearchFacet) {
+                            SearchFacet sFacet = (SearchFacet) facetObj;
+                            if(facetFieldName.equals(sFacet.getFieldName())) {
+                                facet = sFacet;
+                                break;
+                            }
+                        }
                     }
                 }
             }
-            sw.write("}");
+            if(facet != null) {
+                int i = -1;
+                int facetOffset = getFacetOffset(vreq);
+                for(SearchFacetCategory cat : facet.getCategories()) {
+                    i++;
+                    if(i < facetOffset) {
+                        continue;
+                    }
+                    JSONObject catJson = new JSONObject();
+                    catJson.put("text", cat.getText());
+                    catJson.put("url", cat.getUrl());
+                    catJson.put("value", cat.getValue());
+                    catJson.put("count", cat.getCount());
+                    json.put(catJson);
+                }
+            }
+            sw.write(json.toString(2));
             write(sw, response, 200);
         } catch (Exception e) {
             log.error(e, e);
@@ -872,12 +922,17 @@ public class PagedSearchController extends FreemarkerHttpServlet {
             //When no filtering is set, we want ClassGroup facets
             query.addFacetFields(VitroSearchTermNames.CLASSGROUP_URI).setFacetLimit(-1);
         }
-        for(SearchFacet facet : NoraSearchFacets.getCommonSearchFacets()) {
-            query.addFacetFields(facet.getFieldName()).setFacetLimit(FACET_LIMIT).setFacetMinCount(1);
-        }
-        if(!"all".equals(getParamSearchMode(vreq))) {
-            for(SearchFacet facet : NoraSearchFacets.getAdditionalSearchFacets()) {
+        String jsonFacet = getJsonFacet(vreq);
+        if(jsonFacet != null) {
+            query.addFacetFields(jsonFacet).setFacetLimit(getFacetLimit(vreq) + getFacetOffset(vreq)).setFacetMinCount(1);
+        } else {
+            for(SearchFacet facet : NoraSearchFacets.getCommonSearchFacets()) {
                 query.addFacetFields(facet.getFieldName()).setFacetLimit(FACET_LIMIT).setFacetMinCount(1);
+            }
+            if(!"all".equals(getParamSearchMode(vreq))) {
+                for(SearchFacet facet : NoraSearchFacets.getAdditionalSearchFacets()) {
+                    query.addFacetFields(facet.getFieldName()).setFacetLimit(FACET_LIMIT).setFacetMinCount(1);
+                }
             }
         }
         addNoraFacetFields(query, excludeFacets, unionFacets, vreq);

@@ -117,11 +117,13 @@ include "individual-setup.ftl" -->
   fetchFacetJson("${urls.base}/search?json=1&&facet_organization-all_ss=${individual.uri?url}");
 
   function updateSidebar(json) {
-    if('publications' in json) { $("#publications_count").text(json.publications); }
-    if('datasets' in json) { $("#datasets_count").text(json.datasets); }
-    if('grants' in json) { $("#grants_count").text(json.grants); }
-    if('patents' in json) { $("#patents_count").text(json.patents); }
-    if('clinical_trials' in json) { $("#clinical_trials_count").text(json.clinical_trials); }    
+    for(var i = 0; i < json.length; i++) {
+      var cat = json[i];
+      if("publications" === cat.value || "datasets" === cat.value || "grants" === cat.value 
+          || "patents" === cat.value || "clinical_trials" === cat.value) {
+        $("#" + cat.value + "_count").text(cat.count);
+      }
+    }
    }
 
    function fetchFacetJson(fetchUrl) {

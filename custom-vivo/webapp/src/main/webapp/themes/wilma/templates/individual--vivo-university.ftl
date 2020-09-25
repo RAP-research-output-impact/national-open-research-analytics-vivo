@@ -32,9 +32,9 @@ include "individual-setup.ftl" -->
   <#assign languageCount = 1>
 </#if>
 
-<section style="width: fit-content; float: left;" id="individual-intro" class="vcard person" role="region">
+<section style="width: auto; float: left;" id="individual-intro" class="vcard person" role="region">
 
-    <section id="share-contact" role="region" style="width:fit-content;padding-bottom:2em;">
+    <section id="share-contact" role="region" style="width:auto;padding-bottom:2em;">
         <!-- Image -->
         <#assign individualImage>
 	  <#--
@@ -72,7 +72,7 @@ include "individual-setup.ftl" -->
         
     </section>
 
-    <section id="individual-info" ${infoClass!} role="region" style="width:fit-content;margin-right:4em;">
+    <section id="individual-info" ${infoClass!} role="region" style="width:auto;margin-right:4em;">
         
 	<header>
             <#if relatedSubject??>
@@ -105,11 +105,11 @@ include "individual-setup.ftl" -->
 <p style="width:15em;"><strong>Records linked to this university for the years 2014 to 2017</strong></p>
 
 <ul style="list-style-type:none;">
-  <li>Publications <span id="publications_count" style="float:right;">0</span</li>
-  <li>Datasets <span id="datasets_count" style="float:right;">0</li>
-  <li>Grants <span id="grants_count" style="float:right;">0</li>
-  <li>Patents <span id="patents_count" style="float:right;">0</li>
-  <li>Clinical trials <span id="clinical_trials_count" style="float:right;">0</li>
+  <li>Publications <a id="publications_count" style="float:right;" href="${urls.base}/search?facet_content-type_ss=publications&facet_organization-all_ss=${individual.uri?url}">0</a></li>
+  <li>Datasets <a id="datasets_count" style="float:right;" href="${urls.base}/search?facet_content-type_ss=datasets&facet_organization-all_ss=${individual.uri?url}">0</a></li>
+  <li>Grants <a id="grants_count" style="float:right;" href="${urls.base}/search?facet_content-type_ss=grants&facet_organization-all_ss=${individual.uri?url}">0</a></li>
+  <li>Patents <a id="patents_count" style="float:right;" href="${urls.base}/search?facet_content-type_ss=patents&facet_organization-all_ss=${individual.uri?url}">0</a></li>
+  <li>Clinical trials <a id="clinical_trials_count" style="float:right;" href="${urls.base}/search?facet_content-type_ss=clinical_trials&facet_organization-all_ss=${individual.uri?url}">0</a></li>
 </ul>
 
 <script type="text/javascript">

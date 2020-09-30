@@ -67,6 +67,7 @@ import edu.cornell.mannlib.vitro.webapp.modules.searchEngine.SearchResultDocumen
 import edu.cornell.mannlib.vitro.webapp.rdfservice.RDFServiceException;
 import edu.cornell.mannlib.vitro.webapp.rdfservice.ResultSetConsumer;
 import edu.cornell.mannlib.vitro.webapp.search.VitroSearchTermNames;
+import edu.cornell.mannlib.vitro.webapp.search.controller.PagedSearchController.YearComparator;
 import edu.cornell.mannlib.vitro.webapp.web.templatemodels.LinkTemplateModel;
 import edu.cornell.mannlib.vitro.webapp.web.templatemodels.searchresult.IndividualSearchResult;
 import edu.ucsf.vitro.opensocial.OpenSocialManager;
@@ -671,7 +672,16 @@ public class PagedSearchController extends FreemarkerHttpServlet {
             if(ff == null) {
                 continue;
             }
-            for(Count value : ff.getValues()) {
+            List<Count> values = ff.getValues();
+            if ("facet_year_ss".equals(sf.getFieldName())) {
+                // sort the year values in descending chronological order,
+                // not by hit count
+                List<Count> yearValues = new ArrayList<Count>();
+                yearValues.addAll(values);
+                Collections.sort(yearValues, new YearComparator());
+                values = yearValues;
+            }
+            for(Count value : values) {
                 if(value.getCount() < 1) {
                     continue;
                 }
@@ -706,6 +716,15 @@ public class PagedSearchController extends FreemarkerHttpServlet {
         return searchFacets;
     }
 
+    private class YearComparator implements Comparator<Count> {
+
+        @Override
+        public int compare(Count arg0, Count arg1) {
+            return String.CASE_INSENSITIVE_ORDER.compare(arg1.getName(), arg0.getName());
+        }
+
+    }
+    
     /**
      * Get the class groups represented for the individuals in the documents.
      */

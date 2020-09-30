@@ -716,7 +716,7 @@ public class PagedSearchController extends FreemarkerHttpServlet {
         return searchFacets;
     }
 
-    private class YearComparator implements Comparator<Count> {
+    public static class YearComparator implements Comparator<Count> {
 
         @Override
         public int compare(Count arg0, Count arg1) {

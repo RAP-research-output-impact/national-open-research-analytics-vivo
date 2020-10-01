@@ -211,7 +211,7 @@ public class DimensionsConnector extends ConnectorDataSource
             while(batch > 0 && cursor.hasNext()) {
                 batch--;
                 long start = System.currentTimeMillis();
-                //log.info("Getting next document from cursor");
+                log.debug("Getting next document from cursor");
                 Document d = cursor.next();
                 log.info((System.currentTimeMillis() - start) + " ms to retrieve document");
                 start = System.currentTimeMillis();
@@ -220,48 +220,8 @@ public class DimensionsConnector extends ConnectorDataSource
                 JSONObject fullJsonObj = jsonObj;
                 log.debug((System.currentTimeMillis() - start) + " ms to convert to JSON");
                 start = System.currentTimeMillis();
-//                JSONArray organisations = jsonObj.getJSONObject("who").getJSONArray("organisations");
-//                List<String> whoGrids = new ArrayList<String>();
-//                for(int orgi = 0; orgi < organisations.length(); orgi++) {
-//                    String grid = organisations.getJSONObject(orgi).getString("gridid");
-//                    if(grid != null) {
-//                        whoGrids.add(grid);
-//                    }
-//                }
-                //log.info(whoGrids.size() + " grids in who " + whoGrids);
-//                JSONObject meta = jsonObj.getJSONObject("meta");                
-//                jsonObj = meta.getJSONObject("raw");
-//                if(meta.has("matchingstatus")) {
-//                    jsonObj.put("matchingstatus", meta.getString("matchingstatus"));    
-//                }
-//                if(jsonObj.has("author_affiliations")) {
-//                    JSONArray authorAffiliations = jsonObj.getJSONArray("author_affiliations");
-//                    List<String> affiliationGrids = new ArrayList<String>(); 
-//                    for(int aai = 0; aai < authorAffiliations.length(); aai++) {
-//                        JSONArray authorAffiliationsInner = authorAffiliations.getJSONArray(aai);
-//                        for(int aaj = 0; aaj < authorAffiliationsInner.length(); aaj++) {
-//                            JSONObject authorAffiliation = authorAffiliationsInner.getJSONObject(aaj);
-//                            JSONArray affiliations = authorAffiliation.getJSONArray("affiliations");
-//                            for(int aak = 0; aak < affiliations.length(); aak++) {
-//                                JSONObject affiliation = affiliations.getJSONObject(aak);
-//                                if(affiliation.has("id")) {
-//                                    String id = affiliation.getString("id");
-//                                    if(id != null && id.startsWith("grid")) {
-//                                        affiliationGrids.add(id);
-//                                    }
-//                                } 
-//                            }
-//                        }
-//                    }
-//                }
-                //log.info(affiliationGrids.size() + " grids in affiliations " + affiliationGrids);
-                //for(String whoGrid : whoGrids) {
-                //    if(!affiliationGrids.contains(whoGrid) 
-                //            && (ugrids.values().contains(whoGrid) 
-                //                    || hgrids.values().contains(whoGrid))) {                        
-                        //log.info("***** Grid only from who: " + whoGrid);
-                //    }
-                //}                         
+                JSONObject meta = jsonObj.getJSONObject("meta");                
+                jsonObj = meta.getJSONObject("raw");
                 try {               
                     if(jsonObj.has("authors")) {
                         JSONArray authors = jsonObj.getJSONArray("authors");

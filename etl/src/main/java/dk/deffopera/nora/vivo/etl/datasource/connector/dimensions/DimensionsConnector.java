@@ -1,12 +1,12 @@
 package dk.deffopera.nora.vivo.etl.datasource.connector.dimensions;
 
 import java.io.IOException;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -119,6 +119,9 @@ public class DimensionsConnector extends ConnectorDataSource
         
         this.mongoClient = MongoClients.create(
                 MongoClientSettings.builder()
+                        .retryReads(true)
+                        .applyToSocketSettings(builder -> builder.readTimeout(
+                                180, TimeUnit.SECONDS))
                         .applyToClusterSettings(builder ->
                                 builder.hosts(Arrays.asList(
                                         new ServerAddress(
@@ -136,7 +139,7 @@ public class DimensionsConnector extends ConnectorDataSource
         //   Document gridDoc = gridCursor.next();
         //   log.info(gridDoc.toJson());
         //}
-        this.ddfDoiCollection = database.getCollection("ddf-doi");
+        this.ddfDoiCollection = database.getCollection("ddf");
         this.mongoCollection = database.getCollection(mongoCollection);                
     }
     
@@ -210,10 +213,13 @@ public class DimensionsConnector extends ConnectorDataSource
                 long start = System.currentTimeMillis();
                 //log.info("Getting next document from cursor");
                 Document d = cursor.next();
-                //log.info((System.currentTimeMillis() - start) + " ms to retrieve document");
+                log.info((System.currentTimeMillis() - start) + " ms to retrieve document");
+                start = System.currentTimeMillis();
                 String jsonStr = d.toJson();   
                 JSONObject jsonObj = new JSONObject(jsonStr);
                 JSONObject fullJsonObj = jsonObj;
+                log.debug((System.currentTimeMillis() - start) + " ms to convert to JSON");
+                start = System.currentTimeMillis();
 //                JSONArray organisations = jsonObj.getJSONObject("who").getJSONArray("organisations");
 //                List<String> whoGrids = new ArrayList<String>();
 //                for(int orgi = 0; orgi < organisations.length(); orgi++) {
@@ -223,31 +229,31 @@ public class DimensionsConnector extends ConnectorDataSource
 //                    }
 //                }
                 //log.info(whoGrids.size() + " grids in who " + whoGrids);
-                JSONObject meta = jsonObj.getJSONObject("meta");                
-                jsonObj = meta.getJSONObject("raw");
-                if(meta.has("matchingstatus")) {
-                    jsonObj.put("matchingstatus", meta.getString("matchingstatus"));    
-                }
-                if(jsonObj.has("author_affiliations")) {
-                    JSONArray authorAffiliations = jsonObj.getJSONArray("author_affiliations");
-                    List<String> affiliationGrids = new ArrayList<String>(); 
-                    for(int aai = 0; aai < authorAffiliations.length(); aai++) {
-                        JSONArray authorAffiliationsInner = authorAffiliations.getJSONArray(aai);
-                        for(int aaj = 0; aaj < authorAffiliationsInner.length(); aaj++) {
-                            JSONObject authorAffiliation = authorAffiliationsInner.getJSONObject(aaj);
-                            JSONArray affiliations = authorAffiliation.getJSONArray("affiliations");
-                            for(int aak = 0; aak < affiliations.length(); aak++) {
-                                JSONObject affiliation = affiliations.getJSONObject(aak);
-                                if(affiliation.has("id")) {
-                                    String id = affiliation.getString("id");
-                                    if(id != null && id.startsWith("grid")) {
-                                        affiliationGrids.add(id);
-                                    }
-                                } 
-                            }
-                        }
-                    }
-                }
+//                JSONObject meta = jsonObj.getJSONObject("meta");                
+//                jsonObj = meta.getJSONObject("raw");
+//                if(meta.has("matchingstatus")) {
+//                    jsonObj.put("matchingstatus", meta.getString("matchingstatus"));    
+//                }
+//                if(jsonObj.has("author_affiliations")) {
+//                    JSONArray authorAffiliations = jsonObj.getJSONArray("author_affiliations");
+//                    List<String> affiliationGrids = new ArrayList<String>(); 
+//                    for(int aai = 0; aai < authorAffiliations.length(); aai++) {
+//                        JSONArray authorAffiliationsInner = authorAffiliations.getJSONArray(aai);
+//                        for(int aaj = 0; aaj < authorAffiliationsInner.length(); aaj++) {
+//                            JSONObject authorAffiliation = authorAffiliationsInner.getJSONObject(aaj);
+//                            JSONArray affiliations = authorAffiliation.getJSONArray("affiliations");
+//                            for(int aak = 0; aak < affiliations.length(); aak++) {
+//                                JSONObject affiliation = affiliations.getJSONObject(aak);
+//                                if(affiliation.has("id")) {
+//                                    String id = affiliation.getString("id");
+//                                    if(id != null && id.startsWith("grid")) {
+//                                        affiliationGrids.add(id);
+//                                    }
+//                                } 
+//                            }
+//                        }
+//                    }
+//                }
                 //log.info(affiliationGrids.size() + " grids in affiliations " + affiliationGrids);
                 //for(String whoGrid : whoGrids) {
                 //    if(!affiliationGrids.contains(whoGrid) 
@@ -268,20 +274,25 @@ public class DimensionsConnector extends ConnectorDataSource
                     log.info(jsonObj.toString(2));
                     throw (e);
                 }
-                addDDFGrids(jsonObj);
+                //long start2 = System.currentTimeMillis();
+                //addDDFGrids(jsonObj);
+                //log.debug((System.currentTimeMillis() - start2) + " ms to retrieve DDF grids");
                 if(log.isDebugEnabled()) {
                     log.debug(jsonObj.toString(2));
-                }                
+                }                                
                 if(toRdfIteration < MONGO_DOCS_PER_ITERATION) {
                   log.info(fullJsonObj.toString(2));
                 }
+                log.debug((System.currentTimeMillis() - start) + " ms to preprocess JSON");
+                start = System.currentTimeMillis();
                 Model rdf = toRdf(fullJsonObj.toString());
                 if(toRdfIteration < MONGO_DOCS_PER_ITERATION) {
-                    StringWriter out = new StringWriter();
-                    rdf.write(out, "TTL");
-                    log.info(out.toString());
+                    //StringWriter out = new StringWriter();
+                    //rdf.write(out, "TTL");
+                    //log.info(out.toString());
                 }
                 results.add(rdf);
+                log.debug((System.currentTimeMillis() - start) + " ms to convert to RDF");
             }
             return results;
         }
@@ -299,7 +310,10 @@ public class DimensionsConnector extends ConnectorDataSource
                     }                    
                 }
                 if(!grids.isEmpty()) {
+                    log.info("DDF grids found :)");
                     json.put("ddfGrids", grids);
+                } else {
+                    log.info("No DDF grids found :(");
                 }
             }
             
@@ -314,7 +328,7 @@ public class DimensionsConnector extends ConnectorDataSource
                 String xml = json2xml.convertJsonToXml(data);
                 Model rdf = xml2rdf.toRDF(xml);
                 toRdfIteration++;
-                rdf = rdfUtils.renameBNodes(rdf, ABOX + "n" + toRdfIteration + "-", rdf);
+                rdf = rdfUtils.renameBNodes(rdf, ABOX + getPrefixName() + "-n" + toRdfIteration + "-", rdf);
                 return rdf;
             } catch (JsonProcessingException e) {
                 throw new RuntimeException(e);
@@ -363,9 +377,10 @@ public class DimensionsConnector extends ConnectorDataSource
     protected Model mapToVIVO(Model model) {
         long start = System.currentTimeMillis();
         List<String> queries = Arrays.asList(
-                //"050-orcidId.rq",
-                "100-publicationTypes.rq",
-                "110-publicationMetadata.rq"
+                ////"050-orcidId.rq",
+                //"100-publicationTypes.rq",
+                "110-publicationMetadata.rq",
+                "115-abstract.rq"
                 );
         for(String query : queries) {
             construct(SPARQL_RESOURCE_DIR + query, model, ABOX + getPrefixName() + "-");
@@ -373,11 +388,11 @@ public class DimensionsConnector extends ConnectorDataSource
         model = renameByIdentifier(model, model.getProperty(
                 XmlToRdf.GENERIC_NS + "publication_id"), ABOX, "");
         queries = Arrays.asList(
-                "120-publicationDate.rq",
-                "130-publicationJournal.rq",
-                //"140-publicationAuthorship.rq"
-                "141-publicationAuthorship1.rq",
-                "142-publicationAuthorship2.rq"
+                //"120-publicationDate.rq",
+                //"130-publicationJournal.rq",
+                ////"140-publicationAuthorship.rq"
+                //"141-publicationAuthorship1.rq",
+                //"142-publicationAuthorship2.rq"
                 );
         for(String query : queries) {
             construct(SPARQL_RESOURCE_DIR + query, model, ABOX + getPrefixName() + "-");
@@ -387,24 +402,24 @@ public class DimensionsConnector extends ConnectorDataSource
         model = renameByIdentifier(model, model.getProperty(
                 XmlToRdf.GENERIC_NS + "person_orcidStr"), ABOX, "orcid-");
         queries = Arrays.asList(         
-                "150-publicationAuthor.rq",
-                "160-publicationAuthorPosition.rq",
-                "170-publisher.rq",
-                "180-mesh.rq",
-                "190-for.rq",
-                "200-rcdc.rq",
-                "210-hrcs.rq",
-                "215-sdg.rq",
-                "220-openAccess.rq",
-                "230-funding.rq",
-                "240-references.rq"
+                //"150-publicationAuthor.rq",
+                //"160-publicationAuthorPosition.rq",
+                //"170-publisher.rq",
+                //"180-mesh.rq",
+                //"190-for.rq",
+                //"200-rcdc.rq",
+                //"210-hrcs.rq",
+                //"215-sdg.rq",
+                //"220-openAccess.rq",
+                //"230-funding.rq",
+                //"240-references.rq"
                 );
         for(String query : queries) {
             construct(SPARQL_RESOURCE_DIR + query, model, ABOX + getPrefixName() + "-");            
         }
         model = renameByIdentifier(model, model.getProperty(
                 XmlToRdf.GENERIC_NS + "org_id"), ABOX, "");
-        log.info((System.currentTimeMillis() - start) + " ms to map to VIVO");
+        log.debug((System.currentTimeMillis() - start) + " ms to map to VIVO");
         return model;
     }
 

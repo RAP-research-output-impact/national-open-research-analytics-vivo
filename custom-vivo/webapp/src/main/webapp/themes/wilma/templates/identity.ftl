@@ -3,7 +3,7 @@
 <header id="branding" role="banner">
 
     <h1 class="vivo-logo"><a title="${i18n().identity_title}" href="${urls.home}"><span class="displace">${siteName}</span></a></h1>
-    <h2 class="vivo-logo"><span class="displace2">A <strong>prototype</strong> built with Dimensions data and open tools &mdash; <a href="${urls.base}/about" title="more about NORA">more</a></span></h2>
+    <h2 class="vivo-logo"><span class="displace2">A <strong>prototype</strong> built with Dimensions data 2014-2019 and open tools &mdash; <a href="${urls.base}/about" title="more about NORA">more</a></span></h2>
     <#-- Since we are using a graphic text for the tagline, we won't render ${siteTagline}
     <#if siteTagline?has_content>
         <em>${siteTagline}</em>

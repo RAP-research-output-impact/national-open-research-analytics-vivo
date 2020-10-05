@@ -32,7 +32,6 @@
         <#include "menu.ftl">
 
 <div class="n_main width-l">
-  <h1 class="n_hero-heading">NORA &mdash; National Open Research Analytics is a platform developed as part of the Open Research Analytics (OPERA) project, funded by the Danish Agency of Higher Education & Science. NORA is built with Dimensions data related to Danish Universities and University Hospitals from 2014-2017 and enhanced with data from Danish Research Indicators.</h1>
   <div class="n_cards">
     <article class="n_card">
       <a href="${urls.base}/search?searchMode=all" class="n_c-link-img">
@@ -40,7 +39,6 @@
       </a>
       <div class="n_c-content">
         <a class="n_c-linkTitle" href="${urls.base}/search?searchMode=all"><h3>Search</h3></a>
-        <p>Search for publications, datasets, grants, patents and clincal trials</p>
       </div>
     </article>
     <!-- end .n_card -->
@@ -51,7 +49,6 @@
       </a>
       <div class="n_c-content">
         <a class="n_c-linkTitle" href="${urls.base}/SDGdash"><h3>Sustainable Development Goals Dashboard</h3></a>
-        <p>An exploration of the connections between Danish scientific publications and the Sustainable Development Goals (SDGs)</p>
       </div>
     </article>
     <!-- end .n_card -->
@@ -62,7 +59,6 @@
       </a>
       <div class="n_c-content">
         <a class="n_c-linkTitle" href="{urls.base}/intlcollabs"><h3>International Collaborations Dashboard</h3></a>
-        <p>An overview of the top international co-authorship collaborations between Danish universities and their partners abroad.</p>
       </div>
     </article>
     <!-- end .n_card -->
@@ -73,7 +69,6 @@
       </a>
       <div class="n_c-content">
         <a class="n_c-linkTitle" href="${urls.base}/dkcollabsash"><h3>National Collaboration Dashboard</h3></a>
-        <p>An overview of the top national co-authorship collaborations between Danish universities and their national partners.</p>
       </div>
     </article>
     <!-- end .n_card -->
@@ -84,14 +79,12 @@
       </a>
       <div class="n_c-content">
         <a class="n_c-linkTitle" href="${urls.base}/individuallist?vclassId=http%3A%2F%2Fvivoweb.org%2Fontology%2Fcore%23University"><h3>University Profiles</h3></a>
-        <p>Summary of key information to characterise the scientific production of Danish universities.</p>
       </div>
     </article>
     <!-- end .n_card -->
 
   </div>
   <!-- end .n-cards -->
-
 
 </div>
 <!-- end .n_main -->

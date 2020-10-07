@@ -113,7 +113,7 @@ public class DimensionsConnector extends ConnectorDataSource
     public DimensionsConnector(String username, String password, 
             String mongoServer, String mongoPort, String mongoCollection, 
             String mongoUsername, String mongoPassword) {                     
-        this.token = getToken(username, password);
+        //this.token = getToken(username, password);
         MongoCredential credential = MongoCredential.createScramSha256Credential(
                 mongoUsername, "opera", mongoPassword.toCharArray());
         

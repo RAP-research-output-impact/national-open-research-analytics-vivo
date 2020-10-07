@@ -242,7 +242,8 @@ public abstract class ConnectorDataSource extends DataSourceBase {
             Statement stmt = sit.next();
             if(stmt.getObject().isLiteral()) {
                 idMap.put(stmt.getSubject(), 
-                        stmt.getObject().asLiteral().getLexicalForm());
+                        stripSpaces(stmt.getObject().asLiteral().getLexicalForm()));
+                        //stmt.getObject().asLiteral().getLexicalForm());
                         //stripNonWordChars(stmt.getObject().asLiteral().getLexicalForm()));
             }
         }
@@ -251,6 +252,14 @@ public abstract class ConnectorDataSource extends DataSourceBase {
                     res, namespace + localNamePrefix + idMap.get(res));
         }
         return m;
+    }
+    
+    protected String stripSpaces(String value) {
+        if(value == null) {
+            return value;
+        } else {
+            return value.replaceAll(" ", "");
+        }
     }
     
     protected String stripNonWordChars(String value) {

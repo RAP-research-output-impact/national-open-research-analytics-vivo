@@ -337,10 +337,10 @@ public class DimensionsConnector extends ConnectorDataSource
     protected Model mapToVIVO(Model model) {
         long start = System.currentTimeMillis();
         List<String> queries = Arrays.asList(
-                ////"050-orcidId.rq",
-                //"100-publicationTypes.rq",
-                "110-publicationMetadata.rq",
-                "115-abstract.rq"
+                //"050-orcidId.rq",
+                "100-publicationTypes.rq",
+                "110-publicationMetadata.rq"
+                //"115-abstract.rq"
                 );
         for(String query : queries) {
             construct(SPARQL_RESOURCE_DIR + query, model, ABOX + getPrefixName() + "-");
@@ -348,11 +348,11 @@ public class DimensionsConnector extends ConnectorDataSource
         model = renameByIdentifier(model, model.getProperty(
                 XmlToRdf.GENERIC_NS + "publication_id"), ABOX, "");
         queries = Arrays.asList(
-                //"120-publicationDate.rq",
-                //"130-publicationJournal.rq",
-                ////"140-publicationAuthorship.rq"
-                //"141-publicationAuthorship1.rq",
-                //"142-publicationAuthorship2.rq"
+                "120-publicationDate.rq",
+                "130-publicationJournal.rq",
+                //"140-publicationAuthorship.rq"
+                "141-publicationAuthorship1.rq",
+                "142-publicationAuthorship2.rq"
                 );
         for(String query : queries) {
             construct(SPARQL_RESOURCE_DIR + query, model, ABOX + getPrefixName() + "-");
@@ -362,17 +362,17 @@ public class DimensionsConnector extends ConnectorDataSource
         model = renameByIdentifier(model, model.getProperty(
                 XmlToRdf.GENERIC_NS + "person_orcidStr"), ABOX, "orcid-");
         queries = Arrays.asList(         
-                //"150-publicationAuthor.rq",
-                //"160-publicationAuthorPosition.rq",
-                //"170-publisher.rq",
-                //"180-mesh.rq",
-                //"190-for.rq",
-                //"200-rcdc.rq",
-                //"210-hrcs.rq",
-                //"215-sdg.rq",
-                //"220-openAccess.rq",
-                //"230-funding.rq",
-                //"240-references.rq"
+                "150-publicationAuthor.rq",
+                "160-publicationAuthorPosition.rq",
+                "170-publisher.rq",
+                "180-mesh.rq",
+                "190-for.rq",
+                "200-rcdc.rq",
+                "210-hrcs.rq",
+                "215-sdg.rq",
+                "220-openAccess.rq",
+                "230-funding.rq",
+                "240-references.rq"
                 );
         for(String query : queries) {
             construct(SPARQL_RESOURCE_DIR + query, model, ABOX + getPrefixName() + "-");            

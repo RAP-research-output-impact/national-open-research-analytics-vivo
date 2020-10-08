@@ -34,6 +34,7 @@ public abstract class ConnectorDataSource extends DataSourceBase {
     /* number of iterator elements to be processed at once in memory 
     before being flushed to a SPARQL endpoint */
     protected final static int DEFAULT_BATCH_SIZE = 1;
+    protected final static int TRIPLE_BUFFER_SIZE = 12500;
     private static final List<String> FILTER_OUT = Arrays.asList(
             "generalizedXMLtoRDF/0.1", "vitro/0.7#position", "vitro/0.7#value", "XMLSchema-instance");
     private static final String FILTER_OUT_RES = "match_nothing"; 
@@ -159,7 +160,8 @@ public abstract class ConnectorDataSource extends DataSourceBase {
                     }
                     if(activeEndpointForResults()) {
                         buffer.add(model);                
-                        if(count % getBatchSize() == 0 || !it.hasNext() 
+                        //if(count % getBatchSize() == 0 || !it.hasNext()
+                        if(buffer.size() >= TRIPLE_BUFFER_SIZE || !it.hasNext()
                                 || count == this.getConfiguration().getLimit()) {
                             if(buffer.size() > 0) {
                                 dataWrittenToEndpoint = true;

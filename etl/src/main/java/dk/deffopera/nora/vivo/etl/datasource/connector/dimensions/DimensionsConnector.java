@@ -145,7 +145,7 @@ public class DimensionsConnector extends ConnectorDataSource
     
     @Override
     public int getBatchSize() {
-        return 20;
+        return 1;
     }
     
     protected String getToken(String username, String password) {
@@ -176,7 +176,7 @@ public class DimensionsConnector extends ConnectorDataSource
         protected MongoCollection<Document> collection;
         protected MongoCursor<Document> cursor;
         protected int toRdfIteration = 0;
-        protected int MONGO_DOCS_PER_ITERATION = 10;
+        protected int MONGO_DOCS_PER_ITERATION = 1;
                
         protected MongoIterator() {}
         

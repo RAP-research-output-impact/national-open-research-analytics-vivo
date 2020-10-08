@@ -213,7 +213,7 @@ public class DimensionsConnector extends ConnectorDataSource
                 long start = System.currentTimeMillis();
                 log.debug("Getting next document from cursor");
                 Document d = cursor.next();
-                log.info((System.currentTimeMillis() - start) + " ms to retrieve document");
+                log.debug((System.currentTimeMillis() - start) + " ms to retrieve document");
                 start = System.currentTimeMillis();
                 String jsonStr = d.toJson();   
                 JSONObject jsonObj = new JSONObject(jsonStr);

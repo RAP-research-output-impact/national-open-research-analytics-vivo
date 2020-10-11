@@ -121,7 +121,7 @@ public class DimensionsConnector extends ConnectorDataSource
                 MongoClientSettings.builder()
                         .retryReads(true)
                         .applyToSocketSettings(builder -> builder.readTimeout(
-                                180, TimeUnit.SECONDS))
+                                30, TimeUnit.SECONDS))
                         .applyToClusterSettings(builder ->
                                 builder.hosts(Arrays.asList(
                                         new ServerAddress(
@@ -176,7 +176,7 @@ public class DimensionsConnector extends ConnectorDataSource
         protected MongoCollection<Document> collection;
         protected MongoCursor<Document> cursor;
         protected int toRdfIteration = 0;
-        protected int MONGO_DOCS_PER_ITERATION = 1;
+        protected int MONGO_DOCS_PER_ITERATION = 25;
                
         protected MongoIterator() {}
         
@@ -201,7 +201,12 @@ public class DimensionsConnector extends ConnectorDataSource
         
         @Override
         public boolean hasNext() {
-            return cursor.hasNext();
+            try {
+                return cursor.hasNext();
+            } catch (Exception e) {
+                // try again once in case Mongo needs to reestablish connection
+                return cursor.hasNext();
+            }
         }
 
         @Override

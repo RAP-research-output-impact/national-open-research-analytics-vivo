@@ -122,7 +122,7 @@ public abstract class DataSourceBase {
         m.add(n);
         log.debug("Post-query model size: " + m.size());
         if(n.size() == 0 ) {
-            log.info(queryName + " constructed no triples");
+            log.debug(queryName + " constructed no triples");
         }
         return m;
     }

@@ -150,6 +150,7 @@ body {
 }
 #search {
   /* TODO: this class should no longer be used */
+  display:none;
   top:75px;
 }
 ul#main-nav {
@@ -357,6 +358,7 @@ footer {
 .n_c-img {
   display: inline-block;
   width: 100%;
+  height: 200px;
 }
 .n_c-content {
   padding: 16px;

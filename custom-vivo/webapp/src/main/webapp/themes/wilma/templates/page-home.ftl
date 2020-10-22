@@ -44,36 +44,6 @@
     <!-- end .n_card -->
 
     <article class="n_card">
-      <a href="${urls.base}/SDGdash" class="n_c-link-img">
-        <img class="n_c-img" src="${urls.theme}/images/SDGs.png" alt="">
-      </a>
-      <div class="n_c-content">
-        <a class="n_c-linkTitle" href="${urls.base}/SDGdash"><h3>Sustainable Development Goals Dashboard</h3></a>
-      </div>
-    </article>
-    <!-- end .n_card -->
-
-    <article class="n_card">
-      <a href="${urls.base}/intlcollabs" class="n_c-link-img">
-        <img class="n_c-img" src="${urls.theme}/images/international_collabs.png" alt="">
-      </a>
-      <div class="n_c-content">
-        <a class="n_c-linkTitle" href="{urls.base}/intlcollabs"><h3>International Collaborations Dashboard</h3></a>
-      </div>
-    </article>
-    <!-- end .n_card -->
-
-    <article class="n_card">
-      <a href="${urls.base}/dkcollabsash" class="n_c-link-img">
-        <img class="n_c-img" src="${urls.theme}/images/national_collabs.png" alt="">
-      </a>
-      <div class="n_c-content">
-        <a class="n_c-linkTitle" href="${urls.base}/dkcollabsash"><h3>National Collaboration Dashboard</h3></a>
-      </div>
-    </article>
-    <!-- end .n_card -->
-
-    <article class="n_card">
       <a href="${urls.base}/individuallist?vclassId=http%3A%2F%2Fvivoweb.org%2Fontology%2Fcore%23University" class="n_c-link-img">
         <img class="n_c-img" src="${urls.theme}/images/univ_profiles.png" alt="">
       </a>
@@ -83,7 +53,48 @@
     </article>
     <!-- end .n_card -->
 
-  </div>
+    <article class="n_card">
+      <a href="${urls.base}/SDGdash" class="n_c-link-img">
+        <img class="n_c-img" src="${urls.theme}/images/SDGs.png" alt="">
+      </a>
+      <div class="n_c-content">
+        <a class="n_c-linkTitle" href="${urls.base}/SDGdash"><h3>Sustainable Development Goals</h3></a>
+      </div>
+    </article>
+    <!-- end .n_card -->
+
+    <article class="n_card">
+      <a href="${urls.base}/intlcollabs" class="n_c-link-img">
+        <img class="n_c-img" src="${urls.theme}/images/international_collabs.png" alt="">
+      </a>
+      <div class="n_c-content">
+        <a class="n_c-linkTitle" href="{urls.base}/intlcollabs"><h3>International Collaborations</h3></a>
+      </div>
+    </article>
+    <!-- end .n_card -->
+
+    <article class="n_card">
+      <a href="${urls.base}/dkcollabsash" class="n_c-link-img">
+        <img class="n_c-img" src="${urls.theme}/images/national_collabs.png" alt="">
+      </a>
+      <div class="n_c-content">
+        <a class="n_c-linkTitle" href="${urls.base}/dkcollabsash"><h3>National Collaboration</h3></a>
+      </div>
+    </article>
+    <!-- end .n_card -->
+
+    <article class="n_card">
+      <a href="${urls.base}/dkcollabsash" class="n_c-link-img">
+        <img class="n_c-img" src="${urls.theme}/images/network_views.png" alt="">
+      </a>
+      <div class="n_c-content">
+        <a class="n_c-linkTitle" href="${urls.base}/vosviewerviews"><h3>Network Maps</h3></a>
+      </div>
+    </article>
+    <!-- end .n_card -->
+
+
+ </div>
   <!-- end .n-cards -->
 
 </div>

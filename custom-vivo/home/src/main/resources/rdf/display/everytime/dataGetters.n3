@@ -1018,12 +1018,9 @@ PREFIX osrap:    <http://vivo.deffopera.dk/ontology/osrap/>
 SELECT ?assignee ?assigneeName ?assigneeAbbreviation  
 WHERE {
   ?individualURI a bibo:Patent .
+  ?individualURI vivo:assignee ?assignee .
+  ?assignee rdfs:label ?assigneeName
   OPTIONAL {
-    ?individualURI vivo:assignee ?assignee .
-    ?assignee rdfs:label ?assigneeName
-  }
-  OPTIONAL {
-    ?individualURI vivo:assignee ?assignee .
     ?assignee vivo:abbreviation ?assigneeAbbreviation 
   }
 }
@@ -1047,12 +1044,9 @@ PREFIX osrap:    <http://vivo.deffopera.dk/ontology/osrap/>
 SELECT ?assigneeOriginal ?assigneeOriginalName ?assigneeOriginalAbbreviation  
 WHERE {
   ?individualURI a bibo:Patent .
+  ?individualURI vivo:assigneeOriginal ?assigneeOriginal .
+  ?assigneeOriginal rdfs:label ?assigneeOriginalName
   OPTIONAL {
-    ?individualURI vivo:assigneeOriginal ?assigneeOriginal .
-    ?assigneeOriginal rdfs:label ?assigneeOriginalName
-  }
-  OPTIONAL {
-    ?individualURI vivo:assigneeOriginal ?assigneeOriginal .
     ?assigneeOriginal vivo:abbreviation ?assigneeOriginalAbbreviation 
   }
 }

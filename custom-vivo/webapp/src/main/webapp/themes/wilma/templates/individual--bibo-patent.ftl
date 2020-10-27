@@ -122,22 +122,22 @@
   </#if>
 </p>
 
-<#if (patentMeta?has_content && patentMeta[0].assignee??) || (patentMeta?has_content && patentMeta[0].assigneeOriginal??) >
+<#if (assignees?has_content || assigneesOriginal?has_content) >
 <div class="pub_authors-box">
   <h3>Assignee</h3>
-  <#if patentMeta[0].assigneeOriginal??>
+  <#if assigneesOriginal?has_content>
    <p>Original:</p>
    <ul>
-   <#list patentMeta as meta>
-     <li><a href="${urls.base}/search?searchMode=patents&facet_original-assignee_ss=${meta.assigneeOriginal?url}">${meta.assigneeOriginalName}<#if meta.assigneeOriginalAbbreviation??>, ${meta.assigneeOriginalAbbreviation}</#if></a></li>
+   <#list assigneesOriginal as assigneeOriginal>
+     <li><a href="${urls.base}/search?searchMode=patents&facet_original-assignee_ss=${assigneeOriginal.assigneeOriginal?url}">${assigneeOriginal.assigneeOriginalName}<#if assigneeOriginal.assigneeOriginalAbbreviation??>, ${assigneeOriginal.assigneeOriginalAbbreviation}</#if></a></li>
    </#list>
    </ul> 
   </#if>
-  <#if patentMeta[0].assignee??>
+  <#if assignees?has_content>
     <p>Current:</p>
     <ul>
-      <#list patentMeta as meta>
-        <li>${meta.assigneeName}<#if meta.assigneeAbbreviation??>, ${meta.assigneeAbbreviation}</#if></li>
+      <#list assignees as assignee>
+        <li>${assignee.assigneeName}<#if assignee.assigneeAbbreviation??>, ${assignee.assigneeAbbreviation}</#if></li>
       </#list>
     </ul>
   </#if>

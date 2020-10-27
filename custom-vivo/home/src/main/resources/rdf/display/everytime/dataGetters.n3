@@ -1044,7 +1044,7 @@ PREFIX osrap:    <http://vivo.deffopera.dk/ontology/osrap/>
 SELECT ?assigneeOriginal ?assigneeOriginalName ?assigneeOriginalAbbreviation  
 WHERE {
   ?individualURI a bibo:Patent .
-  ?individualURI vivo:assigneeOriginal ?assigneeOriginal .
+  ?individualURI osrap:assigneeOriginal ?assigneeOriginal .
   ?assigneeOriginal rdfs:label ?assigneeOriginalName
   OPTIONAL {
     ?assigneeOriginal vivo:abbreviation ?assigneeOriginalAbbreviation 

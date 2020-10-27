@@ -126,17 +126,27 @@
 <div class="pub_authors-box">
   <h3>Assignee</h3>
   <#if patentMeta[0].assigneeOriginal??>
-   <p>Original: <a href="${urls.base}/search?searchMode=patents&facet_original-assignee_ss=${patentMeta[0].assigneeOriginal?url}">${patentMeta[0].assigneeOriginalName}<#if patentMeta[0].assigneeOriginalAbbreviation??>, ${patentMeta[0].assigneeOriginalAbbreviation}</#if></a></p>
+   <p>Original:</p>
+   <ul>
+   <#list patentMeta as meta>
+     <li><a href="${urls.base}/search?searchMode=patents&facet_original-assignee_ss=${meta.assigneeOriginal?url}">${meta.assigneeOriginalName}<#if meta.assigneeOriginalAbbreviation??>, ${meta.assigneeOriginalAbbreviation}</#if></a></li>
+   </#list>
+   </ul> 
   </#if>
   <#if patentMeta[0].assignee??>
-   <p>Current: ${patentMeta[0].assigneeName}<#if patentMeta[0].assigneeAbbreviation??>, ${patentMeta[0].assigneeAbbreviation}</#if></p>
+    <p>Current:</p>
+    <ul>
+      <#list patentMeta as meta>
+        <li>${meta.assigneeName}<#if meta.assigneeAbbreviation??>, ${meta.assigneeAbbreviation}</#if></li>
+      </#list>
+    </ul>
   </#if>
 </div>
 </#if>
 
 <!-- authors -->
 <div class="pub_authors-box">
-  <h3>Authors</h3>
+  <h3>Inventors</h3>
   <#if pg.getProperty(vivo + "relatedBy", vivo + "Authorship")??>
     <@p.objectProperty pg.getProperty(vivo + "relatedBy", vivo + "Authorship") false />
   </#if>

@@ -167,6 +167,16 @@
 </ol>
 </#if>
 
+<!-- research orgs -->
+<#if researchOrgs?has_content && researchOrgs[0].researchOrg?has_content>
+<h3>Research Organisations</h3>
+<ul>
+<#list researchOrgs as researchOrg>
+  <li><a href="${urls.base}/search?searchMode=grants&facet_organization_ss=${researchOrg.researchOrg?url}">${researchOrg.researchOrgLabel}<#if researchOrg.researchOrgGrid??>, ${researchOrg.researchOrgGrid}</#if><#if researchOrg.researchOrgAbbreviation??>, ${researchOrg.researchOrgAbbreviation}</#if></a></li>
+</#list>
+</ul>
+</#if>
+
 <#if countries?has_content || continents?has_content>
 <div class="pub_categories">
   <#if countries?has_content>
@@ -262,7 +272,11 @@
         <p>Funding amount: <span>EUR ${grantMeta[0].fundingAmount}</span></p>
       </#if>
       <#if grantMeta[0].grantNumber??>
-        <p>Grant number: <span>${grantMeta[0].grantNumber}</span></p>
+        <#if vcardUrl?has_content && vcardUrl[0]?has_content>
+          <p>Grant number: <span><a href="${vcardUrl[0].url}">${grantMeta[0].grantNumber}</a></span></p>
+	<#else>
+          <p>Grant number: <span>${grantMeta[0].grantNumber}</span></p>
+	</#if>
       </#if>
     </div>
     <!-- end pv-metrics -->

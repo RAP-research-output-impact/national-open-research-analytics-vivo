@@ -36,7 +36,7 @@ public class GridJsonConnector extends DimensionsConnector {
     
     @Override
     public int getBatchSize() {
-        return 1;
+        return 10;
     }
     
     @Override
@@ -51,10 +51,11 @@ public class GridJsonConnector extends DimensionsConnector {
         public GridJsonIterator(MongoCollection<Document> collection) {
             this.collection = collection;
             ArrayList<Bson> bsons = new ArrayList<Bson>();
-            for(String grid : ugrids.values()) {
-                bsons.add(Filters.eq("id", grid));
-            }
-            this.cursor = collection.find(Filters.or(bsons))
+            //for(String grid : ugrids.values()) {
+            //    bsons.add(Filters.eq("id", grid));
+            //}
+            //this.cursor = collection.find(Filters.or(bsons))
+            this.cursor = collection.find()
                     .noCursorTimeout(true).iterator();
         }
         

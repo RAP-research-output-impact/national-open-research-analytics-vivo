@@ -19,7 +19,7 @@
 </#if>
 
 <#include "stylesheets.ftl">
-<link rel="stylesheet" href="${urls.theme}/css/screen.css?version=20201022" />
+<link rel="stylesheet" href="${urls.theme}/css/screen.css?version=20201028" />
 
 <#include "headScripts.ftl">
 

@@ -275,18 +275,21 @@
 	    ?ddf a nora:DDF .
 	    ?ddf nora:grid ?grid .
 	    BIND(IRI(CONCAT(STR(abox:), ?grid)) AS ?org)
-	    ?org nora:countryCode ?countryCode .
+	    ?org nora:addresses ?address .
+	    ?address nora:country_code ?countryCode .
 	    ?country <http://aims.fao.org/aos/geopolitical.owl#codeISO2> ?countryCode .
 	  } UNION {
 	    ?uri nora:relatedToOrganization ?org .
-	    ?org nora:countryCode ?countryCode .
+	    ?org nora:addresses ?address .
+	    ?address nora:country_code ?countryCode .
 	    ?country <http://aims.fao.org/aos/geopolitical.owl#codeISO2> ?countryCode .
 	  } UNION {
             ?authorship vivo:relates ?uri .
 	    ?authorship a vivo:Authorship .
 	    ?authorship nora:relatedToOrganization ?org .
 	    ?org a foaf:Organization .
-	    ?org nora:countryCode ?countryCode .
+            ?org nora:addresses ?address .
+	    ?address nora:country_code ?countryCode .
 	    ?country <http://aims.fao.org/aos/geopolitical.owl#codeISO2> ?countryCode .
 	  } UNION {
             ?uri a vivo:Grant .
@@ -294,7 +297,8 @@
 	    ?role a obo:BFO_0000023 .
 	    ?role nora:relatedToOrganization ?org .
 	    ?org a foaf:Organization .
-	    ?org nora:countryCode ?countryCode .
+	    ?org nora:addresses ?address .
+	    ?address nora:country_code ?countryCode .
 	    ?country <http://aims.fao.org/aos/geopolitical.owl#codeISO2> ?countryCode .
 	  } UNION {
             ?uri a obo:ERO_0000016 . # ClinicalTrial
@@ -302,17 +306,20 @@
 	    ?role a obo:BFO_0000023 .
 	    ?role nora:relatedToOrganization ?org .
 	    ?org a foaf:Organization .
-	    ?org nora:countryCode ?countryCode .
+	    ?org nora:addresses ?address .
+	    ?address nora:country_code ?countryCode .
 	    ?country <http://aims.fao.org/aos/geopolitical.owl#codeISO2> ?countryCode .
 	  } UNION {
             ?uri nora:assigneeOriginal ?org .
 	    ?org a foaf:Organization .
-	    ?org nora:countryCode ?countryCode .
+	    ?org nora:addresses ?address .
+	    ?address nora:country_code ?countryCode .
 	    ?country <http://aims.fao.org/aos/geopolitical.owl#codeISO2> ?countryCode .
 	  } UNION {
             ?uri vivo:assignee ?org .
 	    ?org a foaf:Organization .
-	    ?org nora:countryCode ?countryCode .
+	    ?org nora:addresses ?address .
+	    ?address nora:country_code ?countryCode .
 	    ?country <http://aims.fao.org/aos/geopolitical.owl#codeISO2> ?countryCode .
 	  }
         }
@@ -343,13 +350,15 @@
 	    ?ddf a nora:DDF .
 	    ?ddf nora:grid ?grid .
 	    BIND(IRI(CONCAT(STR(abox:), ?grid)) AS ?org)
-	    ?org nora:countryCode ?countryCode .
+	    ?org nora:addresses ?address .
+	    ?address nora:country_code ?countryCode .
 	    ?country <http://aims.fao.org/aos/geopolitical.owl#codeISO2> ?countryCode .
 	    ?country <http://aims.fao.org/aos/geopolitical.owl#isInGroup> ?continent .
 	    ?continent a vivo:Continent .
 	  } UNION {
 	    ?uri nora:relatedToOrganization ?org .
-	    ?org nora:countryCode ?countryCode .
+	    ?org nora:addresses ?address .
+	    ?address nora:country_code ?countryCode .
 	    ?country <http://aims.fao.org/aos/geopolitical.owl#codeISO2> ?countryCode .
 	    ?country <http://aims.fao.org/aos/geopolitical.owl#isInGroup> ?continent .
 	    ?continent a vivo:Continent .
@@ -358,7 +367,8 @@
 	    ?authorship a vivo:Authorship .
 	    ?authorship nora:relatedToOrganization ?org .
 	    ?org a foaf:Organization .
-	    ?org nora:countryCode ?countryCode .
+	    ?org nora:addresses ?address .
+	    ?address nora:country_code ?countryCode .
 	    ?country <http://aims.fao.org/aos/geopolitical.owl#codeISO2> ?countryCode .
 	    ?country <http://aims.fao.org/aos/geopolitical.owl#isInGroup> ?continent .
 	    ?continent a vivo:Continent .
@@ -368,7 +378,8 @@
 	    ?role a obo:BFO_0000023 .
 	    ?role nora:relatedToOrganization ?org .
 	    ?org a foaf:Organization .
-	    ?org nora:countryCode ?countryCode .
+	    ?org nora:addresses ?address .
+	    ?address nora:country_code ?countryCode .
 	    ?country <http://aims.fao.org/aos/geopolitical.owl#codeISO2> ?countryCode .
 	    ?country <http://aims.fao.org/aos/geopolitical.owl#isInGroup> ?continent .
 	    ?continent a vivo:Continent .
@@ -378,21 +389,24 @@
 	    ?role a obo:BFO_0000023 .
 	    ?role nora:relatedToOrganization ?org .
 	    ?org a foaf:Organization .
-	    ?org nora:countryCode ?countryCode .
+	    ?org nora:addresses ?address .
+	    ?address nora:country_code ?countryCode .
 	    ?country <http://aims.fao.org/aos/geopolitical.owl#codeISO2> ?countryCode .
 	    ?country <http://aims.fao.org/aos/geopolitical.owl#isInGroup> ?continent .
 	    ?continent a vivo:Continent .
 	  } UNION {
             ?uri nora:assigneeOriginal ?org .
 	    ?org a foaf:Organization .
-	    ?org nora:countryCode ?countryCode .
+	    ?org nora:addresses ?address .
+	    ?address nora:country_code ?countryCode .
 	    ?country <http://aims.fao.org/aos/geopolitical.owl#codeISO2> ?countryCode .
 	    ?country <http://aims.fao.org/aos/geopolitical.owl#isInGroup> ?continent .
 	    ?continent a vivo:Continent .
 	  } UNION {
             ?uri vivo:assignee ?org .
 	    ?org a foaf:Organization .
-	    ?org nora:countryCode ?countryCode .
+	    ?org nora:addresses ?address .
+	    ?address nora:country_code ?countryCode .
 	    ?country <http://aims.fao.org/aos/geopolitical.owl#codeISO2> ?countryCode .
 	    ?country <http://aims.fao.org/aos/geopolitical.owl#isInGroup> ?continent .
 	    ?continent a vivo:Continent .

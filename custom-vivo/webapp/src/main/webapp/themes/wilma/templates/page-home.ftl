@@ -84,15 +84,34 @@
     <!-- end .n_card -->
 
     <article class="n_card">
-      <a href="${urls.base}/dkcollabsash" class="n_c-link-img">
+      <a href="${urls.base}/sciencemap" class="n_c-link-img">
         <img class="n_c-img" src="${urls.theme}/images/network_views.png" alt="">
       </a>
       <div class="n_c-content">
-        <a class="n_c-linkTitle" href="${urls.base}/vosviewerviews"><h3>Network Maps</h3></a>
+        <a class="n_c-linkTitle" href="${urls.base}/sciencemap"><h3>Map of Science</h3></a>
       </div>
     </article>
     <!-- end .n_card -->
 
+    <article class="n_card">
+      <a href="${urls.base}/collabmap" class="n_c-link-img">
+        <img class="n_c-img" src="${urls.theme}/images/network_views.png" alt="">
+      </a>
+      <div class="n_c-content">
+        <a class="n_c-linkTitle" href="${urls.base}/collabmap"><h3>Collaboration Map</h3></a>
+      </div>
+    </article>
+    <!-- end .n_card -->
+
+    <article class="n_card">
+      <a href="${urls.base}/about" class="n_c-link-img">
+        <img class="n_c-img" src="https://www.biosustain.dtu.dk/-/media/Andre_Universitetsenheder/Bibliotek/foto/Boeger2.ashx?mw=700&hash=1F7FE26E4903121CD49458449F8AD2BD686444F2" alt="">
+      </a>
+      <div class="n_c-content">
+        <a class="n_c-linkTitle" href="${urls.base}/about"><h3>About NORA</h3></a>
+      </div>
+    </article>
+    <!-- end .n_card -->
 
  </div>
   <!-- end .n-cards -->

@@ -252,10 +252,15 @@ public abstract class DataSourceBase {
     
     protected List<String> getGraphsWithBaseURI(String baseURI, SparqlEndpoint endpoint) {
         List<String> graphs = new ArrayList<String>();
+        // This nonstandard version is much faster on TDB
         String queryStr = "SELECT DISTINCT ?g WHERE { \n" +
-                          "    GRAPH ?g { ?s ?p ?o } \n" +
-                          "    FILTER(REGEX(STR(?g), \"^" + baseURI + "\")) \n" +
-                          "}";
+                "    GRAPH ?g { } \n" +
+                "    FILTER(REGEX(STR(?g), \"^" + baseURI + "\")) \n" +
+                "}";
+//        String queryStr = "SELECT DISTINCT ?g WHERE { \n" +
+//                          "    GRAPH ?g { ?s ?p ?o } \n" +
+//                          "    FILTER(REGEX(STR(?g), \"^" + baseURI + "\")) \n" +
+//                          "}";
         ResultSet rs = endpoint.getResultSet(queryStr);
         while(rs.hasNext()) {
             QuerySolution qsoln = rs.next();

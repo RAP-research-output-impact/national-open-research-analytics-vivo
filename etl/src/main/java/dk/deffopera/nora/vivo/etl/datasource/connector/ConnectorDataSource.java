@@ -196,6 +196,7 @@ public abstract class ConnectorDataSource extends DataSourceBase {
             }
             if(activeEndpointForResults() && !skipClearingOldData) {
                 this.getStatus().setMessage("removing old data");
+                log.info("removing old data");
                 List<String> allVersionsOfSource = getGraphsWithBaseURI(graphURI, 
                         getSparqlEndpoint());
                 for(String version : allVersionsOfSource) {

@@ -1,3 +1,4 @@
+<#if publication?has_content>
 <#assign publication = publication[0]>
 <div class="publication-short-view" style="margin-bottom:2ex;"> 
     <div class="open-access" style="height:50px;width:32px;float:left;">
@@ -41,3 +42,4 @@
     </p>
     </div>
 </div>
+</#if>

@@ -276,15 +276,23 @@
 
   <#if bfiOai?has_content && bfiOai[0].type?has_content && (bfiOai[0].type == "Both" || bfiOai[0].type == "OA-Ind")>
     <h3>Danish Open Access Indicator</h3>
-    <#if bfiOai[0].oaiSubYear??>${bfiOai[0].oaiSubYear}</#if>
-    <#if bfiOai[0].oaiMri??>(${bfiOai[0].oaiMri}): </#if>
-    <#if bfiOai[0].oaiClass??>${bfiOai[0].oaiClass?cap_first}</#if>
+    <p>
+      <#if bfiOai[0].oaiSubYear??>${bfiOai[0].oaiSubYear}: </#if>
+      <#if bfiOai[0].oaiClass??>${bfiOai[0].oaiClass?cap_first}</#if>
+    </p>
+    <p>
+      <#if bfiOai[0].oaiMri??>Research area: ${bfiOai[0].oaiMri}</#if>
+    </p>
   </#if>
   <#if bfiOai?has_content && bfiOai[0].type?has_content && (bfiOai[0].type == "Both" || bfiOai[0].type == "BFI")>
     <h3>Danish Bibliometrics Indicator</h3>
-    <#if bfiOai[0].bfiSubYear??>${bfiOai[0].bfiSubYear}</#if>
-    <#if bfiOai[0].bfiMra??>(${bfiOai[0].bfiMra}): </#if>
-    <#if bfiOai[0].bfiLevel??>${bfiOai[0].bfiLevel}</#if>
+    <p>
+      <#if bfiOai[0].bfiSubYear??>${bfiOai[0].bfiSubYear}: </#if>
+      <#if bfiOai[0].bfiLevel??>${bfiOai[0].bfiLevel}</#if>
+    </p>
+    <p>
+      <#if bfiOai[0].bfiMra??>Research area: ${bfiOai[0].bfiMra}</#if>
+    </p>
   </#if>
 
 <#if funders?has_content>

@@ -340,15 +340,23 @@
 
       <#if bfiOai?has_content && bfiOai[0].type?has_content && (bfiOai[0].type == "Both" || bfiOai[0].type == "OA-Ind")>
         <h3>Danish Open Access Indicator</h3>
-	<#if bfiOai[0].oaiSubYear??>${bfiOai[0].oaiSubYear}</#if>
-	<#if bfiOai[0].oaiMra??>(${bfiOai[0].oaiMra}): </#if>
-	<#if bfiOai[0].oaiClass??>${bfiOai[0].oaiClass?cap_first}</#if>
+	<p>
+	  <#if bfiOai[0].oaiSubYear??>${bfiOai[0].oaiSubYear}: </#if>
+	  <#if bfiOai[0].oaiClass??>${bfiOai[0].oaiClass?cap_first}</#if>
+	</p>
+	<p>
+	  <#if bfiOai[0].oaiMra??>Research area: ${bfiOai[0].oaiMra}</#if>
+	</p>
       </#if>
       <#if bfiOai?has_content && bfiOai[0].type?has_content && (bfiOai[0].type == "Both" || bfiOai[0].type == "BFI")>
         <h3>Danish Bibliometrics Indicator</h3>
-	<#if bfiOai[0].bfiSubYear??>${bfiOai[0].bfiSubYear}</#if>
-	<#if bfiOai[0].bfiMra??>(${bfiOai[0].bfiMra}): </#if>
-	<#if bfiOai[0].bfiLevel??>Level ${bfiOai[0].bfiLevel}</#if>
+	<p>
+	  <#if bfiOai[0].bfiSubYear??>${bfiOai[0].bfiSubYear}: </#if>
+	  <#if bfiOai[0].bfiLevel??>Level ${bfiOai[0].bfiLevel}</#if>
+	</p>
+	<p>
+	  <#if bfiOai[0].bfiMra??>Research area: ${bfiOai[0].bfiMra}</#if>
+	</p>
       </#if>
       <#-- <p class='pv-metrics-src'><img src="https://38h6q83kpel22aipe0iux4i1-wpengine.netdna-ssl.com/wp-content/themes/dimensions-2019/dist/images/dimensions-logo-400x80.png" alt="Dimensions" width="150"/></p> -->
       <#if pubMeta[0].timesCited?? || pubMeta[0].fieldCitationRatio?? || pubMeta[0].relativeCitationRatio??>

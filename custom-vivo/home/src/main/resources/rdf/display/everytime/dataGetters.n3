@@ -915,7 +915,7 @@ WHERE {
       OPTIONAL { ?x nora:BFIOAItype ?type }
       OPTIONAL { ?x nora:BFI-Level ?bfiLevel }
       OPTIONAL { ?x nora:BFI-MRA ?bfiMra_
-                 BIND(REPLACE(REPLACE(REPLACE(STR(?bfiMra_), "^SUND$", "MED"), "^NAT/TEK$", "SCI"), "^SAM$", "SOC") AS ?bfiMra)
+                 BIND(REPLACE(REPLACE(REPLACE(REPLACE(STR(?bfiMra_), "^SUND$", "Medicine"), "^NAT/TEK$", "Science & Technology"), "^SAM$", "Social Sciences"), "HUM", "Humanities") AS ?bfiMra)
                }
       OPTIONAL { ?x nora:BFI-pub-year ?bfiPubYear }
       OPTIONAL { ?x nora:BFI-sub-year ?bfiSubYear }
@@ -923,7 +923,7 @@ WHERE {
                  BIND(REPLACE(STR(?oaiClass_), "[Uu]nclear", "Blocked") AS ?oaiClass)
                }
       OPTIONAL { ?x nora:OAI-MRA ?oaiMra_ 
-                 BIND(UCASE(STR(?oaiMra_)) AS ?oaiMra)
+                 BIND(REPLACE(REPLACE(REPLACE(REPLACE(UCASE(STR(?oaiMra_)), "MED", "Medicine"), "SCI", "Science & Technology"), "SOC", "Social Sciences"), "HUM", "Humanities") AS ?oaiMra)
                }
       OPTIONAL { ?x nora:OAI-pub-year ?oaiPubYear }
       OPTIONAL { ?x nora:OAI-sub-year ?oaiSubYear }
@@ -1071,9 +1071,12 @@ PREFIX abox:     <http://vivo.deffopera.dk/individual/>
 PREFIX vitro: <http://vitro.mannlib.cornell.edu/ns/vitro/public#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT ?abbreviation ?country ?continent ?web ?grid ?ror ?isni ?noraOrganisationType
+SELECT ?street ?abbreviation ?country ?continent ?web ?grid ?ror ?isni ?noraOrganisationType
 WHERE {
   ?individualURI a vivo:University
+  OPTIONAL {
+    ?individualURI nora:address ?street
+  }
   OPTIONAL {
     ?individualURI vivo:abbreviation ?abbreviation .
   } 

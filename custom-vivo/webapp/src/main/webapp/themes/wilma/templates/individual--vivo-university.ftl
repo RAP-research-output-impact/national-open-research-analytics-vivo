@@ -86,8 +86,8 @@ include "individual-setup.ftl" -->
             </#if>
 	</header>
     
-        <p>Street N/A</p>
         <#if universityMeta?has_content && universityMeta[0]?has_content>
+	  <#if universityMeta[0].street??><p>${universityMeta[0].street}</p></#if>
 	  <#if universityMeta[0].country??><p>Country:  ${universityMeta[0].country}</p></#if>
 	  <#if universityMeta[0].continent??><p>Continent: ${universityMeta[0].continent}</p></#if>
 	  <#if universityMeta[0].web??><p style="margin-top:1em;">Web: <a href="${universityMeta[0].web}" target="external">${universityMeta[0].web}</a></p></#if>

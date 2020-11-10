@@ -26,7 +26,8 @@
         a       vivo:Hospital .
 
 <http://vivo.deffopera.dk/individual/grid.32190.39>
-        a       vivo:University .
+        a       vivo:University ;
+        <http://vivo.deffopera.dk/ontology/osrap/address> "ued Langgaards Vej 7, 2300 København".
 
 <http://vivo.deffopera.dk/individual/grid.411646.0>
         a       vivo:Hospital .
@@ -59,7 +60,8 @@
         a       vivo:Hospital .
 
 <http://vivo.deffopera.dk/individual/grid.7048.b>
-        a       vivo:University .
+        a       vivo:University ;
+        <http://vivo.deffopera.dk/ontology/osrap/address> "Nordre Ringgade 1, 8000 Aarhus C".
 
 <http://vivo.deffopera.dk/individual/grid.416811.b>
         a       vivo:Hospital .
@@ -74,7 +76,8 @@
         a       vivo:Hospital .
 
 <http://vivo.deffopera.dk/individual/grid.5170.3>
-        a       vivo:University .
+        a       vivo:University ;
+        <http://vivo.deffopera.dk/ontology/osrap/address> "Anker Engelunds Vej 1, DK-2800 Kongens Lyngby".
 
 <http://vivo.deffopera.dk/individual/grid.452905.f>
         a       vivo:Hospital .
@@ -89,7 +92,8 @@
         a       vivo:Hospital .
 
 <http://vivo.deffopera.dk/individual/grid.4655.2>
-        a       vivo:University .
+        a       vivo:University ;
+        <http://vivo.deffopera.dk/ontology/osrap/address> "Solbjerg Pl. 3, 2000 Frederiksberg".
 
 <http://vivo.deffopera.dk/individual/grid.477812.f>
         a       vivo:Hospital .
@@ -140,13 +144,15 @@
         a       vivo:Hospital .
 
 <http://vivo.deffopera.dk/individual/grid.5117.2>
-        a       vivo:University .
+        a       vivo:University ;
+        <http://vivo.deffopera.dk/ontology/osrap/address> "Frederik Bajers Vej 7K, 9220 Aalborg Øst".
 
 <http://vivo.deffopera.dk/individual/grid.415677.6>
         a       vivo:Hospital .
 
 <http://vivo.deffopera.dk/individual/grid.5254.6>
-        a       vivo:University .
+        a       vivo:University ;
+        <http://vivo.deffopera.dk/ontology/osrap/address> "Nørregade 10, 1165 Københaven".
 
 <http://vivo.deffopera.dk/individual/grid.27530.33>
         a       vivo:Hospital .
@@ -155,10 +161,14 @@
         a       vivo:Hospital .
 
 <http://vivo.deffopera.dk/individual/grid.10825.3e>
-        a       vivo:University .
+        a       vivo:University ;
+        <http://vivo.deffopera.dk/ontology/osrap/address> "Campusvej 55, 5230 Odense".
+
 
 <http://vivo.deffopera.dk/individual/grid.11702.35>
-        a       vivo:University .
+        a       vivo:University ;
+        <http://vivo.deffopera.dk/ontology/osrap/address> "Universitetsvej 1, 4000 Roskilde".
+
 
 <http://vivo.deffopera.dk/individual/grid.414058.c>
         a       vivo:Hospital .

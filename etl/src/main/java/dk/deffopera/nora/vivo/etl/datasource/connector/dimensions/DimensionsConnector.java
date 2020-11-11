@@ -198,7 +198,7 @@ public class DimensionsConnector extends ConnectorDataSource
                 while(cursor.hasNext()) {
                     String jsonStr = cursor.next().toJson();
                     JSONObject json = new JSONObject(jsonStr);
-                    String defaultid = json.getJSONObject("meta").getString("id");
+                    String defaultid = json.getJSONObject("meta").getString("defaultid");
                     defaultids.add(defaultid);
                 }
             } finally {

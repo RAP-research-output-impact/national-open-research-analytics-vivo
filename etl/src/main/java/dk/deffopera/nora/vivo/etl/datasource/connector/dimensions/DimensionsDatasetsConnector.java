@@ -33,39 +33,15 @@ public class DimensionsDatasetsConnector extends DimensionsConnector {
     
     @Override
     protected IteratorWithSize<Model> getSourceModelIterator() {
-        return new GrantsIterator(this.mongoCollection);
+        return new DatasetsIterator(this.mongoCollection);
     }
     
-    protected class GrantsIterator extends MongoIterator implements IteratorWithSize<Model> {
-
-        private List<String> defaultids = new ArrayList<String>();
-        private Iterator<String> defaultidIt;        
+    protected class DatasetsIterator extends MongoIterator implements IteratorWithSize<Model> {
+       
         private int iteration = 0;
         
-        public GrantsIterator(MongoCollection<Document> collection) {
-            this.collection = collection;
-            try {
-                this.cursor = collection.find(Filters.eq("meta.raw.dbname", "datasets"))
-                        .projection(new Document("meta.defaultid", 1))
-                        .noCursorTimeout(true).iterator();
-                while(cursor.hasNext()) {
-                    String jsonStr = cursor.next().toJson();
-                    JSONObject json = new JSONObject(jsonStr);
-                    String defaultid = json.getJSONObject("meta").getString("defaultid");
-                    defaultids.add(defaultid);
-                }
-            } finally {
-                if(this.cursor != null) {
-                    cursor.close();
-                }
-            }
-            this.defaultidIt = defaultids.iterator();
-            log.info(defaultids.size() + " documents to retrieve");
-        }
-        
-        @Override
-        public boolean hasNext() {
-            return defaultidIt.hasNext();
+        public DatasetsIterator(MongoCollection<Document> collection) {
+            super(collection, "datasets");
         }
         
         @Override
@@ -76,7 +52,6 @@ public class DimensionsDatasetsConnector extends DimensionsConnector {
             int batch = MONGO_DOCS_PER_ITERATION;
             List<Bson> filters = new ArrayList<Bson>();
             while(batch > 0 && defaultidIt.hasNext()) {
-                //while(batch > 0 && cursor.hasNext()) {
                 batch--;
                 String defaultid = defaultidIt.next();
                 filters.add(Filters.eq("meta.defaultid", defaultid));

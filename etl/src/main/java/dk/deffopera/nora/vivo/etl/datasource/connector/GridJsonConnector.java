@@ -1,6 +1,7 @@
 package dk.deffopera.nora.vivo.etl.datasource.connector;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -14,6 +15,7 @@ import org.bson.conversions.Bson;
 import org.json.JSONObject;
 
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Filters;
 
 import dk.deffopera.nora.vivo.etl.datasource.IteratorWithSize;
@@ -49,14 +51,7 @@ public class GridJsonConnector extends DimensionsConnector {
         private int iteration = 0;
         
         public GridJsonIterator(MongoCollection<Document> collection) {
-            this.collection = collection;
-            ArrayList<Bson> bsons = new ArrayList<Bson>();
-            //for(String grid : ugrids.values()) {
-            //    bsons.add(Filters.eq("id", grid));
-            //}
-            //this.cursor = collection.find(Filters.or(bsons))
-            this.cursor = collection.find()
-                    .noCursorTimeout(true).iterator();
+            super(collection, null);
         }
         
         @Override
@@ -64,22 +59,31 @@ public class GridJsonConnector extends DimensionsConnector {
             iteration++;
             Model results = ModelFactory.createDefaultModel();
             int batch = MONGO_DOCS_PER_ITERATION;
-            while(batch > 0 && cursor.hasNext()) {
+            List<Bson> filters = new ArrayList<Bson>();
+            while(batch > 0 && defaultidIt.hasNext()) {
                 batch--;
-                //long start = System.currentTimeMillis();
-                //log.info("Getting next document from cursor");
-                Document d = cursor.next();
-                //log.info((System.currentTimeMillis() - start) + " ms to retrieve document");
-                String jsonStr = d.toJson();        
+                String defaultid = defaultidIt.next();
+                filters.add(Filters.eq("_id", defaultid));
+            }
+            log.info("RDFizing next batch of documents from MongoDB");
+            MongoCursor<Document> dcur = collection.find(Filters.or(filters)).iterator();
+            try {
+                while(dcur.hasNext()) {
+                    Document d = dcur.next();
+                    String jsonStr = d.toJson();       
                 if(iteration < 6) {
                     JSONObject fullJsonObj = new JSONObject(jsonStr);
                     log.info(fullJsonObj.toString(2));
                 }
                 results.add(toRdf(jsonStr));
-            }         
-            return results;
-        }          
-        
+                }
+                return results;
+            } finally {
+                if(dcur != null) {
+                    dcur.close();
+                }
+            }
+        }     
     }
     
     @Override

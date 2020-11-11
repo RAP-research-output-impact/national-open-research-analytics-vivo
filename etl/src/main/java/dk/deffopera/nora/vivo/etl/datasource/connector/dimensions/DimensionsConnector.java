@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -13,6 +14,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -160,8 +162,6 @@ public class DimensionsConnector extends ConnectorDataSource
             tokenObj = mapper.readTree(tokenJson);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
         return tokenObj.get("token").textValue();
     }
@@ -174,92 +174,107 @@ public class DimensionsConnector extends ConnectorDataSource
     protected class MongoIterator implements IteratorWithSize<Model> {
 
         protected MongoCollection<Document> collection;
-        protected MongoCursor<Document> cursor;
         protected int toRdfIteration = 0;
         protected int MONGO_DOCS_PER_ITERATION = 25;
+        private List<String> defaultids = new ArrayList<String>();
+        protected Iterator<String> defaultidIt; 
                
         protected MongoIterator() {}
         
         public MongoIterator(MongoCollection<Document> collection) {
+            this(collection, "publications");
+        }
+        
+        public MongoIterator(MongoCollection<Document> collection, String dbname) {
             this.collection = collection;
-            //Iterator<String> distincts = collection.distinct("meta.raw.type", String.class).iterator();
-            //while(distincts.hasNext()) {
-            //    String distinct = distincts.next();
-            //    log.info("type: " + distinct);
-            //}
-            cursor = collection.find(
-                    Filters.and(
-                            Filters.eq("meta.raw.dbname", "publications")
-                            //Filters.eq("meta.raw.type", "article"),  // TODO remove
-                            //Filters.exists("meta.raw.category_sdg")  // TODO remove
-                            //Filters.exists("meta.raw.author_affiliations", false)
-                            //Filters.eq("meta.raw.id", "pub.1100249993")
-                    )
-                 )
+            MongoCursor<Document> cursor = (dbname != null)  
+                ?    collection.find(Filters.eq("meta.raw.dbname", dbname))
+                    .projection(new Document("meta.defaultid", 1))
+                    .noCursorTimeout(true).iterator()
+                :    collection.find()
+                    .projection(new Document("_id", 1))
                     .noCursorTimeout(true).iterator();
+            try {
+                while(cursor.hasNext()) {
+                    String jsonStr = cursor.next().toJson();
+                    JSONObject json = new JSONObject(jsonStr);
+                    String defaultid = json.getJSONObject("meta").getString(dbname);
+                    defaultids.add(defaultid);
+                }
+            } finally {
+                if(cursor != null) {
+                    cursor.close();
+                }
+            }
+            this.defaultidIt = defaultids.iterator();
+            log.info(defaultids.size() + " documents to retrieve");
         }
         
         @Override
         public boolean hasNext() {
-            try {
-                return cursor.hasNext();
-            } catch (Exception e) {
-                // try again once in case Mongo needs to reestablish connection
-                return cursor.hasNext();
-            }
+            return defaultidIt.hasNext();
         }
 
         @Override
         public Model next() {
             Model results = ModelFactory.createDefaultModel();
+            long start = System.currentTimeMillis();
             int batch = MONGO_DOCS_PER_ITERATION;
-            while(batch > 0 && cursor.hasNext()) {
+            List<Bson> filters = new ArrayList<Bson>();
+            while(batch > 0 && defaultidIt.hasNext()) {
                 batch--;
-                long start = System.currentTimeMillis();
-                log.debug("Getting next document from cursor");
-                Document d = cursor.next();
-                log.debug((System.currentTimeMillis() - start) + " ms to retrieve document");
-                start = System.currentTimeMillis();
-                String jsonStr = d.toJson();   
-                JSONObject jsonObj = new JSONObject(jsonStr);
-                JSONObject fullJsonObj = jsonObj;
-                log.debug((System.currentTimeMillis() - start) + " ms to convert to JSON");
-                start = System.currentTimeMillis();
-                JSONObject meta = jsonObj.getJSONObject("meta");                
-                jsonObj = meta.getJSONObject("raw");
-                try {               
-                    if(jsonObj.has("authors")) {
-                        JSONArray authors = jsonObj.getJSONArray("authors");
-                        for(int authi = 0; authi < authors.length(); authi++) {
-                            JSONObject author = authors.getJSONObject(authi);
-                            author.put("authorRank", authi + 1);
-                        }                           
-                    }
-                } catch (JSONException e) {
-                    log.info(jsonObj.toString(2));
-                    throw (e);
-                }
-                //long start2 = System.currentTimeMillis();
-                //addDDFGrids(jsonObj);
-                //log.debug((System.currentTimeMillis() - start2) + " ms to retrieve DDF grids");
-                if(log.isDebugEnabled()) {
-                    log.debug(jsonObj.toString(2));
-                }                                
-                if(toRdfIteration < MONGO_DOCS_PER_ITERATION) {
-                  log.info(fullJsonObj.toString(2));
-                }
-                log.debug((System.currentTimeMillis() - start) + " ms to preprocess JSON");
-                start = System.currentTimeMillis();
-                Model rdf = toRdf(fullJsonObj.toString());
-                if(toRdfIteration < MONGO_DOCS_PER_ITERATION) {
-                    //StringWriter out = new StringWriter();
-                    //rdf.write(out, "TTL");
-                    //log.info(out.toString());
-                }
-                results.add(rdf);
-                log.debug((System.currentTimeMillis() - start) + " ms to convert to RDF");
+                String defaultid = defaultidIt.next();
+                filters.add(Filters.eq("meta.defaultid", defaultid));
             }
-            return results;
+            log.info("RDFizing next batch of documents from MongoDB");
+            MongoCursor<Document> dcur = collection.find(Filters.or(filters)).iterator();
+            try {
+                while(dcur.hasNext()) {
+                    Document d = dcur.next();
+                    String jsonStr = d.toJson();   
+                    JSONObject fullJsonObj = new JSONObject(jsonStr);
+                    log.debug((System.currentTimeMillis() - start) + " ms to convert to JSON");
+                    start = System.currentTimeMillis();
+                    JSONObject meta = fullJsonObj.getJSONObject("meta");                
+                    JSONObject jsonObj = meta.getJSONObject("raw");
+                    try {               
+                        if(jsonObj.has("authors")) {
+                            JSONArray authors = jsonObj.getJSONArray("authors");
+                            for(int authi = 0; authi < authors.length(); authi++) {
+                                JSONObject author = authors.getJSONObject(authi);
+                                author.put("authorRank", authi + 1);
+                            }                           
+                        }
+                    } catch (JSONException e) {
+                        log.info(jsonObj.toString(2));
+                        throw (e);
+                    }
+                    //long start2 = System.currentTimeMillis();
+                    //addDDFGrids(jsonObj);
+                    //log.debug((System.currentTimeMillis() - start2) + " ms to retrieve DDF grids");
+                    if(log.isDebugEnabled()) {
+                        log.debug(jsonObj.toString(2));
+                    }                                
+                    if(toRdfIteration < MONGO_DOCS_PER_ITERATION) {
+                        log.info(fullJsonObj.toString(2));
+                    }
+                    log.debug((System.currentTimeMillis() - start) + " ms to preprocess JSON");
+                    start = System.currentTimeMillis();
+                    Model rdf = toRdf(fullJsonObj.toString());
+                    if(toRdfIteration < MONGO_DOCS_PER_ITERATION) {
+                        //StringWriter out = new StringWriter();
+                        //rdf.write(out, "TTL");
+                        //log.info(out.toString());
+                    }
+                    results.add(rdf);
+                }
+                log.info((System.currentTimeMillis() - start) + " ms to RDFize batch of documents");
+                return results;
+            } finally {
+                if(dcur != null) {
+                    dcur.close();
+                }
+            }
         }
         
         private void addDDFGrids(JSONObject json) {
@@ -309,10 +324,6 @@ public class DimensionsConnector extends ConnectorDataSource
 
         @Override
         public void close() {
-            if(cursor != null) {
-                log.info("Closing iterator");
-                cursor.close();
-            }
             if(mongoClient != null) {
                 log.info("Closing Mongo client");
                 mongoClient.close();
@@ -344,6 +355,7 @@ public class DimensionsConnector extends ConnectorDataSource
         List<String> queries = Arrays.asList(
                 //"050-orcidId.rq",
                 "100-publicationTypes.rq",
+                "109-publicationId.rq",
                 "110-publicationMetadata.rq"
                 //"115-abstract.rq"
                 );
@@ -377,6 +389,7 @@ public class DimensionsConnector extends ConnectorDataSource
                 "215-sdg.rq",
                 "220-openAccess.rq",
                 "230-funding.rq",
+                "235-funders.rq",
                 "240-references.rq"
                 );
         for(String query : queries) {

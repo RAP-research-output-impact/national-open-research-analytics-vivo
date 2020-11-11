@@ -122,6 +122,7 @@ public class SparqlEndpoint {
                             "returned " + status + " redirect status. " +
                             "Redirection is not supported.");
                 } else if (status >= 400) {
+		    log.error("Response 400: \n" + content);
                     throw new RuntimeException("Status " + status + 
                             " from SPARQL endpoint: \n" + content);
                 } else {
@@ -244,13 +245,16 @@ public class SparqlEndpoint {
             }
             HttpResponse response = httpClient.execute(post);
             try {
-            int result = response.getStatusLine().getStatusCode();
+                String content = stringFromInputStream(
+                        response.getEntity().getContent());
+                int result = response.getStatusLine().getStatusCode();
                 if (result == 403) {
                     throw new RuntimeException(
-                            "VIVO forbid update with the supplied " +
+                            "VIVO forbade update with the supplied " +
                             "username and password.  Update unsuccessful.");
                 } else if (result > 200) {
                     log.error("Error code " + result + " processing update \n" + updateString);
+		    log.error(content);
                     throw new RuntimeException("VIVO responded with error code " + 
                             result + ". Update unsuccessful. ");
                 }

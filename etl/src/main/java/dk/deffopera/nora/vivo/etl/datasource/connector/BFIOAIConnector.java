@@ -15,6 +15,7 @@ import org.apache.jena.rdf.model.Statement;
 import org.apache.jena.vocabulary.RDF;
 import org.bson.Document;
 import org.bson.conversions.Bson;
+import org.bson.types.ObjectId;
 import org.json.JSONObject;
 
 import com.mongodb.client.MongoCollection;
@@ -66,7 +67,7 @@ public class BFIOAIConnector extends DimensionsConnector {
             while(batch > 0 && defaultidIt.hasNext()) {
                 batch--;
                 String defaultid = defaultidIt.next();
-                filters.add(Filters.eq("_id", defaultid));
+                filters.add(Filters.eq("_id", new ObjectId(defaultid)));
             }
             log.info("RDFizing next batch of documents from MongoDB");
             MongoCursor<Document> dcur = collection.find(Filters.or(filters)).iterator();

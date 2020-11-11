@@ -726,16 +726,18 @@ PREFIX owl:      <http://www.w3.org/2002/07/owl#>
 PREFIX obo:      <http://purl.obolibrary.org/obo/>
 PREFIX bibo:     <http://purl.org/ontology/bibo/>
 PREFIX foaf:     <http://xmlns.com/foaf/0.1/>
+PREFIX nora:    <http://vivo.deffopera.dk/ontology/osrap/>
 PREFIX vitro:    <http://vitro.mannlib.cornell.edu/ns/vitro/0.7#>
 PREFIX vivo:     <http://vivoweb.org/ontology/core#>
 
 SELECT DISTINCT 
     ?org ?orgName
 WHERE {
-    ?individualURI obo:BFO_0000055 ?role .
-    ?role a obo:ERO_0000224 . # FundingRole
-    ?role obo:RO_0000052 ?org .
-    ?role obo:BFO_0000054 ?clinicalTrial .
+    #?individualURI obo:BFO_0000055 ?role .
+    #?role a obo:ERO_0000224 . # FundingRole
+    #?role obo:RO_0000052 ?org .
+    #?role obo:BFO_0000054 ?clinicalTrial .
+    ?individualURI nora:sponsorCollaborator ?org .
     ?org a foaf:Organization .
     ?org rdfs:label ?orgName .
 }       

@@ -26,6 +26,7 @@ PREFIX abox:     <http://vivo.deffopera.dk/individual/>
 
 CONSTRUCT {
     ?x osrap:relatedToOrganization ?org .
+    ?x osrap:sponsorCollaborator ?org .
 } WHERE {
     ?x g:research_orgs ?researchOrg .
     ?researchOrg g:name ?name .

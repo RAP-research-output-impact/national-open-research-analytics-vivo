@@ -105,7 +105,7 @@
 
     <article class="n_card">
       <a href="" class="n_c-link-img">
-        <img class="n_c-img" src="${urls.theme}/images/univ_profiles.png" alt="">
+        <img class="n_c-img" src="${urls.theme}/images/open_researcher_profiles.png" alt="">
       </a>
       <div class="n_c-content">
         <a class="n_c-linkTitle" href=""><h3>Open Researcher Profile &mdash; Prototype</h3></a>

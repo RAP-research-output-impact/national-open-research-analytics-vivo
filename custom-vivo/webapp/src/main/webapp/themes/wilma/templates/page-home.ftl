@@ -35,7 +35,7 @@
   <div class="n_cards">
     <article class="n_card">
       <a href="${urls.base}/search?searchMode=all" class="n_c-link-img">
-        <img class="n_c-img" height="220" width="600" src="https://www.biosustain.dtu.dk/-/media/Andre_Universitetsenheder/Bibliotek/foto/Boeger2.ashx?mw=700&hash=1F7FE26E4903121CD49458449F8AD2BD686444F2" alt="search"> 
+        <img class="n_c-img" src="${urls.theme}/images/search.png" alt="search"> 
       </a>
       <div class="n_c-content">
         <a class="n_c-linkTitle" href="${urls.base}/search?searchMode=all"><h3>Search</h3></a>

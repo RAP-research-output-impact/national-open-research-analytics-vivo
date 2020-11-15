@@ -1,4 +1,4 @@
-<#if patent?has_content>
+<#if patentDetails?has_content>
 <#assign patent = patentDetails[0]>
 <div class="publication-short-view" style="margin-bottom:2ex;"> 
     <div class="publication-short-view-details" style="margin-left:32px;">

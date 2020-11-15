@@ -67,6 +67,8 @@
         WHERE {
             ?uri vitro:mostSpecificType ?type 
 	    FILTER (?type != bibo:Journal)
+	    FILTER (?type != bibo:Patent)
+	    FILTER (?type != vivo:Dataset)
         }
     """ .
 

@@ -375,19 +375,30 @@
       <#if doi?has_content>
         <div id="altmetrics" style="display:none;">
 	  <h3>Altmetric Social Media Indicators</h3>
-          <p>Attention: <span id="altmetricScore"></span><p>
-          <p>News: <span id="altmetricNews"></span><p>
-          <p>Twitter: <span id="altmetricTwitter"></span><p>
-          <p>Mendeley: <span id="altmetricMendeley"></span><p>
+          <div class="individual-altmetric-badge" style="padding-top:0.5em;">
+                <div class="altmetric-embed" 
+                     data-badge-type="donut"
+                     data-badge-popover="top"
+                     data-hide-no-mentions="true"
+                     data-link-target="_blank"
+                     data-doi="${doi}">
+                </div>
+          </div>
+          <p>Attention: <a target="_blank" id="altmetricScore"></a><p>
+          <p>News: <a target="_blank" id="altmetricNews"></a><p>
+          <p>Twitter: <a target="_blank" id="altmetricTwitter"></a><p>
+          <p>Mendeley: <a target="_blank" id="altmetricMendeley"></a><p>
 	</div>
         <script type="text/javascript">
           fetchAltmetrics("https://api.altmetric.com/v1/doi/${doi}");
 
 	  function updateSidebar(json) {
-	       if('score' in json) { $("#altmetricScore").text(json.score); }
-	       if('cited_by_msm_count' in json) { $("#altmetricNews").text(json.cited_by_msm_count); }
-	       if('cited_by_tweeters_count' in json) { $("#altmetricTwitter").text(json.cited_by_tweeters_count); }
-	       if('readers' in json && 'mendeley' in json.readers) { $("#altmetricMendeley").text(json.readers.mendeley); }
+               var altmetric_id = json.altmetric_id;
+               var altmetric_base = "https://www.altmetric.com/details/";
+	       if('score' in json) { $("#altmetricScore").text(json.score); $("#altmetricScore").attr("href", altmetric_base + altmetric_id); }
+	       if('cited_by_msm_count' in json) { $("#altmetricNews").text(json.cited_by_msm_count); $("#altmetricNews").attr("href", altmetric_base + altmetric_id + "/news"); }
+	       if('cited_by_tweeters_count' in json) { $("#altmetricTwitter").text(json.cited_by_tweeters_count); $("#altmetricTwitter").attr("href", altmetric_base + altmetric_id + "/twitter"); }
+	       if('readers' in json && 'mendeley' in json.readers) { $("#altmetricMendeley").text(json.readers.mendeley); $("#altmetricMendeley").attr("href", altmetric_base + altmetric_id + "#mendeley-demographics"); }
 	       $("#altmetrics").show();
 	  }
 

@@ -343,13 +343,16 @@ footer {
   justify-content: space-around;
 }
 .n_card a {
-  height: 140px;
+  height: 152px;
+}
+.n_card h3 {
+  padding: 2ex 0 0 0.5ex;
 }
 .n_card {
   width: 300px;
   height: 180px;
   margin-bottom: 0px;
-  padding:20px;
+  padding: 10px 20px 20px 20px;
   -webkit-box-shadow: 0 4px 3px 0 rgba(0,0,0,.1);
   -moz-box-shadow: 0 4px 3px 0 rgba(0,0,0,.1);
   box-shadow: 0 4px 3px 0 rgba(0,0,0,.1);
@@ -360,7 +363,7 @@ footer {
 .n_c-img {
   display: inline-block;
   width: 100%;
-  height: 150px;
+  height: 169px;
 }
 .n_c-content {
   /* padding: 16px; */

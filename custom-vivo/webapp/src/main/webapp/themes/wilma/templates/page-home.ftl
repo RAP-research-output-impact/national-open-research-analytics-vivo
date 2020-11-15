@@ -35,7 +35,7 @@
   <div class="n_cards">
     <article class="n_card">
       <a href="${urls.base}/search?searchMode=all" class="n_c-link-img">
-        <img class="n_c-img" src="${urls.theme}/images/search.png" alt="search"> 
+        <img class="n_c-img" height="225" width="300" src="${urls.theme}/images/search.png" alt="search"> 
       </a>
       <div class="n_c-content">
         <a class="n_c-linkTitle" href="${urls.base}/search?searchMode=all"><h3>Search</h3></a>
@@ -55,7 +55,7 @@
 
     <article class="n_card">
       <a href="${urls.base}/SDGdash" class="n_c-link-img">
-        <img class="n_c-img" src="${urls.theme}/images/SDGs.png" alt="">
+        <img class="n_c-img" src="${urls.theme}/images/SDGs2.png" alt="">
       </a>
       <div class="n_c-content">
         <a class="n_c-linkTitle" href="${urls.base}/SDGdash"><h3>Sustainable Development Goals</h3></a>
@@ -65,7 +65,7 @@
 
     <article class="n_card">
       <a href="${urls.base}/intlcollabs" class="n_c-link-img">
-        <img class="n_c-img" src="${urls.theme}/images/international_collabs.png" alt="">
+        <img class="n_c-img" src="${urls.theme}/images/international_collabs2.png" alt="">
       </a>
       <div class="n_c-content">
         <a class="n_c-linkTitle" href="{urls.base}/intlcollabs"><h3>International Collaborations</h3></a>
@@ -85,7 +85,7 @@
 
     <article class="n_card">
       <a href="${urls.base}/sciencemap" class="n_c-link-img">
-        <img class="n_c-img" src="${urls.theme}/images/network_views.png" alt="">
+        <img class="n_c-img" src="${urls.theme}/images/map_of_science.png" alt="">
       </a>
       <div class="n_c-content">
         <a class="n_c-linkTitle" href="${urls.base}/sciencemap"><h3>Map of Science</h3></a>
@@ -95,7 +95,7 @@
 
     <article class="n_card">
       <a href="${urls.base}/collabmap" class="n_c-link-img">
-        <img class="n_c-img" src="${urls.theme}/images/network_views.png" alt="">
+        <img class="n_c-img" src="${urls.theme}/images/collaboration_map.png" alt="">
       </a>
       <div class="n_c-content">
         <a class="n_c-linkTitle" href="${urls.base}/collabmap"><h3>Collaboration Map</h3></a>
@@ -104,18 +104,8 @@
     <!-- end .n_card -->
 
     <article class="n_card">
-      <a href="${urls.base}/about" class="n_c-link-img">
-        <img class="n_c-img" src="https://www.biosustain.dtu.dk/-/media/Andre_Universitetsenheder/Bibliotek/foto/Boeger2.ashx?mw=700&hash=1F7FE26E4903121CD49458449F8AD2BD686444F2" alt="">
-      </a>
-      <div class="n_c-content">
-        <a class="n_c-linkTitle" href="${urls.base}/about"><h3>About NORA</h3></a>
-      </div>
-    </article>
-    <!-- end .n_card -->
-
-    <article class="n_card">
       <a href="" class="n_c-link-img">
-        <img class="n_c-img" src="${urls.theme}/images/univ_profiles.png" alt="">
+        <img class="n_c-img" src="${urls.theme}/images/open_researcher_profiles.png" alt="">
       </a>
       <div class="n_c-content">
         <a class="n_c-linkTitle" href=""><h3>Open Researcher Profile &mdash; Prototype</h3></a>
@@ -123,6 +113,15 @@
     </article>
     <!-- end .n_card -->
 
+    <article class="n_card">
+      <a href="${urls.base}/about" class="n_c-link-img">
+        <img class="n_c-img" src="${urls.theme}/images/about_nora.png" alt="">
+      </a>
+      <div class="n_c-content">
+        <a class="n_c-linkTitle" href="${urls.base}/about"><h3>About NORA</h3></a>
+      </div>
+    </article>
+    <!-- end .n_card -->
  
  </div>
   <!-- end .n-cards -->

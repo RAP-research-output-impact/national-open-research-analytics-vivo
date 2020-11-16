@@ -8,6 +8,8 @@
         <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#hasDataGetter> 
                  <http://vitro.mannlib.cornell.edu/ns/default#fundersDataGetter> ;
         <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#hasDataGetter> 
+                 <http://vitro.mannlib.cornell.edu/ns/default#otherAssociatedUniversitiesDataGetter> ;
+        <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#hasDataGetter> 
                  <http://vitro.mannlib.cornell.edu/ns/default#countriesDataGetter> ,
                  <http://vitro.mannlib.cornell.edu/ns/default#continentsDataGetter> .
 <freemarker:individual--vivo-dataset.ftl> 
@@ -1011,6 +1013,43 @@ WHERE {
     """ ;                
     <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#saveToVar>
                 "patentMeta" .
+
+<http://vitro.mannlib.cornell.edu/ns/default#otherAssociatedUniversitiesDataGetter>
+        a       <java:edu.cornell.mannlib.vitro.webapp.utils.dataGetter.SparqlQueryDataGetter> ;
+        <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#query> """
+        PREFIX vivo: <http://vivoweb.org/ontology/core#>
+        PREFIX wos: <http://webofscience.com/ontology/wos#>
+        PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+        PREFIX bibo:   <http://purl.org/ontology/bibo/>
+        PREFIX nora:    <http://vivo.deffopera.dk/ontology/osrap/>
+        PREFIX obo: <http://purl.obolibrary.org/obo/>
+        PREFIX abox:     <http://vivo.deffopera.dk/individual/>
+        SELECT DISTINCT ?university ?universityName
+        WHERE {
+          {
+            ?uri bibo:doi ?doi .
+            ?ddf nora:doi ?doi .
+            ?ddf a nora:DDF .
+            ?ddf nora:grid ?grid .
+            BIND(IRI(CONCAT(STR(abox:), ?grid)) AS ?university)
+            ?university a vivo:University .
+          } UNION {
+            ?uri nora:relatedToOrganization ?university .
+            ?university a vivo:University .
+          } UNION {
+            ?uri nora:relatedToOrganizationByDdfDoi ?university .
+            ?university a vivo:University .
+          }
+          FILTER NOT EXISTS {
+            ?authorship vivo:relates ?uri .
+            ?authorship a vivo:Authorship .
+            ?authorship nora:relatedToOrganization ?university .
+            ?university a vivo:University .
+          }
+       }
+""" ;                
+    <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#saveToVar>
+                "otherAssociatedUniversities" .
 
 <http://vitro.mannlib.cornell.edu/ns/default#assigneesDataGetter>
         a       <java:edu.cornell.mannlib.vitro.webapp.utils.dataGetter.SparqlQueryDataGetter> ;

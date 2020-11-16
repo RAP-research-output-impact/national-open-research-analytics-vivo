@@ -334,6 +334,7 @@
 
       <#if universityExists?? || otherAssociatedUniversities?has_content>
       <h3>NORA University Profiles</h3>
+      <#if universityExists??>
       <#list authorAffiliations as authorAffiliation>
         <#if authorAffiliation.affiliation?has_content && authorAffiliation.affiliationName?has_content>
           <#if authorAffiliation.grid?has_content>
@@ -343,11 +344,14 @@
           </#if>
         </#if>
       </#list>
+      </#if>
+      <#if otherAssociatedUniversities?has_content>
       <#list otherAssociatedUniversities as otherUni>
         <#if otherUni.university?has_content && otherUni.universityName?has_content>
               <p><a href="${profileUrl(otherUni.university)}">${otherUni.universityName}</a></p>
         </#if>
       </#list>
+      </#if>
 
     </#if>
 

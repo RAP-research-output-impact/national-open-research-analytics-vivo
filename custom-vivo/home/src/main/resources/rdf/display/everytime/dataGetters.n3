@@ -275,17 +275,17 @@ PREFIX foaf:     <http://xmlns.com/foaf/0.1/>
 PREFIX vitro:    <http://vitro.mannlib.cornell.edu/ns/vitro/0.7#>
 PREFIX vivo:     <http://vivoweb.org/ontology/core#>
 
-SELECT ?funder ?funderLabel
+SELECT ?funder (MIN(?funderLabel_) AS ?funderLabel)
 WHERE {
   {
     ?individualURI <http://vivo.deffopera.dk/ontology/osrap/funder> ?funder .
-    ?funder rdfs:label ?funderLabel
+    ?funder rdfs:label ?funderLabel_
   } UNION {
     # TODO harmonize these two versions at source
     ?individualURI <http://vivo.deffopera.dk/ontology/osrap/hasFunder> ?funder .
-    ?funder rdfs:label ?funderLabel
+    ?funder rdfs:label ?funderLabel_
   }
-} 
+} GROUP BY ?funder
     """ ;                
     <http://vitro.mannlib.cornell.edu/ontologies/display/1.1#saveToVar>
                 "funders" .

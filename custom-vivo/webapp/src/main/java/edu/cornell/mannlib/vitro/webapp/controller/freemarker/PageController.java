@@ -59,12 +59,12 @@ public class PageController extends FreemarkerHttpServlet{
     protected AuthorizationRequest requiredActions(VitroRequest vreq) {
         try {
             // RAP modification : default to unauthorized for all pages if not logged in
-            if(!LoginStatusBean.getBean(vreq).isLoggedIn()) {
-                return UNAUTHORIZED;
-            } else {
+            //if(!LoginStatusBean.getBean(vreq).isLoggedIn()) {
+            //    return UNAUTHORIZED;
+            //} else {
 	        return AUTHORIZED.and(getActionsForPage(vreq)).and(
                                       getActionsForDataGetters(vreq));
-            }
+            //}
         } catch (Exception e) {
             log.warn(e);
             return UNAUTHORIZED;

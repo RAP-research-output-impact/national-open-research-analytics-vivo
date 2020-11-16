@@ -212,13 +212,13 @@ public class FreemarkerHttpServlet extends VitroHttpServlet  {
      */    
     protected AuthorizationRequest requiredActions(VitroRequest vreq) {
 	// RAP modification : default to unauthorized for all pages if not logged in 
-	if(LoginStatusBean.getBean(vreq).isLoggedIn()) {
-	    log.info("Authorizing because logged in");
+	//if(LoginStatusBean.getBean(vreq).isLoggedIn()) {
+	//    log.info("Authorizing because logged in");
             return AUTHORIZED;
-	} else {
-	    log.info("Defaulting to unauthorized");
-	    return UNAUTHORIZED;
-	}
+	//} else {
+	//    log.info("Defaulting to unauthorized");
+	//    return UNAUTHORIZED;
+	//}
     }
     
     // Subclasses will override

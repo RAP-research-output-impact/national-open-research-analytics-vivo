@@ -153,13 +153,13 @@
       <#if !grantAffiliation.type?has_content>
         <li>(${grantAffiliation?index + 1}) ${grantAffiliation.affiliationName}, ${grantAffiliation.grid}</li>
       <#else>
-          <li>(${grantAffiliation?index + 1}) <a href="${urls.base}/search?searchMode=grants&facet_${grantAffiliation.type!organization}_ss=${grantAffiliation.affiliation?url}">${grantAffiliation.affiliationName}, ${grantAffiliation.grid}<#if grantAffiliation.affiliationAbbreviation??>, ${grantAffiliation.affiliationAbbreviation}</#if></a></li>
+          <li>(${grantAffiliation?index + 1}) <a href="${urls.base}/search?facet_content-type_ss=grants&facet_${grantAffiliation.type!organization}_ss=${grantAffiliation.affiliation?url}">${grantAffiliation.affiliationName}, ${grantAffiliation.grid}<#if grantAffiliation.affiliationAbbreviation??>, ${grantAffiliation.affiliationAbbreviation}</#if></a></li>
       </#if>
     <#else>
       <#if !grantAffiliation.type?has_content>
         <li>(${grantAffiliation?index + 1}) ${grantAffiliation.affiliationName}</li>
       <#else>
-          <li>(${grantAffiliation?index + 1}) <a href="${urls.base}/search?searchMode=grants&facet_${grantAffiliation.type!organization}_ss=${grantAffiliation.affiliation?url}">${grantAffiliation.affiliationName}</a></li>
+          <li>(${grantAffiliation?index + 1}) <a href="${urls.base}/search?facet_content-type_ss=grants&facet_${grantAffiliation.type!organization}_ss=${grantAffiliation.affiliation?url}">${grantAffiliation.affiliationName}</a></li>
       </#if>
     </#if>
   </#if>
@@ -172,7 +172,7 @@
 <h3>Research Organisations</h3>
 <ul>
 <#list researchOrgs as researchOrg>
-  <li><a href="${urls.base}/search?searchMode=grants&facet_organization_ss=${researchOrg.researchOrg?url}">${researchOrg.researchOrgLabel}<#if researchOrg.researchOrgGrid??>, ${researchOrg.researchOrgGrid}</#if><#if researchOrg.researchOrgAbbreviation??>, ${researchOrg.researchOrgAbbreviation}</#if></a></li>
+  <li><a href="${urls.base}/search?facet_content-type_ss=grants&facet_organization_ss=${researchOrg.researchOrg?url}">${researchOrg.researchOrgLabel}<#if researchOrg.researchOrgGrid??>, ${researchOrg.researchOrgGrid}</#if><#if researchOrg.researchOrgAbbreviation??>, ${researchOrg.researchOrgAbbreviation}</#if></a></li>
 </#list>
 </ul>
 </#if>
@@ -216,9 +216,9 @@
         <p style="margin-bottom:0.1em;"><a href="${profileUrl(supportedPublication.publication)}">${supportedPublication.label}</a></p>
 	<#if supportedPublication.year?? || supportedPublication.journal?? || supportedPublication.type??>
 	  <p style="margin-bottom:0.1em;">
-             <#if supportedPublication.year??><a href="${urls.base}/search?searchModel=all&facet_year_ss=${supportedPublication.year}">${supportedPublication.year}</a>, </#if> 
-             <#if supportedPublication.journal??><a href="${urls.base}/search?searchModel=all&facet_journal_ss=${supportedPublication.journalObj?url}">${supportedPublication.journal}</a>, </#if> 
-             <#if supportedPublication.type??><a href="${urls.base}/search?searchModel=all&facet_document-type_ss=${supportedPublication.type?url}">${supportedPublication.typeLabel}</a></#if>
+             <#if supportedPublication.year??><a href="${urls.base}/search?searchMode=all&facet_year_ss=${supportedPublication.year}">${supportedPublication.year}</a>, </#if> 
+             <#if supportedPublication.journal??><a href="${urls.base}/search?searchMode=all&facet_journal_ss=${supportedPublication.journalObj?url}">${supportedPublication.journal}</a>, </#if> 
+             <#if supportedPublication.type??><a href="${urls.base}/search?searchMode=all&facet_document-type_ss=${supportedPublication.type?url}">${supportedPublication.typeLabel}</a></#if>
 	  </p>
 	</#if>
     </li>
@@ -262,9 +262,9 @@
       <h3>Funding information</h3>
       <#if grantMeta[0].startYear??>
         <p>Funding period: 	
-        <span class="pub_meta-value"><a href="${urls.base}/search?searchMode=grants&facet_start-year_ss=${grantMeta[0].startYear}">
+        <span class="pub_meta-value"><a href="${urls.base}/search?facet_content-type_ss=grants&facet_start-year_ss=${grantMeta[0].startYear}">
 	    ${grantMeta[0].startYear}</a><#if grantMeta[0].endYear??>-<a 
-	    href="${urls.base}/search?searchMode=grants&facet_start-year_ss=${grantMeta[0].endYear}">${grantMeta[0].endYear}</a></#if>
+	    href="${urls.base}/search?facet_content-type_ss=grants&facet_start-year_ss=${grantMeta[0].endYear}">${grantMeta[0].endYear}</a></#if>
 	</span>
 	</p>
       </#if>
@@ -302,7 +302,7 @@
     <p>Fields of Research</p>
     <ul class="one-line-list">
       <#list researchCategoriesFOR as researchCategory>
-        <li role="list-item"><a href="${urls.base}/search?searchMode=grants&facet_research-category_ss=${researchCategory.researchCategory?url}">${researchCategory.researchCategoryName}</a></li>
+        <li role="list-item"><a href="${urls.base}/search?facet_content-type_ss=grants&facet_research-category_ss=${researchCategory.researchCategory?url}">${researchCategory.researchCategoryName}</a></li>
       </#list>
     </ul>
   </div>
@@ -313,7 +313,7 @@
     <p>Sustainable Development Goals</p>
     <ul class="one-line-list">
       <#list researchCategoriesSDG as researchCategory>
-        <li role="list-item"><a href="${urls.base}/search?searchMode=grants&facet_sdg_ss=${researchCategory.researchCategory?url}">${researchCategory.researchCategoryName}</a></li>
+        <li role="list-item"><a href="${urls.base}/search?facet_content-type_ss=grants&facet_sdg_ss=${researchCategory.researchCategory?url}">${researchCategory.researchCategoryName}</a></li>
       </#list>
     </ul>
   </div>

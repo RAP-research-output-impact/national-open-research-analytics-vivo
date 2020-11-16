@@ -106,10 +106,10 @@
 <!-- journal -->
 <#assign publishedIn = pg.getProperty(vivo + "hasPublicationVenue")!>
 <#if publishedIn?? && publishedIn.statements?? && publishedIn.statements[0]??>
-  <span class="pub_meta"><a href="${urls.base}/search?searchMode=publications&facet_journal_ss=${publishedIn.statements[0].object?url}">${publishedIn.statements[0].label}</a>, </span>
+  <span class="pub_meta"><a href="${urls.base}/search?searchMode=all&facet_journal_ss=${publishedIn.statements[0].object?url}">${publishedIn.statements[0].label}</a>, </span>
 </#if>
 <#if pubMeta[0].publisher??>
-  <span class="pub_meta"><a href="${urls.base}/search?searchMode=publications&facet_publisher_ss=${pubMeta[0].publisher?url}">${pubMeta[0].publisherName}</a>, </span>
+  <span class="pub_meta"><a href="${urls.base}/search?facet_content-type_ss=searchMode=all&facet_publisher_ss=${pubMeta[0].publisher?url}">${pubMeta[0].publisherName}</a>, </span>
 </#if>
 
 
@@ -129,7 +129,7 @@
    <p>Original:</p>
    <ul>
    <#list assigneesOriginal as assigneeOriginal>
-     <li><a href="${urls.base}/search?searchMode=patents&facet_original-assignee_ss=${assigneeOriginal.assigneeOriginal?url}">${assigneeOriginal.assigneeOriginalName}<#if assigneeOriginal.assigneeOriginalAbbreviation??>, ${assigneeOriginal.assigneeOriginalAbbreviation}</#if></a></li>
+     <li><a href="${urls.base}/search?searchMode=all&facet_original-assignee_ss=${assigneeOriginal.assigneeOriginal?url}">${assigneeOriginal.assigneeOriginalName}<#if assigneeOriginal.assigneeOriginalAbbreviation??>, ${assigneeOriginal.assigneeOriginalAbbreviation}</#if></a></li>
    </#list>
    </ul> 
   </#if>
@@ -165,13 +165,13 @@
       <#if !authorAffiliation.type?has_content>
         <li>(${authorAffiliation?index + 1}) ${authorAffiliation.affiliationName}, ${authorAffiliation.grid}</li>
       <#else>
-          <li>(${authorAffiliation?index + 1}) <a href="${urls.base}/search?searchMode=publications&facet_${authorAffiliation.type!organization}_ss=${authorAffiliation.affiliation?url}">${authorAffiliation.affiliationName}, ${authorAffiliation.grid}<#if authorAffiliation.affiliationAbbreviation??>, ${authorAffiliation.affiliationAbbreviation}</#if></a></li>
+          <li>(${authorAffiliation?index + 1}) <a href="${urls.base}/search?searchMode=all&facet_${authorAffiliation.type!organization}_ss=${authorAffiliation.affiliation?url}">${authorAffiliation.affiliationName}, ${authorAffiliation.grid}<#if authorAffiliation.affiliationAbbreviation??>, ${authorAffiliation.affiliationAbbreviation}</#if></a></li>
       </#if>
     <#else>
       <#if !authorAffiliation.type?has_content>
         <li>(${authorAffiliation?index + 1}) ${authorAffiliation.affiliationName}</li>
       <#else>
-          <li>(${authorAffiliation?index + 1}) <a href="${urls.base}/search?searchMode=publications&facet_${authorAffiliation.type!organization}_ss=${authorAffiliation.affiliation?url}">${authorAffiliation.affiliationName}</a></li>
+          <li>(${authorAffiliation?index + 1}) <a href="${urls.base}/search?searchMode=all&facet_${authorAffiliation.type!organization}_ss=${authorAffiliation.affiliation?url}">${authorAffiliation.affiliationName}</a></li>
       </#if>
     </#if>
   </#if>
@@ -216,7 +216,7 @@
   <#list supportingGrants as supportingGrant>
     <li>
       <#if supportingGrant.funder??>
-        <p style="margin-bottom:0.1em;"><a href="${urls.base}/search?searchMode=&facet_funder_ss=${supportingGrant.funder?url}">${supportingGrant.funderLabel}</a></p>
+        <p style="margin-bottom:0.1em;"><a href="${urls.base}/search?searchMode=all&facet_funder_ss=${supportingGrant.funder?url}">${supportingGrant.funderLabel}</a></p>
       </#if>
         <p style="margin-bottom:0.1em;"><a href="${profileUrl(supportingGrant.grant)}">${supportingGrant.grantLabel}</a></p>
       <#if supportingGrant.grantNumber??>

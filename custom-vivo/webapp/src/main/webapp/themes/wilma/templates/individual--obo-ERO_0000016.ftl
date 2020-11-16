@@ -148,13 +148,13 @@
       <#if !clinicalTrialAffiliation.type?has_content>
         <li>(${clinicalTrialAffiliation?index + 1}) ${clinicalTrialAffiliation.affiliationName}, ${clinicalTrialAffiliation.grid}</li>
       <#else>
-          <li>(${clinicalTrialAffiliation?index + 1}) <a href="${urls.base}/search?searchMode=clinical_trials&facet_${clinicalTrialAffiliation.type!organization}_ss=${clinicalTrialAffiliation.affiliation?url}">${clinicalTrialAffiliation.affiliationName}, ${clinicalTrialAffiliation.grid}<#if clinicalTrialAffiliation.affiliationAbbreviation??>, ${clinicalTrialAffiliation.affiliationAbbreviation}</#if></a></li>
+          <li>(${clinicalTrialAffiliation?index + 1}) <a href="${urls.base}/search?facet_content-type_ss=clinical_trials&facet_${clinicalTrialAffiliation.type!organization}_ss=${clinicalTrialAffiliation.affiliation?url}">${clinicalTrialAffiliation.affiliationName}, ${clinicalTrialAffiliation.grid}<#if clinicalTrialAffiliation.affiliationAbbreviation??>, ${clinicalTrialAffiliation.affiliationAbbreviation}</#if></a></li>
       </#if>
     <#else>
       <#if !clinicalTrialAffiliation.type?has_content>
         <li>(${clinicalTrialAffiliation?index + 1}) ${clinicalTrialAffiliation.affiliationName}</li>
       <#else>
-          <li>(${clinicalTrialAffiliation?index + 1}) <a href="${urls.base}/search?searchMode=clinical_trials&facet_${clinicalTrialAffiliation.type!organization}_ss=${clinicalTrialAffiliation.affiliation?url}">${clinicalTrialAffiliation.affiliationName}</a></li>
+          <li>(${clinicalTrialAffiliation?index + 1}) <a href="${urls.base}/search?facet_content-type_ss=clinical_trials&facet_${clinicalTrialAffiliation.type!organization}_ss=${clinicalTrialAffiliation.affiliation?url}">${clinicalTrialAffiliation.affiliationName}</a></li>
       </#if>
     </#if>
   </#if>
@@ -166,7 +166,7 @@
   <h3>Sponsors/collaborators</h3>
   <ul>
     <#list sponsorsCollaborators as sponsorCollaborator>
-      <li><a href="${urls.base}/search?searchModel=clinical_trials&facet_sponsor-collaborator_ss=${sponsorCollaborator.org?url}">${sponsorCollaborator.orgName}</a></li>
+      <li><a href="${urls.base}/search?facet_content-type_ss=clinical_trials&facet_sponsor-collaborator_ss=${sponsorCollaborator.org?url}">${sponsorCollaborator.orgName}</a></li>
     </#list>
   </ul>
 </#if>
@@ -274,15 +274,15 @@
       <#if clinicalTrialMeta[0].startYear??>
         <h3>Trial period</h3>
         <p> 	
-        <span class="pub_meta-value"><a href="${urls.base}/search?searchMode=clinical_trials&facet_start-year_ss=${clinicalTrialMeta[0].startYear}">
+        <span class="pub_meta-value"><a href="${urls.base}/search?facet_content-type_ss=clinical_trials&facet_start-year_ss=${clinicalTrialMeta[0].startYear}">
 	    ${clinicalTrialMeta[0].startYear}</a><#if clinicalTrialMeta[0].endYear??>-<a 
-	    href="${urls.base}/search?searchMode=clinical_trials&facet_start-year_ss=${clinicalTrialMeta[0].endYear}">${clinicalTrialMeta[0].endYear}</a></#if>
+	    href="${urls.base}/search?facet_content-type_ss=clinical_trials&facet_start-year_ss=${clinicalTrialMeta[0].endYear}">${clinicalTrialMeta[0].endYear}</a></#if>
 	    </span>
 	    </p>
       </#if>
       <#if clinicalTrialMeta[0].phase?? && clinicalTrialMeta[0].phaseInd??>
         <h3>Phase</h3>
-        <p><a href="${urls.base}/search?searchMode=clinical_trials&facet_phase_ss=${clinicalTrialMeta[0].phaseInd?url}">${clinicalTrialMeta[0].phase}</a></p>
+        <p><a href="${urls.base}/search?facet_content-type_ss=clinical_trials&facet_phase_ss=${clinicalTrialMeta[0].phaseInd?url}">${clinicalTrialMeta[0].phase}</a></p>
       </#if>
  
     </div>
@@ -309,7 +309,7 @@
         <p>Fields of Research</p>
         <ul class="one-line-list">
           <#list researchCategoriesFOR as researchCategory>
-            <li role="list-item"><a href="${urls.base}/search?searchMode=clinical_trials&facet_research-category_ss=${researchCategory.researchCategory?url}">${researchCategory.researchCategoryName}</a></li>
+            <li role="list-item"><a href="${urls.base}/search?facet_content-type_ss=clinical_trials&facet_research-category_ss=${researchCategory.researchCategory?url}">${researchCategory.researchCategoryName}</a></li>
           </#list>
         </ul>
       </div>
@@ -320,7 +320,7 @@
         <p>Sustainable Development Goals</p>
         <ul class="one-line-list">
           <#list researchCategoriesSDG as researchCategory>
-            <li role="list-item"><a href="${urls.base}/search?searchMode=clinical_trials&facet_sdg_ss=${researchCategory.researchCategory?url}">${researchCategory.researchCategoryName}</a></li>
+            <li role="list-item"><a href="${urls.base}/search?facet_content-type_ss=clinical_trials&facet_sdg_ss=${researchCategory.researchCategory?url}">${researchCategory.researchCategoryName}</a></li>
           </#list>
         </ul>
       </div>

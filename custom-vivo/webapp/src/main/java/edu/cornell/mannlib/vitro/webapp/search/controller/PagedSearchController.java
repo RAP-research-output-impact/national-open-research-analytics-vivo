@@ -1092,6 +1092,10 @@ public class PagedSearchController extends FreemarkerHttpServlet {
                             valBuilder.append(" OR ");
                         }
                         valBuilder.append(parameterName + ":\"" + val + "\"");
+                        // 2020-11-17 temporary fix to avoid reindexing TODO: remove
+                        if("facet_organization-all_ss".equals(parameterName) && !val.startsWith("http")) {
+                            valBuilder.append(" OR ").append("facet_hospital_ss:" + val + "\"");
+                        }
                     }
                     builder.append(valBuilder).append(")");
                 }                             

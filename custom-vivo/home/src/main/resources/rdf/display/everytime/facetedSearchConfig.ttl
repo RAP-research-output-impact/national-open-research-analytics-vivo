@@ -214,7 +214,6 @@
 	PREFIX abox:     <http://vivo.deffopera.dk/individual/>
         SELECT DISTINCT ?org
         WHERE {
-	  FILTER(REGEX(STR(?org), "grid"))
 	  { 
 	    ?uri a obo:IAO_0000030 .
             ?uri bibo:doi ?doi .
@@ -222,32 +221,79 @@
 	    ?ddf a nora:DDF .
 	    ?ddf nora:grid ?grid .
 	    BIND(IRI(CONCAT(STR(abox:), ?grid)) AS ?org)
+	    FILTER(REGEX(STR(?org), "grid"))
 	  } UNION {
 	    ?uri a obo:IAO_0000030 .
 	    ?uri nora:relatedToOrganization ?org .
+	    FILTER(REGEX(STR(?org), "grid"))
 	  } UNION {
             ?authorship vivo:relates ?uri .
 	    ?authorship a vivo:Authorship .
 	    ?authorship nora:relatedToOrganization ?org .
 	    ?org a foaf:Organization .
+	    FILTER(REGEX(STR(?org), "grid"))
 	  } UNION {
             ?uri a vivo:Grant .
 	    ?uri vivo:relates ?role .
 	    ?role a obo:BFO_0000023 .
 	    ?role nora:relatedToOrganization ?org .
 	    ?org a foaf:Organization .
+	    FILTER(REGEX(STR(?org), "grid"))
 	  } UNION {
             ?uri a obo:ERO_0000016 . # ClinicalTrial
 	    ?uri obo:BFO_0000055 ?role .
 	    ?role a obo:BFO_0000023 .
 	    ?role nora:relatedToOrganization ?org .
 	    ?org a foaf:Organization .
+	    FILTER(REGEX(STR(?org), "grid"))
 	  } UNION {
             ?uri nora:assigneeOriginal ?org .
 	    ?org a foaf:Organization .
+	    FILTER(REGEX(STR(?org), "grid"))
 	  } UNION {
             ?uri vivo:assignee ?org .
 	    ?org a foaf:Organization .
+	    FILTER(REGEX(STR(?org), "grid"))
+	  } UNION {
+            ?uri bibo:doi ?doi .
+	    ?ddf nora:doi ?doi .
+	    ?ddf a nora:DDF .
+	    ?ddf nora:grid ?grid .
+	    BIND(IRI(CONCAT(STR(abox:), ?grid)) AS ?hosp)
+	    ?hosp a vivo:Hospital .
+	    ?hosp vivo:abbreviation ?org
+	  } UNION {
+	    ?uri nora:relatedToOrganization ?hosp .
+	    ?hosp a vivo:Hospital .
+	    ?hosp vivo:abbreviation ?org
+	  } UNION {
+            ?authorship vivo:relates ?uri .
+	    ?authorship a vivo:Authorship .
+	    ?authorship nora:relatedToOrganization ?hosp .
+	    ?hosp a vivo:Hospital .
+	    ?hosp vivo:abbreviation ?org
+	  } UNION {
+            ?uri a vivo:Grant .
+	    ?uri vivo:relates ?role .
+	    ?role a obo:BFO_0000023 .
+	    ?role nora:relatedToOrganization ?hosp .
+	    ?hosp a vivo:Hospital .
+	    ?hosp vivo:abbreviation ?org
+	  } UNION {
+            ?uri a obo:ERO_0000016 . # ClinicalTrial
+	    ?uri obo:BFO_0000055 ?role .
+	    ?role a obo:BFO_0000023 .
+	    ?role nora:relatedToOrganization ?hosp .
+	    ?hosp a vivo:Hospital .
+	    ?hosp vivo:abbreviation ?org
+	  } UNION {
+            ?uri nora:assigneeOriginal ?hosp .
+	    ?hosp a vivo:Hospital .
+	    ?hosp vivo:abbreviation ?org
+	  } UNION {
+            ?uri vivo:assignee ?hosp .
+	    ?hosp a vivo:Hospital .
+	    ?hosp vivo:abbreviation ?org
 	  }
         }
     """ .

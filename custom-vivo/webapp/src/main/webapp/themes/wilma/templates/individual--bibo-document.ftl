@@ -170,7 +170,7 @@
 <!-- end .authors-box -->
 
 <!-- author affiliations -->
-<#if authorAffiliations?has_content>
+<#if authorAffiliations?has_content && authorAffiliations[0].affiliation?has_content>
 <h3>Affiliations</h3>
 <p>Organisations</p>
 <ol>
@@ -223,7 +223,7 @@
 </script>
 </#if>
 
-<#if funders?has_content>
+<#if funders?has_content && funders[0].funderLabel??>
   <h3>Funders</h3>
   <ul class="pub_meta-list">
     <#list funders as funder>
@@ -334,6 +334,7 @@
 
       <#if universityExists?? || otherAssociatedUniversities?has_content>
       <h3>NORA University Profiles</h3>
+      <#if universityExists??>
       <#list authorAffiliations as authorAffiliation>
         <#if authorAffiliation.affiliation?has_content && authorAffiliation.affiliationName?has_content>
           <#if authorAffiliation.grid?has_content>
@@ -342,12 +343,15 @@
 	    </#if>
           </#if>
         </#if>
-      </#list>
+      </#list> 
+      </#if>
+      <#if otherAssociatedUniversities?has_content>
       <#list otherAssociatedUniversities as otherUni>
         <#if otherUni.university?has_content && otherUni.universityName?has_content>
               <p><a href="${profileUrl(otherUni.university)}">${otherUni.universityName}</a></p>
         </#if>
       </#list>
+      </#if>
 
     </#if>
 

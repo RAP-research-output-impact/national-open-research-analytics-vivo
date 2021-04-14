@@ -33,6 +33,7 @@ CONSTRUCT {
     ?x bibo:volume ?volume .
     ?x bibo:issue ?issue .
     ?x g:publication_id ?id .
+    ?x osrap:authorsCount ?authorsCount .
     ?x osrap:timesCited ?timesCited .
     ?x osrap:relativeCitationRatio ?relativeCitationRatio .
     ?x osrap:fieldCitationRatio ?fieldCitationRatio .
@@ -97,5 +98,8 @@ CONSTRUCT {
       BIND(IRI(CONCAT(STR(?x), "-vcard")) AS ?vcard)
       BIND(IRI(CONCAT(STR(?x), "-vcard-url")) AS ?url)
       BIND(xsd:anyURI(?linkout) AS ?linkoutUrl)
+    }
+    OPTIONAL {
+      ?x g:authors_count ?authorsCount
     }
 }

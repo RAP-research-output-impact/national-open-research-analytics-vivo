@@ -25,19 +25,8 @@ PREFIX osrap:    <http://vivo.deffopera.dk/ontology/osrap/>
 PREFIX abox:     <http://vivo.deffopera.dk/individual/>
 
 CONSTRUCT {
-    ?x osrap:openAccessCategory ?oaCategory .
-    ?x osrap:openAccessCategoryV2 ?oacv2 .
-    ?oaCategory a osrap:OpenAccessCategory .
-    ?oaCategory rdfs:label ?name .
-    ?oaCategory vivo:description ?description .
+    ?x vivo:informationResourceSupportedBy ?grantInd .
 } WHERE {
-  {
-    ?x g:open_access_categories ?oac .
-    ?oac g:id ?id .
-    ?oac g:name ?name .
-    ?oac g:description ?description
-    BIND(IRI(CONCAT(STR(abox:), "open-access-category-", STR(?id))) AS ?oaCategory) .
-  } UNION {
-    ?x g:open_access_categories_v2 ?oacv2 .
-  }
+    ?x g:associated_grant_ids ?id .
+    BIND(IRI(CONCAT(STR(abox:), STR(?id))) AS ?grantInd) .
 }

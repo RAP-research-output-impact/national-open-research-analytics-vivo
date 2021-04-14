@@ -104,8 +104,8 @@ public class DimensionsPatentsConnector extends DimensionsConnector {
                     }
                     if(iteration < 2) {
                         log.info(fullJsonObj.toString(2));
-                        results.add(toRdf(fullJsonObj.toString()));
                     }
+                    results.add(toRdf(fullJsonObj.toString()));
                 }
                 return results;
             } finally {
@@ -126,7 +126,8 @@ public class DimensionsPatentsConnector extends DimensionsConnector {
         queries = Arrays.asList(
                 "100-patent.rq",
                 "140-patentAuthorship.rq",
-                "190-for.rq"
+                "190-for.rq",
+		"230-funding.rq"
                 );
         for(String query : queries) {
             construct(SPARQL_RESOURCE_DIR + "patents/" + query, model, ABOX + getPrefixName() + "-");

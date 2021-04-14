@@ -79,7 +79,7 @@ SELECT ?p ?title ?typeLabel ?journal ?authorList ?year ?openAccess WHERE {
              ?authorship vivo:relates ?author .
 	     ?author a foaf:Person .
 	     ?author rdfs:label ?authorName 
-           } ORDER BY ?rank 
+           } GROUP BY ?rank ?authorName ORDER BY ?rank 
         }  
     }
 }

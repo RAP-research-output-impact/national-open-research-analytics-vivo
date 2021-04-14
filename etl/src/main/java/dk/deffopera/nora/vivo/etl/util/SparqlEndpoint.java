@@ -174,7 +174,7 @@ public class SparqlEndpoint {
         }
         long total = model.size();
         long written = 0;
-        log.debug("Writing " + total + " new statements to VIVO");
+        log.info("Writing " + total + " new statements to " + graphURI);
         for (Model chunk : modelChunks) {
             writeChunk(chunk, graphURI);
             written += chunk.size();
@@ -353,23 +353,31 @@ public class SparqlEndpoint {
      * @param graphURI
      */
     public void clearGraph(String graphURI) {
-        int batchSize = 25000;
+        int batchSize = 10000;
         log.info("Clearing graph " + graphURI + " in batches of " + batchSize + 
                 " triples");
         // Get triple count
-        String countSelect = "SELECT (COUNT(*) AS ?count) WHERE { \n"
-                + "  GRAPH <" + graphURI + "> { ?s ?p ?o } \n"
-                + "}";
-        ResultSet countRs = getResultSet(countSelect);
-        QuerySolution qsoln = countRs.next();
-        int count = qsoln.getLiteral("count").getInt();
-        int iterations = (count / batchSize) + 1;
-        for(int i = 0; i < iterations; i++) {
+//        String countSelect = "SELECT (COUNT(*) AS ?count) WHERE { \n"
+//                + "  GRAPH <" + graphURI + "> { ?s ?p ?o } \n"
+//                + "}";
+//        ResultSet countRs = getResultSet(countSelect);
+//        QuerySolution qsoln = countRs.next();
+//        int count = qsoln.getLiteral("count").getInt();
+//        int iterations = (count / batchSize) + 1;
+        boolean done = false;
+//	for(int i = 0; i < iterations; i++) {
+        while(!done) {
+	    log.info("Acquiring chunk");
             String chunkConstruct = "CONSTRUCT { ?s ?p ?o } WHERE { \n"
                     + "  GRAPH <" + graphURI + "> { ?s ?p ?o } \n" 
                     + "} LIMIT " + batchSize;
             Model chunk = this.construct(chunkConstruct);
+	    log.info("Chunk acquired");
             this.deleteModel(chunk, graphURI);
+	    log.info("Chunk deleted");
+	    if(chunk.size() < batchSize) {
+                done = true;
+	    }
         }
         log.info("Calling final clear");
         update("CLEAR GRAPH <" + graphURI + ">");

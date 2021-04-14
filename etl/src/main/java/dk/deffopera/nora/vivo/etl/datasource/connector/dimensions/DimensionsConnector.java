@@ -123,7 +123,7 @@ public class DimensionsConnector extends ConnectorDataSource
                 MongoClientSettings.builder()
                         .retryReads(true)
                         .applyToSocketSettings(builder -> builder.readTimeout(
-                                30, TimeUnit.SECONDS))
+                                180, TimeUnit.SECONDS))
                         .applyToClusterSettings(builder ->
                                 builder.hosts(Arrays.asList(
                                         new ServerAddress(

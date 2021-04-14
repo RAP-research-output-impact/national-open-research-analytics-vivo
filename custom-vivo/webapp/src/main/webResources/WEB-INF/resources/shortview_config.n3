@@ -70,8 +70,8 @@ SELECT ?p ?title ?typeLabel ?journal ?authorList ?year ?openAccess WHERE {
       FILTER(?openAccess != <http://vivo.deffopera.dk/individual/open-access-category-closed>)
     }
     {
-        SELECT (group_concat(?authorName; separator = '; ') as ?authorList) WHERE  {                    
-           SELECT ?authorName WHERE {
+        SELECT (group_concat(?name; separator = '; ') as ?authorList) WHERE  {                    
+           SELECT (MIN(?authorName) AS ?name) WHERE {
              ?individualUri vivo:relatedBy ?authorship .                                           
              ?authorship a vivo:Authorship .
              ?authorship vivo:rank ?rank .            

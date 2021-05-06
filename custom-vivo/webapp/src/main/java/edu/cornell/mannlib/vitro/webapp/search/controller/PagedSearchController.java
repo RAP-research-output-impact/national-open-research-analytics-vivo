@@ -1094,7 +1094,7 @@ public class PagedSearchController extends FreemarkerHttpServlet {
                         valBuilder.append(parameterName + ":\"" + val + "\"");
                         // 2020-11-17 temporary fix to avoid reindexing TODO: remove
                         if("facet_organization-all_ss".equals(parameterName) && !val.startsWith("http")) {
-                            valBuilder.append(" OR ").append("facet_hospital_ss:" + val + "\"");
+                            valBuilder.append(" OR ").append("facet_hospital_ss:\"" + val + "\"");
                         }
                     }
                     builder.append(valBuilder).append(")");
@@ -1240,7 +1240,7 @@ public class PagedSearchController extends FreemarkerHttpServlet {
                     List<String> vals = new ArrayList<String>(Arrays.asList(
                             s.split(Pattern.quote(VALUE_DELIMITER))));
                     for (int i = 0; i < vals.size(); i++) {
-                        String val = vals.get(i);
+                        String val = vals.remove(i);
                         String valueLabel = humanReadableFacetValue(val, vreq);
                         map.put(key, StringUtils.join(vals, VALUE_DELIMITER));
                         vals.add(i, val);
@@ -1298,8 +1298,8 @@ public class PagedSearchController extends FreemarkerHttpServlet {
             //Individual ind = iDao.getIndividualByURI(facetValue);
             ParameterizedSparqlString pss = new ParameterizedSparqlString(
                     LABEL_ABBR_QUERY);
-            pss.setIri("x", facetValue);
             try {
+                pss.setIri("x", facetValue);
                 LabelAbbrConsumer consumer = new LabelAbbrConsumer();
                 vreq.getRDFService().sparqlSelectQuery(
                         pss.toString(), consumer);
@@ -1310,7 +1310,7 @@ public class PagedSearchController extends FreemarkerHttpServlet {
                 } else {
                     return facetValue;
                 }
-            } catch (RDFServiceException e) {
+            } catch (Exception e) {
                 log.error(e, e);
                 return facetValue;
             }            

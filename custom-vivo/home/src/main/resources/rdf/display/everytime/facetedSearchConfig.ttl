@@ -104,7 +104,7 @@
 	  #  ?dtv vivo:dateTime ?dateTime .
 	  #  BIND(substr(str(?dateTime), 1, 4) AS ?year)
 	  #}
-	  FILTER( (xsd:integer(?year) >= 2014) && (xsd:integer(?year) <= 2019) )
+	  FILTER( (xsd:integer(?year) >= 2011) && (xsd:integer(?year) <= 2021) )
         }
     """ .
 
@@ -137,7 +137,7 @@
 	    ?dtv vivo:dateTime ?dateTime .
 	    BIND(substr(str(?dateTime), 1, 4) AS ?year)
 	  }
-	  FILTER( (xsd:integer(?year) >= 2014) && (xsd:integer(?year) <= 2019) )
+	  FILTER( (xsd:integer(?year) >= 2011) && (xsd:integer(?year) <= 2021) )
         } GROUP BY ?uri
     """ .
 

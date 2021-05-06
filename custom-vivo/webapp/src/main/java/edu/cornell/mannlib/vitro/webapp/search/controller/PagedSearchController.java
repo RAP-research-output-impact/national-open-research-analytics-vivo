@@ -1180,7 +1180,6 @@ public class PagedSearchController extends FreemarkerHttpServlet {
             VitroRequest vreq, VClassGroupDao grpDao, VClassDao vclassDao) {
         ParamMap map = NoraGetQueryParamMap(vreq);
         List<LinkTemplateModel> qr = new ArrayList<LinkTemplateModel>();
-
         String s = map.get(PARAM_QUERY_TEXT);
         if ((s != null) && (!StringUtils.isEmpty(s))) {
             map.remove(PARAM_QUERY_TEXT);
@@ -1199,34 +1198,6 @@ public class PagedSearchController extends FreemarkerHttpServlet {
             qr.add(new LinkTemplateModel(label + ": " + s, "/search", map));
             map.put(PARAM_FACET_TEXT_VALUE, s);
         }
-/*      Don't display or give the option to remove the class group for now, it adds to confusion when just viewing publication
-        s = map.get(PARAM_CLASSGROUP);
-        if ((s != null) && (!StringUtils.isEmpty(s))) {
-            VClassGroup vcg = grpDao.getGroupByURI(s);
-            String label = "";
-            if( vcg == null ){
-                label = s;
-            } else {
-                label = vcg.getPublicName();
-            }
-            map.remove(PARAM_CLASSGROUP);
-            qr.add(new LinkTemplateModel("Type: " + label, "/search", map));
-            map.put(PARAM_CLASSGROUP, s);
-        }
-        s = map.get(PARAM_RDFTYPE);
-        if ((s != null) && (!StringUtils.isEmpty(s))) {
-            VClass type = vclassDao.getVClassByURI(s);
-            String label = "";
-            if( type == null ){
-                label = s;
-            } else {
-                label = type.getName();
-            }
-            map.remove(PARAM_RDFTYPE);
-            qr.add(new LinkTemplateModel("Sub-Type: " + label, "/search", map));
-            map.put(PARAM_RDFTYPE, s);
-        }
-*/
         for(String key : NoraSearchFacets.getFacetFields()) {
             log.debug("Building query reduce link for " + key);
             s = map.get(key);
@@ -1270,6 +1241,7 @@ public class PagedSearchController extends FreemarkerHttpServlet {
                         qr.add(new LinkTemplateModel(label + ": " 
                                 + valueLabels.toString(), "/search", map));                   
                         groups.add(i, group);
+                        map.put(key, StringUtils.join(groups, GROUP_DELIMITER));
                     }
                 } else {
                     String val = humanReadableFacetValue(s, vreq);                    

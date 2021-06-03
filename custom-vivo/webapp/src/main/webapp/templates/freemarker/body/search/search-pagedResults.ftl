@@ -251,7 +251,11 @@
     }
     firstFacetCategory[fieldName] = currentFirstCategory;
     if("checkboxes" === markupType) {
-      fetchFacetJson(fieldName, currentFirstCategory, function(json) { updateFacetCheckboxes(json, fieldName, markupType)});
+      if(currentFirstCategory < $("#" + fieldName + "-categories").children('li').length) {
+        reshowCheckboxes($("#" + fieldName + "-categories").children('li'), currentFirstCategory, currentFirstCategory + 15);
+      } else {
+        fetchFacetJson(fieldName, currentFirstCategory, function(json) { updateFacetCheckboxes(json, fieldName, markupType)});
+      }
     } else {
       fetchFacetJson(fieldName, currentFirstCategory, function(json) { updateFacetLinks(json, fieldName, markupType)});
     }
@@ -263,9 +267,19 @@
     return false;
   }
 
+  function reshowCheckboxes(children, firstVisible, lastVisible) {
+    children.each(function(i, input) {
+      if(i >= firstVisible && i < lastVisible) {
+        $(input).show();
+      } else {
+        $(input).hide();
+      }
+    });
+  }
+
   function updateFacetCheckboxes(json, fieldName) {
     $("#" + fieldName + "-categories").children('li').each(function(i, input) {
-       $(input).remove();
+       $(input).hide();
     });
     for(var i = 0; i < json.length; i++) {
         var cat = json[i];

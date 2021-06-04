@@ -463,6 +463,79 @@
         }
     """ .
 
+:documentModifier_facet_dk-organization
+    a   <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.SelectQueryDocumentModifier> ,
+            <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.DocumentModifier> ;
+    rdfs:label "DK Organization document modifier" ;
+    :hasTargetField "facet_dk-organization_ss" ;
+    :hasTypeRestriction "http://purl.obolibrary.org/obo/IAO_0000030";
+    :hasTypeRestriction "http://vivoweb.org/ontology/core#Grant" ;
+    :hasTypeRestriction "http://purl.obolibrary.org/obo/ERO_0000016" ; # ClinicalTrial
+    :hasSelectQuery """
+	PREFIX vivo: <http://vivoweb.org/ontology/core#>
+	PREFIX wos: <http://webofscience.com/ontology/wos#> 
+	PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+	PREFIX bibo:   <http://purl.org/ontology/bibo/>
+	PREFIX nora:    <http://vivo.deffopera.dk/ontology/osrap/>
+	PREFIX obo: <http://purl.obolibrary.org/obo/> 
+	PREFIX abox:     <http://vivo.deffopera.dk/individual/>
+        SELECT DISTINCT ?org
+        WHERE {
+	  FILTER(REGEX(STR(?org), "grid"))
+	  FILTER EXISTS {
+	    ?org nora:addresses ?address .
+	    ?address nora:country_code "DK" .
+	  }
+	  { 
+            ?uri bibo:doi ?doi .
+	    ?ddf nora:doi ?doi .
+	    ?ddf a nora:DDF .
+	    ?ddf nora:grid ?grid .
+	    BIND(IRI(CONCAT(STR(abox:), ?grid)) AS ?org)
+	    FILTER NOT EXISTS { ?org a vivo:University }
+	    FILTER NOT EXISTS { ?org a vivo:Hospital }
+	  } UNION {
+	    ?uri nora:relatedToOrganization ?org .
+	    FILTER NOT EXISTS { ?org a vivo:University }
+	    FILTER NOT EXISTS { ?org a vivo:Hospital }
+	  } UNION {
+            ?authorship vivo:relates ?uri .
+	    ?authorship a vivo:Authorship .
+	    ?authorship nora:relatedToOrganization ?org .
+	    ?org a foaf:Organization .
+	    FILTER NOT EXISTS { ?org a vivo:University }
+	    FILTER NOT EXISTS { ?org a vivo:Hospital }
+	  } UNION {
+            ?uri a vivo:Grant .
+	    ?uri vivo:relates ?role .
+	    ?role a obo:BFO_0000023 .
+	    ?role nora:relatedToOrganization ?org .
+	    ?org a foaf:Organization .
+	    FILTER NOT EXISTS { ?org a vivo:University }
+	    FILTER NOT EXISTS { ?org a vivo:Hospital }
+	  } UNION {
+            ?uri a obo:ERO_0000016 . # ClinicalTrial
+	    ?uri obo:BFO_0000055 ?role .
+	    ?role a obo:BFO_0000023 .
+	    ?role nora:relatedToOrganization ?org .
+	    ?org a foaf:Organization .
+	    FILTER NOT EXISTS { ?org a vivo:University }
+	    FILTER NOT EXISTS { ?org a vivo:Hospital }
+	  } UNION {
+            ?uri nora:assigneeOriginal ?org .
+	    ?org a foaf:Organization .
+	    FILTER NOT EXISTS { ?org a vivo:University }
+	    FILTER NOT EXISTS { ?org a vivo:Hospital }
+	  } UNION {
+            ?uri vivo:assignee ?org .
+	    ?org a foaf:Organization .
+	    FILTER NOT EXISTS { ?org a vivo:University }
+	    FILTER NOT EXISTS { ?org a vivo:Hospital }
+	  }
+        }
+    """ .
+
+
 :documentModifier_facet_organization
     a   <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.SelectQueryDocumentModifier> ,
             <java:edu.cornell.mannlib.vitro.webapp.searchindex.documentBuilding.DocumentModifier> ;
@@ -482,6 +555,10 @@
         SELECT DISTINCT ?org
         WHERE {
 	  FILTER(REGEX(STR(?org), "grid"))
+	  FILTER NOT EXISTS {
+	    ?org nora:addresses ?address .
+	    ?address nora:country_code "DK" .
+	  }
 	  { 
             ?uri bibo:doi ?doi .
 	    ?ddf nora:doi ?doi .
@@ -752,6 +829,7 @@
         WHERE {
 	    ?uri a vivo:Dataset .
             ?uri vivo:hasPublicationVenue ?repository .
+	    FILTER(!REGEX(STR(?repository), "portal_"))
         }
     """ .
 
@@ -838,11 +916,13 @@
     :hasTargetField "facet_phase_ss" ;
     :hasTypeRestriction "http://purl.obolibrary.org/obo/ERO_0000016" ; # ClinicalTrial
     :hasSelectQuery """
+	PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 	PREFIX vivo: <http://vivoweb.org/ontology/core#>
 	PREFIX bibo: <http://purl.org/ontology/bibo/> 
         SELECT DISTINCT ?phase
         WHERE {
 	    ?uri <http://purl.obolibrary.org/obo/ERO_0001518> ?phase .
+	    ?phase rdfs:label ?someLabel
         }
     """ .
 

@@ -108,10 +108,10 @@
 <p>
 <!-- journal -->
 <#assign publishedIn = pg.getProperty(vivo + "hasPublicationVenue")!>
-<#if publishedIn?? && publishedIn.statements?? && publishedIn.statements[0]??>
-  <span class="pub_meta"><a href="${urls.base}/search?searchMode=all&facet_journal_ss=${publishedIn.statements[0].object?url}">${publishedIn.statements[0].label}</a>, </span>
+<#if publishedIn?? && publishedIn.statements?? && publishedIn.statements[0]?? && !publishedIn.statements[0].label?contains("portal_")>
+  <span class="pub_meta"><a href="${urls.base}/search?searchMode=all&facet_repository_ss=${publishedIn.statements[0].object?url}">${publishedIn.statements[0].label}</a>, </span>
 </#if>
-<#if pubMeta[0].publisher??>
+<#if pubMeta[0].publisher??> 
   <span class="pub_meta"><a href="${urls.base}/search?searchMode=all&facet_publisher_ss=${pubMeta[0].publisher?url}">${pubMeta[0].publisherName}</a>, </span>
 </#if>
 <#if pubMeta[0].issn??>
@@ -299,7 +299,9 @@
   <h3>Funders</h3>
   <ul class="pub_meta-list">
     <#list funders as funder>
+      <#if funder.funder??>
       <li><a href="${urls.base}/search?searchMode=all&facet_funder_ss=${funder.funder?url}">${funder.funderLabel}</a></li>
+      </#if>
     </#list>
   </ul>
 </#if>

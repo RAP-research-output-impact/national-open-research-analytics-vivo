@@ -32,6 +32,7 @@ public class NoraSearchFacets {
         commonSearchFacets.add(new SearchFacet("facet_university_ss", "Danish Universities", DISPLAY_IN_SIDEBAR, IS_UNION_FACET, danishOrgsParent));
         commonSearchFacets.add(new SearchFacet("facet_hospital_ss", "Danish Hospitals", DISPLAY_IN_SIDEBAR, IS_UNION_FACET, danishOrgsParent));
         
+        commonSearchFacets.add(new SearchFacet("facet_dk-organization_ss", "Other Danish Organizations", DISPLAY_IN_SIDEBAR, IS_UNION_FACET));
         commonSearchFacets.add(new SearchFacet("facet_organization_ss", "Other Organizations", DISPLAY_IN_SIDEBAR, IS_UNION_FACET));
         commonSearchFacets.add(new SearchFacet("facet_funder_ss", "Funders"));
         commonSearchFacets.add(new SearchFacet("facet_main-subject-area_ss", "Main Subject Areas"));
